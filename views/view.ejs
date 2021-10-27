@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <title>Web Chat</title>
   <!-- SOURCE: https://socket.io/get-started/chat -->
   <style>
@@ -28,7 +28,7 @@
     </form>
 </body>
 <script>
-  const socket = io('http://localhost:4000');
+  const socket = io();
 
   // SOURCE: https://gist.github.com/6174/6062387
   const nickname = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -40,7 +40,7 @@
     event.preventDefault();
     if (input.value) {
       const data = { nickname, chatMessage: input.value }
-      socket.emit('input message', data);
+      socket.emit('message', data);
       input.value = '';
     }
   });

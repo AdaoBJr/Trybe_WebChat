@@ -1,8 +1,10 @@
 require('dotenv').config();
 
 const express = require('express');
-const cors = require('cors');
-const server = require('http').createServer();
+
+const app = express();
+
+const server = require('http').createServer(app);
 
 const io = require('socket.io')(server, {
   cors: {
@@ -11,14 +13,7 @@ const io = require('socket.io')(server, {
   },
 });
 
-const app = express();
-
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Authorization'],
-}));
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -32,18 +27,18 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Disconnected user');
   });
-  socket.on('input message', (msg) => {
+  socket.on('message', (msg) => {
     const date = new Date();
     const [year, day, month] = [date.getFullYear(), date.getDate(), date.getMonth()];
     const [hour, minute, second] = [date.getHours(), date.getMinutes(), date.getSeconds()];
     // DD-MM-yyyy HH:mm:ss
     const messageTime = `${day}-${month + 1}-${year} ${hour}:${minute}:${second}`;
-    console.log(`${messageTime} ${msg.nickname} ${msg.chatMessage}`);
+    const formattedMessage = `${messageTime} - ${msg.nickname}: ${msg.chatMessage}`;
+    io.emit('message', formattedMessage);
+    console.log(formattedMessage);
   });
 });
 
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log('Ouvindo a porta 3000');
 });
-
-server.listen(4000);
