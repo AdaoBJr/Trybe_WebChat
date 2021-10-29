@@ -1,9 +1,10 @@
 const socket = window.io();
 
 const form = document.querySelector('#chat');
+
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-
+  
   const inputMessage = document.querySelector('.chatMessage').value;
   const inputNickname = document.querySelector('.nickname').value;
 
@@ -40,3 +41,11 @@ const randomString = (length) => {
 const inputRandomNickname = document.querySelector('.randomNickname');
 const stringNickname = randomString(16);
 inputRandomNickname.innerHTML = stringNickname;
+
+const buttonSave = document.querySelector('.saveNickname');
+buttonSave.addEventListener('click', () => {
+  const inputNickname = document.querySelector('.nickname').value;
+  console.log(inputNickname);
+  // https://www.w3schools.com/jsref/prop_win_sessionstorage.asp
+  sessionStorage.setItem('nickname', inputNickname);
+});
