@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src='http://localhost:3000/socket.io/socket.io.js'></script>
+  <title>WebChat</title>
+</head>
+
+<body>
+  WebChat
+  <form id="messageInfo">
+
+    <input type="text" placeholder="Digite seu nome" id="nickname" />
+    <input type="text" placeholder="Digite sua mensagem" id="message" data-testid="message-box" />
+    <button type="submit" id="send" data-testid="send-button">Enviar mensagem</button>
+  </form>
+  <ul id="messages">
+    <% messages.forEach((message) => { %> 
+      <li><%= message %></li>
+    <% }) %>
+  </ul>
+
+  <script>
+    const socket = io('http://localhost:3000');
+    const sendButton = document.getElementById('send');
+
+    sendButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      let messageAuthor = document.getElementById('nickname').value;
+      let messageText = document.getElementById('message').value;
+      if (messageAuthor.length > 0 && messageText.length > 0) {
+        const data = {
+          nickname: messageAuthor,
+          chatMessage: messageText,
+        }
+        console.log(data, 'envio');
+        socket.emit('message', data)
+      }
+    });
+
+    socket.on('message', (messages) => {
+      const messagesDiv = document.getElementById('messages')
+      messages.forEach((msg) => {
+        console.log(msg)
+        const ul = document.createElement('ul');
+        ul.textContent = msg.nickname + ' ' + msg.chatMessage;
+        messagesDiv.appendChild(ul);
+      })
+    })
+
+  </script>
+</body>
+
+</html>
