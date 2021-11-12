@@ -78,13 +78,14 @@ const socket = window.io();
         socket.emit('edit user', { newNickName: userName, oldNickName });
       });
 
-    socket.on('new user', (data) => {
+    socket.on('new user', ({ activeUsers: data, arrayOfMessages }) => {
       inboxPeople.textContent = '';
       const userExist = data.findIndex((element) => element.data === userName);
 
       if (userExist === -1) { console.log('desculpe problemas no array de usuario'); }
       const newArryData = changePosition(data, userExist, 0);
       newArryData.forEach((user) => addToUsersBox(user.data));
+      arrayOfMessages.forEach((obj) => addNewMessage(obj.message));
     });
 
     socket.on('edit user', (data) => {

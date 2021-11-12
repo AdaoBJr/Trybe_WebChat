@@ -1,13 +1,9 @@
 // Faça seu código aqui
-
+const moment = require('moment');
 const express = require('express');
 
 const app = express();
 const PORT = 3000;
-// const http = require('http');
-// const cors = require('cors');
-
-// const server = http.createServer(app);
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -26,15 +22,17 @@ app.use(express.static(`${__dirname}/views`));
 
 const formatMessage = require('./views/js/util/formatMessage');
 const getTheCurrentDate = require('./views/js/util/getTheCurrentDate');
+const { setMessage, getMessages } = require('./models/modelChat');
 
 let activeUsers = [];
-// const historyMessage = [];
-
 io.on('connection', (socket) => {
   console.log(`${socket.id} usuario conectado`);
-  socket.on('new user', (data) => {
+
+  socket.on('new user', async (data) => {
     activeUsers.unshift({ data, id: socket.id });
-    io.emit('new user', activeUsers);
+    const arrayOfMessages = await getMessages();
+    console.log(arrayOfMessages);
+    io.emit('new user', { activeUsers, arrayOfMessages });
   });
 
   socket.on('edit user', ({ newNickName, oldNickName }) => {
@@ -44,8 +42,10 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const messageReturn = formatMessage(getTheCurrentDate(), chatMessage, nickname);
+  socket.on('message', async ({ chatMessage: message, nickname }) => {
+    const messageReturn = formatMessage(getTheCurrentDate(), message, nickname);
+    const dateForDb = moment().format('DD-MM-YYYY HH:mm:ss');
+    await setMessage({ message: messageReturn, nickname, dateForDb });
     io.emit('message', messageReturn);
   });
 
@@ -60,7 +60,3 @@ io.on('connection', (socket) => {
 app.get('/', (req, res) => {
   res.status(200).render('client', { users: activeUsers });
 });
-
-// server.listen(3000, () => {
-//   console.log('listening on *:3000');
-// });
