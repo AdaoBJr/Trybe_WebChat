@@ -26,13 +26,13 @@ let activeUsers = [];
 
 io.on('connection', async (socketClient) => {
   socketClient.on('new user', (data) => {
-    activeUsers.push({ data, id: socketClient.id }); io.emit('new user', [...activeUsers]);
+    activeUsers.push({ data, id: socketClient.id }); io.emit('new user', activeUsers);
   });
 
   socketClient.on('changeUser', ({ oldNickname, newNickname }) => {
     if (activeUsers.findIndex((obj) => obj.data === oldNickname) !== -1) {
       activeUsers[activeUsers.findIndex((obj) => obj.data === oldNickname)
-      ] = { data: newNickname, id: socketClient.id }; io.emit('changeUser', [...activeUsers]); 
+      ] = { data: newNickname, id: socketClient.id }; io.emit('changeUser', activeUsers); 
     }
   });
 

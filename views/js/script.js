@@ -22,16 +22,22 @@ const addToUsersBox = (userNick) => {
   if (document.getElementById(`${userNick}`)) {
     return;
   }
+
   sessionStorage.setItem('nickname', userName); 
-  const userBox = `<li data-testid="online-user" id=${userNick}>${userNick}</li>`;
+  const userBox = document.createElement('li');
+  userBox.setAttribute('data-testid', 'online-user');
+  userBox.setAttribute('id', `${userNick}`);
+  userBox.innerText = userNick;
+  inboxPeople.appendChild(userBox);
+/*   const userBox = `<li data-testid="online-user" id=${userNick}>${userNick}</li>`;
   
-  inboxPeople.innerHTML += userBox;
+  inboxPeople.innerHTML += userBox; */
 };
 
 const newUserConnected = (user) => {
   userName = user || `${randomUser}`;
   socket.emit('new user', userName);
-  return addToUsersBox(userName);
+  addToUsersBox(userName);
 };
 
 // new user is created so we generate nickname and emit event
@@ -72,7 +78,7 @@ socket.on('new user', (data) => {
 
 socket.on('changeUser', (data) => {
   inboxPeople.textContent = '';
-
+  console.log(data);
   const userExist = data.findIndex((element) => element.data === userName);
   if (userExist === -1) { console.log('Palmeiras não tem mundial'); }
   const newArryData = changePosition(data, userExist, 0);
