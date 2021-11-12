@@ -22,12 +22,14 @@ app.use(express.static(`${__dirname}/views`));
 
 const formatMessage = require('./views/js/util/formatMessage');
 const getTheCurrentDate = require('./views/js/util/getTheCurrentDate');
-const modifyArrayOnUsers = require('./views/js/util/modifyArrayOnUsers');
+const modifyOnUsers = require('./views/js/util/modifyArrayOnUsers');
 
 const { setMessage, getMessages } = require('./models/modelChat');
 
 let onUsers = [];
 const formatDateDb = 'DD-MM-YYYY HH:mm:ss';
+const date = moment().format(formatDateDb);
+
 io.on('connection', (socket) => {
   socket.on('new user', async (data) => {
     onUsers.unshift({ data, id: socket.id });
@@ -35,12 +37,12 @@ io.on('connection', (socket) => {
   });
   socket.on('edit user', ({ newNickName, oldNickName }) => {
     if (onUsers.findIndex((obj) => obj.data === oldNickName) !== -1) { 
-      modifyArrayOnUsers(onUsers, newNickName, oldNickName, socket.id); io.emit('edit user', onUsers);
+      modifyOnUsers(onUsers, newNickName, oldNickName, socket.id); io.emit('edit user', onUsers);
     }
   });
   socket.on('message', async ({ chatMessage: message, nickname }) => {
     const mesReturn = formatMessage(getTheCurrentDate(), message, nickname);
-    await setMessage({ message: mesReturn, nickname, date: moment().format(formatDateDb) }); io.emit('message', mesReturn);
+    await setMessage({ message: mesReturn, nickname, date }); io.emit('message', mesReturn);
   });
 
   socket.on('disconnect', () => {
