@@ -7,7 +7,7 @@ const moment = require('moment');
 
 const PORT = process.env.PORT || 3000;
 
-const usersOnline = {};
+const usersOn = {};
 
 const io = require('socket.io')(http, {
   cors: {
@@ -17,7 +17,6 @@ const io = require('socket.io')(http, {
 });
 
 const { getMessage, postMessage } = require('./models/webChatModel');
-const { geraNickName } = require('./utils/index');
 
 app.use(express.static('views'));
 app.set('view engine', 'ejs');
@@ -25,9 +24,9 @@ app.set('views', './views');
 
 // função executada quando usuário se conecta
 io.on('connection', async (socket) => {
-  usersOnline[socket.id] = geraNickName();    
+  usersOn[socket.id] = socket.id.slice(0, 16);
   socket.on('disconnect', () => {
-    delete usersOnline[socket.id]; io.emit('users', Object.values(usersOnline));
+    delete usersOn[socket.id]; io.emit('users', Object.values(usersOn));
   });
   
   socket.on('message', async ({ chatMessage, nickname }) => {
@@ -37,7 +36,7 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('newNickname', (nickname) => {
-    usersOnline[socket.id] = nickname; io.emit('users', Object.values(usersOnline));
+    usersOn[socket.id] = nickname; io.emit('users', Object.values(usersOn));
   });
 
   const chatHistory = async () => {
@@ -45,7 +44,7 @@ io.on('connection', async (socket) => {
     return messages;
   };
   io.emit('chatHistory', await chatHistory());
-  io.emit('users', Object.values(usersOnline));
+  io.emit('users', Object.values(usersOn));
 });
 
 app.get('/', (_req, res) => {

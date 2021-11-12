@@ -3,17 +3,6 @@ const socket = window.io();
 let userId = '';
 const DATA_TESTID = 'data-testid';
 
-// FONTE: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
-function geraNickName() {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let nickname = '';
-  for (let i = 0; i < 16; i += 1) {
-    const r = Math.floor(Math.random() * chars.length);
-    nickname += chars.substring(r, r + 1);
-  }
-  return nickname;
-}
-
 const nickNameInput = document.getElementById('nickname_input');
 const nickNameBtn = document.getElementById('nickname_btn');
 const messageInput = document.getElementById('messages_input');
@@ -21,7 +10,7 @@ const messageBtn = document.getElementById('messages_btn');
 
 messageBtn.addEventListener('click', (event) => {
   event.preventDefault();
-  const nickname = userId || geraNickName();
+  const nickname = userId || socket.id.slice(0, 16);
   socket.emit('message', {
     chatMessage: messageInput.value,
     nickname });
@@ -46,7 +35,7 @@ nickNameBtn.addEventListener('click', (event) => {
 });
 
 const users = (usersOnline) => {
-  const loadNickName = geraNickName();
+  const loadNickName = socket.id.slice(0, 16);
   const usersSection = document.getElementById('usersOn');
   usersSection.innerHTML = '';
 
