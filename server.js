@@ -22,41 +22,34 @@ app.use(express.static(`${__dirname}/views`));
 
 const formatMessage = require('./views/js/util/formatMessage');
 const getTheCurrentDate = require('./views/js/util/getTheCurrentDate');
+const modifyArrayOnUsers = require('./views/js/util/modifyArrayOnUsers');
+
 const { setMessage, getMessages } = require('./models/modelChat');
 
-let activeUsers = [];
+let onUsers = [];
+const formatDateDb = 'DD-MM-YYYY HH:mm:ss';
 io.on('connection', (socket) => {
-  console.log(`${socket.id} usuario conectado`);
-
   socket.on('new user', async (data) => {
-    activeUsers.unshift({ data, id: socket.id });
-    const arrayOfMessages = await getMessages();
-    console.log(arrayOfMessages);
-    io.emit('new user', { activeUsers, arrayOfMessages });
+    onUsers.unshift({ data, id: socket.id });
+    const arrayOfMessages = await getMessages(); io.emit('new user', { onUsers, arrayOfMessages });
   });
-
   socket.on('edit user', ({ newNickName, oldNickName }) => {
-    if (activeUsers.findIndex((obj) => obj.data === oldNickName) !== -1) { 
-      activeUsers[activeUsers.findIndex((obj) => obj.data === oldNickName)] = { data: newNickName, id: socket.id };
-      io.emit('edit user', activeUsers);
+    if (onUsers.findIndex((obj) => obj.data === oldNickName) !== -1) { 
+      modifyArrayOnUsers(onUsers, newNickName, oldNickName, socket.id); io.emit('edit user', onUsers);
     }
   });
-
   socket.on('message', async ({ chatMessage: message, nickname }) => {
-    const messageReturn = formatMessage(getTheCurrentDate(), message, nickname);
-    const dateForDb = moment().format('DD-MM-YYYY HH:mm:ss');
-    await setMessage({ message: messageReturn, nickname, dateForDb });
-    io.emit('message', messageReturn);
+    const mesReturn = formatMessage(getTheCurrentDate(), message, nickname);
+    await setMessage({ message: mesReturn, nickname, date: moment().format(formatDateDb) }); io.emit('message', mesReturn);
   });
 
   socket.on('disconnect', () => {
-    const newArray = activeUsers.find((user) => user.id === socket.id);
-    const newActiveUsers = activeUsers.filter((e) => e.id !== socket.id);
-    activeUsers = newActiveUsers;
-    io.emit('user disconnected', newArray);
+    const newArray = onUsers.find((user) => user.id === socket.id);
+    const newActiveUsers = onUsers.filter((e) => e.id !== socket.id);
+    onUsers = newActiveUsers; io.emit('user disconnected', newArray);
   });
 });
 
 app.get('/', (req, res) => {
-  res.status(200).render('client', { users: activeUsers });
+  res.status(200).render('client', { users: onUsers });
 });
