@@ -1,4 +1,5 @@
 const socket = window.io();
+/* const orderUsers = require('./utils/orderUsers'); */
 
 let userName = '';
 
@@ -11,6 +12,11 @@ const messageBox = document.querySelector('#mensagens');
 
 const randomUser = Math.random().toString(16)
 .substr(2, 8) + Math.random().toString(16).substr(2, 8);
+
+function changePosition(arr, from, to) {
+  arr.splice(to, 0, arr.splice(from, 1)[0]);
+  return arr;
+}
 
 const addToUsersBox = (userNick) => {
   if (document.getElementById(`${userNick}`)) {
@@ -57,17 +63,27 @@ const addNewMessage = (data) => {
 
 socket.on('new user', (data) => {
   inboxPeople.textContent = '';
+  const userExist = data.findIndex((element) => element.data === userName);
+  if (userExist === -1) { console.log('Palmeiras não tem mundial'); }
+  const newArryData = changePosition(data, userExist, 0);
+  newArryData.forEach((user) => addToUsersBox(user.data));
   data.forEach((user) => addToUsersBox(user.data));
 });
 
-socket.on('changeUser', (users) => {
+socket.on('changeUser', (data) => {
   inboxPeople.textContent = '';
-  users.forEach((user) => {
+
+  const userExist = data.findIndex((element) => element.data === userName);
+  if (userExist === -1) { console.log('Palmeiras não tem mundial'); }
+  const newArryData = changePosition(data, userExist, 0);
+
+  newArryData.forEach((user) => {
+    console.log(user);
     addToUsersBox(user.data);
   });
 });
 
-socket.on('user disconnected', ({ data }) => {
+socket.on('user discon', ({ data }) => {
   document.getElementById(`${data}`).remove();
 });
 

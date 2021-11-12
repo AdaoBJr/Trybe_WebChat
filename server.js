@@ -22,24 +22,23 @@ app.set('views', './views');
 // Socket setup
 const io = socket(server);
 
-/* const activeUsers = new Set([]); */
 let activeUsers = [];
 
 io.on('connection', async (socketClient) => {
   socketClient.on('new user', (data) => {
-    activeUsers.push({ data, id: socket.id }); io.emit('new user', [...activeUsers]);
+    activeUsers.push({ data, id: socketClient.id }); io.emit('new user', [...activeUsers]);
   });
 
   socketClient.on('changeUser', ({ oldNickname, newNickname }) => {
     if (activeUsers.findIndex((obj) => obj.data === oldNickname) !== -1) {
       activeUsers[activeUsers.findIndex((obj) => obj.data === oldNickname)
-      ] = { data: newNickname, id: socket.id }; io.emit('changeUser', [...activeUsers]);
+      ] = { data: newNickname, id: socketClient.id }; io.emit('changeUser', [...activeUsers]); 
     }
   });
 
   socketClient.on('disconnect', () => {
-    const news = activeUsers.find((user) => user.id === socket.id);
-    activeUsers = activeUsers.filter((e) => e.id !== socket.id); io.emit('user disconnected', news);
+    const news = activeUsers.find((user) => user.id === socketClient.id);
+    activeUsers = activeUsers.filter((e) => e.id !== socketClient.id); io.emit('user discon', news);
   });
 
   socketClient.on('message', async ({ chatMessage, nickname }) => {
