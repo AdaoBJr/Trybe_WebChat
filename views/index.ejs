@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+    <title>TRYBE WebChat</title>
+  </head>
+  <body>
+    <h3>TRYBE-Chat</h3>
+    <h5 class="nick-name-random" data-testid="online-user" autocomplete='off'></h5>
+    
+    <form class="nick-name-form" action=''>
+      <input type="text" id="nick-name" data-testid="nickname-box" placeholder="Apelido" autocomplete='off'/>
+      <button id="save-nickname" data-testid="nickname-button">Salvar Apelido</button>
+    </form>
+    
+    <form class="msg-box-form" action=''>
+      <input type="text" id="msg-box-input" data-testid="message-box" placeholder="Digite sua mensagem" autocomplete='off'/>
+      <button id="msg-btn" data-testid="send-button">Enviar mensagem</button>
+    </form>
+    
+    <ul id="messages"></ul>
+
+    <script>
+      const socket = io();
+      const msgForm = document.querySelector('.msg-box-form');
+      const msgInput = document.querySelector('#msg-box-input');
+      const nickName = document.querySelector('#nick-name');
+      const randomNick = document.querySelector('.nick-name-random');
+      msgForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const nickname =  randomNick.innerText;
+        const chatMessage = msgInput.value;
+        socket.emit('message', { nickname, chatMessage });
+        msgInput.value = '';
+        return false;
+      });
+
+      const createMessage = (msg) => {
+        const messagesList = document.querySelector('#messages');
+        const li = document.createElement('li');
+        li.setAttribute("data-testid", "message")
+        li.innerText = msg;
+        messagesList.appendChild(li);
+      }
+
+      const randomizeNickName = (length) => {
+      let randomizedNick = '';
+      const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const charactersLength = possibleCharacters.length;
+      for (let index = 0; index < length; index += 1) {
+        randomizedNick += possibleCharacters.charAt(Math.floor(Math.random() 
+      * charactersLength));
+      }
+      return randomizedNick;
+}
+      randomNick.innerText = randomizeNickName(16);
+      const chosenNickName = document.querySelector('#save-nickname');
+      chosenNickName.addEventListener('click', (event)=> {
+        event.preventDefault();
+      randomNick.innerText = nickName.value;
+      nickName.value = '';
+      } )
+
+      socket.on('message', (dateNameMsg) => createMessage(dateNameMsg));
+    </script>
+
+  </body>
+</html> 
