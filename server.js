@@ -22,7 +22,7 @@ app.use(express.static(`${__dirname}/views`));
 
 const formatMessage = require('./views/js/util/formatMessage');
 const getTheCurrentDate = require('./views/js/util/getTheCurrentDate');
-const modifyOnUsers = require('./views/js/util/modifyArrayOnUsers');
+const modifyOnUsers = require('./views/js/util/modifyOnUsers');
 
 const { setMessage, getMessages } = require('./models/modelChat');
 
