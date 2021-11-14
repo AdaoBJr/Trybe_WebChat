@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sala de Bate Papo</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Bate Papo Uau</h1>
+      <h2>Mudar Nome</h2>
+    </header>
+  </main>
+  <section>
+    <input data-testid="nickname-box" type="text" id="nick">
+
+    <button id="sendNick" data-testid="nickname-button">
+      Ok
+    </button>
+  
+    <h2>Total online</h2>
+  
+    <ul id="users"></ul>
+  
+    <h2>Web Chat</h2>
+  
+    <ul id='chatMessage'></ul>
+  
+    <input data-testid="message-box" type="text" id="textMessage">
+  
+    <button type="button" id="send" data-testid="send-button">
+      Enviar Mensagem
+    </button>
+
+  </section>
+  <script>
+    const socket = io();
+    const send = document.querySelector('#send');
+    const textMessage = document.querySelector('#textMessage');
+    const chatMessage = document.querySelector('#chatMessage');
+    const nick = document.querySelector('#nick');
+    const sendNick = document.querySelector('#sendNick');
+    const users = document.querySelector('#users');
+    const randomName = `User-${Math.random().toString(20).substr(2, 11)}`;
+    
+    send.addEventListener('click', () => {
+      const user = sessionStorage.getItem('nickname');
+      socket.emit('message', { nickname: user, chatMessage: textMessage.value });
+      textMessage.value = ''
+      return false;
+    });
+    
+    sendNick.addEventListener('click', () => {
+      socket.emit('mudarNome', nick.value);
+      nick.value = '';
+      return false;
+    });
+    
+    socket.on('message', (message) => {
+      const li = document.createElement('li');
+      li.setAttribute("data-testid", "message");
+      li.innerText = message;
+      chatMessage.appendChild(li)
+    });
+    
+    socket.on('usuarios', (online) => {
+      users.innerHTML = '';
+      online.forEach((element) => {
+        const li = document.createElement('li');
+        if (element.id === socket.id) {
+          sessionStorage.setItem('nickname', element.nickname);
+          li.setAttribute("data-testid", "online-user");
+        }
+        li.innerText = element.nickname;
+        users.appendChild(li);
+      });
+      
+      console.log(online);
+    });
+    
+    socket.emit('online', randomName);
+  </script>
+</body>
+</html>
