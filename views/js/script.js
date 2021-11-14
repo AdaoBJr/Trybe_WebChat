@@ -1,5 +1,8 @@
+/* Tive ajuda na realização da estruturação desse projeto através do site
+https://tsh.io/blog/socket-io-tutorial-real-time-communication/
+ */
+
 const socket = window.io();
-/* const orderUsers = require('./utils/orderUsers'); */
 
 let userName = '';
 
@@ -13,6 +16,7 @@ const messageBox = document.querySelector('#mensagens');
 const randomUser = Math.random().toString(16)
 .substr(2, 8) + Math.random().toString(16).substr(2, 8);
 
+// Peguei no site https://www.horadecodar.com.br
 function changePosition(arr, from, to) {
   arr.splice(to, 0, arr.splice(from, 1)[0]);
   return arr;
@@ -29,9 +33,6 @@ const addToUsersBox = (userNick) => {
   userBox.setAttribute('id', `${userNick}`);
   userBox.innerText = userNick;
   inboxPeople.appendChild(userBox);
-/*   const userBox = `<li data-testid="online-user" id=${userNick}>${userNick}</li>`;
-  
-  inboxPeople.innerHTML += userBox; */
 };
 
 const newUserConnected = (user) => {
@@ -69,19 +70,19 @@ const addNewMessage = (data) => {
 
 socket.on('new user', (data) => {
   inboxPeople.textContent = '';
-  const userExist = data.findIndex((element) => element.data === userName);
-  if (userExist === -1) { console.log('Palmeiras não tem mundial'); }
-  const newArryData = changePosition(data, userExist, 0);
+  const userExisting = data.findIndex((element) => element.data === userName);
+  if (userExisting === -1) { console.log('Palmeiras não tem mundial'); }
+  const newArryData = changePosition(data, userExisting, 0);
   newArryData.forEach((user) => addToUsersBox(user.data));
   data.forEach((user) => addToUsersBox(user.data));
 });
 
+// Tive ajuda de Lucas Lotar
 socket.on('changeUser', (data) => {
   inboxPeople.textContent = '';
-  console.log(data);
-  const userExist = data.findIndex((element) => element.data === userName);
-  if (userExist === -1) { console.log('Palmeiras não tem mundial'); }
-  const newArryData = changePosition(data, userExist, 0);
+  const userExisting = data.findIndex((element) => element.data === userName);
+  if (userExisting === -1) { console.log('Palmeiras não tem mundial'); }
+  const newArryData = changePosition(data, userExisting, 0);
 
   newArryData.forEach((user) => {
     console.log(user);
@@ -97,6 +98,7 @@ socket.on('message', (message) => {
   addNewMessage(message);
 });
 
+// Tive ajuda de Renan Braga
 socket.on('allMessage', (msgList) => {
   msgList.forEach(({ timestamp, message, nickname: nick }) => {
     const item = document.createElement('li');

@@ -28,7 +28,8 @@ io.on('connection', async (socketClient) => {
   socketClient.on('new user', (data) => {
     activeUsers.push({ data, id: socketClient.id }); io.emit('new user', activeUsers);
   });
-
+  
+  // Tive ajuda de Lucas Lotar
   socketClient.on('changeUser', ({ oldNickname, newNickname }) => {
     if (activeUsers.findIndex((obj) => obj.data === oldNickname) !== -1) {
       activeUsers[activeUsers.findIndex((obj) => obj.data === oldNickname)
@@ -45,8 +46,9 @@ io.on('connection', async (socketClient) => {
     const dateHour = newDate(); const message = formatMessage(chatMessage, nickname, dateHour);
     await createMessage({ dateHour, nickname, chatMessage }); io.emit('message', message);
   });
-
-  const getAllMessage = await getAllMessages(); socketClient.emit('allMessage', getAllMessage);
+  
+  // Tive ajuda de Renan Braga
+  const AllMessage = await getAllMessages(); socketClient.emit('allMessage', AllMessage);
 });
 
 app.get('/', (req, res) => res.status(200).render('index'));
