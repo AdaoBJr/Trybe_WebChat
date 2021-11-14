@@ -11,6 +11,7 @@ const io = require('socket.io')(http, {
 });
 
 const { create } = require('./mensagem.js');
+const { clear, getAll } = require('./models/webChat');
 
 require('dotenv').config();
 
@@ -22,8 +23,11 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 app.use(cors());
 
-app.get('/', (_, res) => {
-  res.render('sala');
+clear();
+
+app.get('/', async (_, res) => {
+  const history = await getAll();
+  res.render('sala', { history });
 });
 
 const usuarios = [];
