@@ -27,7 +27,13 @@
   
     <h2>Web Chat</h2>
   
-    <ul id='chatMessage'></ul>
+    <ul id='chatMessage'>
+      <% history.forEach((element) => { %>
+        <li data-testid="message">
+          <%= element.time %> - <%= element.nickname %>: <%= element.message %>
+        </li>
+      <% }) %>
+    </ul>
   
     <input data-testid="message-box" type="text" id="textMessage">
   
@@ -77,8 +83,6 @@
         li.innerText = element.nickname;
         users.appendChild(li);
       });
-      
-      console.log(online);
     });
     
     socket.emit('online', randomName);
