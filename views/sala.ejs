@@ -74,15 +74,22 @@
     
     socket.on('usuarios', (online) => {
       users.innerHTML = '';
-      online.forEach((element) => {
+
+      const findUser = online.find((element) => element.id === socket.id);
+      const filteredUser = online.filter((element) => element.id !== socket.id);
+      
+      filteredUser.unshift(findUser);
+      filteredUser.forEach((element) => {
         const li = document.createElement('li');
+
+        li.setAttribute("data-testid", "online-user");
+        
         if (element.id === socket.id) {
           sessionStorage.setItem('nickname', element.nickname);
-          li.setAttribute("data-testid", "online-user");
         }
         li.innerText = element.nickname;
         users.appendChild(li);
-      });
+      })
     });
     
     socket.emit('online', randomName);
