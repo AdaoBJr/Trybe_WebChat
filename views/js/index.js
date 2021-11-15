@@ -72,13 +72,13 @@ const socket = window.io();
 
     formNickname.addEventListener('submit', (e) => {
         e.preventDefault();
-        const oldNickName = userName;
+        const oldNick = userName;
         userName = NicknameInput.value;
         NicknameInput.value = '';
-        socket.emit('edit user', { newNickName: userName, oldNickName });
-      });
+        socket.emit('edit user', { nick: userName, oldNick });
+    });
 
-    socket.on('new user', ({ activeUsers: data, arrayOfMessages }) => {
+    socket.on('new user', ({ onUsers: data, arrayOfMessages }) => {
       inboxPeople.textContent = '';
       const userExist = data.findIndex((element) => element.data === userName);
 
@@ -92,7 +92,7 @@ const socket = window.io();
       inboxPeople.textContent = '';
       const userExist = data.findIndex((element) => element.data === userName);
       
-      if (userExist === -1) { console.log('desculpe ocorreu alguns problemas'); }
+      if (userExist === -1) { console.log('desculpe ocorreu algum problema'); }
       const newArryData = changePosition(data, userExist, 0);
       newArryData.forEach((user) => addToUsersBox(user.data));
     });
