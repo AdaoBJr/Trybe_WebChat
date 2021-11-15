@@ -78,14 +78,13 @@ const socket = window.io();
         socket.emit('edit user', { nick: userName, oldNick });
     });
 
-    socket.on('new user', ({ onUsers: data, arrayOfMessages }) => {
+    socket.on('new user', ({ onUsers: data }) => {
       inboxPeople.textContent = '';
       const userExist = data.findIndex((element) => element.data === userName);
 
       if (userExist === -1) { console.log('desculpe problemas no array de usuario'); }
       const newArryData = changePosition(data, userExist, 0);
       newArryData.forEach((user) => addToUsersBox(user.data));
-      arrayOfMessages.forEach((obj) => addNewMessage(obj.message));
     });
 
     socket.on('edit user', (data) => {
@@ -99,6 +98,11 @@ const socket = window.io();
 
     socket.on('message', (message) => {
       addNewMessage(message);
+    });
+
+    socket.on('historyMessage', (arrayOfMessages) => {
+      inboxMessage.textContent = '';
+      arrayOfMessages.forEach((obj) => addNewMessage(obj.message));
     });
 
     socket.on('user disconnected', ({ data }) => {
