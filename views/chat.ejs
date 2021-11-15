@@ -35,15 +35,34 @@
       messageDiv.appendChild(p);
     };
 
-    const createUser = (nickname, id) => {
+    const createUser = (users, id) => {
       const userDiv = document.querySelector('.users');
-      const p = document.createElement('p');
-      p.innerText = nickname;
-      p.setAttribute("data-testid", "online-user");
-      p.className = 'one-listed-user';
-      userDiv.appendChild(p);
+      const actualUser = users.find(user => user.id === id);
+
+      if (actualUser) {
+        userDiv.innerHTML = '';
+        const actualUserP = document.createElement('p');
+        actualUserP.innerText = actualUser.nickname;
+        actualUserP.setAttribute("data-testid", "online-user");
+        actualUserP.id = 'actualUser';
+        userDiv.appendChild(actualUserP);
+      }
+
+      users.forEach((user) => {
+        if (user.id !== id) {
+          const userP = document.createElement('p');
+          userP.setAttribute("data-testid", "online-user");
+          userP.innerText = user.nickname;
+          userDiv.appendChild(userP);
+        };
+      });
     };
   
+    const clearUsers = () => {
+      const userDiv = document.querySelector('.users');
+      userDiv.innerHTML = '';
+    };
+
     const inputMessage = document.querySelector('#message');
     document.querySelector('#send').addEventListener('click', (e) => {
       e.preventDefault();
@@ -52,8 +71,9 @@
 
     document.querySelector('#savenick').addEventListener('click', (e) => {
       e.preventDefault();
-      nickname = document.querySelector('#name').value;
-      socket.emit('nickname', { nickname: nickname });
+      newNickname = document.querySelector('#name').value;
+      socket.emit('modifyName', { nickname: newNickname });
+      nickname = newNickname;
     });
 
     socket.on('listAllMessages', (messages) => {
@@ -66,7 +86,12 @@
     socket.on('saveNickname', (name) => { nickname = name });
 
     socket.on('listAllUsers', (users) => {
-      users.forEach(({ nickname, id }) => createUser(nickname, id));
+      createUser(users, socket.id);
+    });
+
+    socket.on('connected', ({ actualUser, users }) => {
+      nickname = actualUser;
+      createUser(users, socket.id);
     });
 
   </script>

@@ -13,8 +13,18 @@ const setUserName = (io, socket, nickname) => {
   io.emit('connected', { users, actualUser: nickname });
 };
 
+const modifyName = (io, socket, userObject) => {
+  const actualUserIn = users.findIndex((user) => user.id === socket.id);
+  console.log(actualUserIn);
+  if (actualUserIn >= 0) {
+    users[actualUserIn].nickname = userObject.nickname;
+    io.emit('listAllUsers', users);
+  }
+};
+
 const setMessage = async (io, socket) => {
   const { chatMessage, nickname } = socket;
+  console.log(socket);
   let userName = nickname;
   if (nickname === '') userName = actualUser;
   const message = await chatModel.createMessage(chatMessage, userName, actualDate);
@@ -43,5 +53,6 @@ module.exports = (io) => {
     socket.emit('listAllUsers', users);
     socket.on('disconnect', () => userDisconnect(io, socket));
     socket.on('message', (objectMessage) => setMessage(io, objectMessage));
+    socket.on('modifyName', (userObject) => modifyName(io, socket, userObject));
   });
 };
