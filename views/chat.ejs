@@ -8,21 +8,31 @@
   <title>Document</title>
 </head>
 <body>
-  <ul id="user-online">
-    <h1>Usuarios online</h1>
-  </ul>
-  <h1>Chat</h1>
-  <ul id="message"></ul>
-  <input id="input-nick-name" data-testid="nickname-box" placeholder="Digite seu Nick Name"/>
-  <input id="input-message" data-testid="message-box" placeholder="Digite sua mensagem"/>
-  <button id="button" data-testid="send-button">Enviar</button>
-  <button data-testid="nickname-button">Salvar Nick Name</button>
+  <div>
+    <section id="esquerda" data-index="3">
+      <ul id="user-online"></ul>
+      <ul id="message"></ul>
+    </section>
+  </div>
+
+  <div>
+    <input id="input-nick-name" data-testid="nickname-box" placeholder="Digite seu Nick Name"/>
+    <button id="button-save" data-testid="nickname-button">Salvar Nick Name</button>
+  </div>
+  
+  <div>
+    <input id="input-message" data-testid="message-box" placeholder="Digite sua mensagem"/>
+    <button id="button" data-testid="send-button">Enviar</button>
+  </div>
 
   <script>
     const client = window.io();
     const button = document.querySelector('#button');
     const messageCard = document.querySelector('#message');
     const ulUserOnline = document.querySelector("#user-online");
+    const buttonSave = document.querySelector("#button-save");
+    let name;
+    let nickname;
     
     button.addEventListener('click', () => {
       const inputMessage = document.querySelector('#input-message');
@@ -35,6 +45,19 @@
       inputMessage.value = "";
       inputNickName.value = "";
     })
+
+    // Feito com a ajuda do Aluno joao
+    function remove() {
+      const pai = document.querySelector('#esquerda');
+      pai.removeChild(pai.children[0]);
+    }
+
+    function addUl() {
+      const esquerda = document.getElementById("esquerda");
+      const ul = document.createElement("ul");
+      ul.setAttribute("id", "user-online");
+      esquerda.appendChild(ul);
+    }
     
     client.on('message', (message) => {
       const li = document.createElement('li');
@@ -52,14 +75,40 @@
       })
     })
 
-    client.on('online', ( userOnline) => {
-      userOnline.forEach(user => {
-        const li = document.createElement('li');
-        li.setAttribute('data-testid', 'online-user');
-        li.innerText = user;
-        ulUserOnline.appendChild(li);
-      })
+    buttonSave.addEventListener('click', () => {
+      name = document.querySelector('#input-nick-name').value;
+      nickname = name;
+      client.emit('saveUser', name);
+    });
+
+    function renderNamesLogados(namesLogados) {
+      remove();
+      addUl();
+      const ul = document.querySelector("#user-online");
+      const li = document.createElement("li");
+      li.innerText = nickname;
+      li.setAttribute('data-testid', 'online-user');
+      ul.appendChild(li);
+      namesLogados.forEach((names) => {
+        if (names !== nickname) {
+          const li = document.createElement("li");
+          li.appendChild(document.createTextNode(names));
+          li.setAttribute('data-testid', 'online-user');
+          ul.appendChild(li);
+        }
+      });
+    }
+
+    client.on('online', (userOnline) => {
+      console.log(userOnline);
+      if(!name){
+        nickname = client.id.slice(0, 16);
+      }else {
+        nickname = name;
+      }
+      renderNamesLogados(userOnline);
     })
+
   </script>
 </body>
 </html>

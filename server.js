@@ -44,14 +44,44 @@ const renderAllMessagesDb = async () => {
   return result;
 };
 
+const disconnectUser = (idRandon) => 
+   usersOnline.map((user, index) => {
+    if (user === idRandon) {
+      usersOnline.splice(index, 2);
+    }
+    return user;
+  });
+
+const attName = (nickname, idAleatorio) => {
+  usersOnline.map((curr, index) => {
+    if (curr === idAleatorio) {
+      usersOnline.splice(index, 1);
+      usersOnline.push(nickname);
+    }
+    return curr;
+  });
+  return nickname;
+};
+
 io.on('connection', async (socket) => {
-  const idRandon = socket.id.slice(0, 16);
+  let idRandon = socket.id.slice(0, 16);
+  usersOnline.unshift(idRandon);
+  io.emit('online', usersOnline);
+
+  socket.on('saveUser', (nickname) => {
+    idRandon = attName(nickname, idRandon);
+    io.emit('online', usersOnline);
+  });
+
   socket.on('message', 
   ({ chatMessage, nickname }) => verifyMessage(chatMessage, nickname, idRandon, io));
   const resultMessage = await renderAllMessagesDb();
-  usersOnline.unshift(idRandon);
   io.emit('html', resultMessage);
-  io.emit('online', usersOnline);
+
+  socket.on('disconnect', () => {
+    disconnectUser(idRandon);
+    io.emit('online', usersOnline);
+  });
 });
 
 const { chatController } = require('./controllers/chatController');
