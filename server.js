@@ -19,23 +19,35 @@ const io = require('socket.io')(httpServer, {
   },
 });
 
+const { addMessage } = require('./models/messagesModel');
+const { getAllMessages } = require('./controllers/messagesController');
+
 app.use(express.static(`${__dirname}/views`));
 
 app.get('/', (_req, res) => {
   res.render(`${__dirname}/views/index.ejs`);
 });
 
+app.get('/messages', getAllMessages);
+
 let onlineUsers = [];
 
 io.on('connection', (socket) => {
-  socket.on('message', ({
+  socket.on('message', async ({
     chatMessage,
     nickname,
   }) => {
     const today = new Date().toLocaleString().replace(/\//g, '-');
+    await addMessage({
+      message: chatMessage,
+      nickname,
+      timestamp: today,
+    });
     io.emit('message', `${today} - ${nickname}: ${chatMessage}`);
   });
+});
 
+io.on('connection', (socket) => {
   socket.on('newLogin', (nickname) => {
     onlineUsers.push({
       nickname,
