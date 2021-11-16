@@ -6,8 +6,6 @@ const app = express();
 
 const http = require('http').createServer(app);
 
-const messageController = require('./controllers/messageController');
-
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
@@ -25,8 +23,6 @@ app.use(express.static(`${__dirname}/views`));
 require('./sockets/chat')(io);
 
 app.get('/', (_req, res) => res.render('chat'));
-
-app.post('/message', messageController.addMessage);
 
 http.listen(3000, () => {
   console.log('Servidor ouvindo na porta 3000');
