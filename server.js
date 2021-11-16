@@ -24,7 +24,7 @@ app.use(express.static(`${__dirname}/views`));
 
 require('./sockets/chat')(io);
 
-app.get('/', messageController.getChat);
+app.get('/', (_req, res) => res.render('chat'));
 
 app.post('/message', messageController.addMessage);
 

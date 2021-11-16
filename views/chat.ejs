@@ -3,23 +3,27 @@
   <head>
     <title>Socket.IO - trybe</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/login.css">
     <link rel="stylesheet" href="./css/chat.css">
   </head>
-  <body>
-    <div class="login-page">
-      <div class="nickname">
-        <form class="login-form" action="">
-          <input type="text" placeholder="nickname" name="nickname" />
-          <button>Entrar na sala</button>
-        </form>
+  <body class="box-chat">
+    <div class="container nickname">
+
+      <div>
+        <ul id="list-nickname" class="ul-list"></ul>
       </div>
+
+      <form>
+        <input id="input-nickname" class="input" type="text" data-testid="nickname-box" placeholder="Nickname" autocomplete="off">
+        <button id="btn-nickname" class="btn-send" data-testid="nickname-button">Enviar</button>
+      </form>
     </div>
-    <div class="message">
-      <ul id="messages"></ul>
-      <form action="">
-        <input id="messageInput" placeholder="message" autocomplete="off" />
-        <button>Send</button>
+    <div class="container message">
+      <div>
+        <ul id="list-message" class="ul-list"></ul>
+      </div>
+      <form>
+        <input id="input-message" class="input" type="text" data-testid="message-box" placeholder="Mensagem" autocomplete="off">
+        <button id="btn-message" class="btn-send" data-testid="send-button">Enviar</button>
       </form>
     </div>
     <script src="/socket.io/socket.io.js"></script>

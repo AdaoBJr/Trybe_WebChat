@@ -1,7 +1,5 @@
 const socket = window.io();
   
-socket.emit('joinRoom', nickname);
-
 const form = document.querySelector('.message');
 const inputMessage = document.querySelector('#messageInput');
 
@@ -13,10 +11,19 @@ form.addEventListener('submit', (e) => {
 });
 
 const createMessage = (message) => {
-  const messagesUl = document.querySelector('#messages');
+  const messagesUl = document.querySelector('#list-message');
   const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
   li.innerText = message;
   messagesUl.appendChild(li);
+};
+
+const createUser = (user) => {
+  const usersUl = document.querySelector('#list-nickname');
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = user;
+  usersUl.appendChild(li);
 };
 
 socket.on('message', (message) => createMessage(message));
