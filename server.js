@@ -41,6 +41,11 @@ io.on('connection', async (socket) => {
 
   const getAllMessage = await getAllMessages();
   socket.emit('allMessage', getAllMessage);
+
+  socket.on('disconnect', () => {
+    userList = userList.filter(({ id }) => id !== socket.id);
+    io.emit('userOnline', userList);  
+  });
 });
 
 http.listen(3000, () => {

@@ -54,5 +54,5 @@ alterNickBtn.addEventListener('click', (e) => {
   nickname = inputNickname.value;
   user.innerText = nickname;
   inputNickname.value = '';
-  socket.emit('user', { nickname });
+  socket.emit('userOnline', { nickname });
   });
