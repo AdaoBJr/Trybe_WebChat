@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { saveMessageModel, getAllMessages } = require('../models/chatModel');
 
 const chatController = Router();
 
@@ -8,4 +9,6 @@ chatController.get('/', (_req, res) => {
 
 module.exports = {
   chatController,
+  saveMessageModel,
+  getAllMessages,
 };

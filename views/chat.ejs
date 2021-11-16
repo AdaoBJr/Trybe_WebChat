@@ -4,111 +4,125 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="/socket.io/socket.io.js"></script>
   <title>Document</title>
 </head>
 <body>
+  <h1>Chat</h1>
   <div>
-    <section id="esquerda" data-index="3">
-      <ul id="user-online"></ul>
-      <ul id="message"></ul>
-    </section>
+    <div>
+        <input id="name" type="text"
+          placeholder="Insira seu nome"
+          data-testid="nickname-box"
+        />
+      <button id="save" data-testid="nickname-button">Ssalvar</button>
+    </div>
+    <div>
+      <section id="last" data-index="3">
+        <ul id="myUl" class="classUl"></ul>
+      </section>
+      <section id="direita">
+        <ul id="ul"></ul>
+      </section>
+    </div>
+    <div>
+        <input id="message" type="text"
+        data-testid="message-box"/>
+      <button id="send" data-testid="send-button">Enviar</button>
+    </div>
   </div>
 
-  <div>
-    <input id="input-nick-name" data-testid="nickname-box" placeholder="Digite seu Nick Name"/>
-    <button id="button-save" data-testid="nickname-button">Salvar Nick Name</button>
-  </div>
-  
-  <div>
-    <input id="input-message" data-testid="message-box" placeholder="Digite sua mensagem"/>
-    <button id="button" data-testid="send-button">Enviar</button>
-  </div>
-
+  <script src="/socket.io/socket.io.js"></script>
   <script>
-    const client = window.io();
-    const button = document.querySelector('#button');
-    const messageCard = document.querySelector('#message');
-    const ulUserOnline = document.querySelector("#user-online");
-    const buttonSave = document.querySelector("#button-save");
-    let name;
+    const socket = io();
+    const buttonSave = document.getElementById('save');
+    const buttonSend = document.getElementById('send');
     let nickname;
-    
-    button.addEventListener('click', () => {
-      const inputMessage = document.querySelector('#input-message');
-      const inputNickName = document.querySelector('#input-nick-name');
+    let name;
 
-      client.emit('message', {
-        chatMessage: inputMessage.value,
-        nickname: inputNickName.value
-      })
-      inputMessage.value = "";
-      inputNickName.value = "";
-    })
-
-    // Feito com a ajuda do Aluno joao
-    function remove() {
-      const pai = document.querySelector('#esquerda');
-      pai.removeChild(pai.children[0]);
+    function removeUl() {
+      const remove = document.getElementById('last');
+      remove.removeChild(remove.children[0]);
     }
 
     function addUl() {
-      const esquerda = document.getElementById("esquerda");
+      const last = document.getElementById("last");
       const ul = document.createElement("ul");
-      ul.setAttribute("id", "user-online");
-      esquerda.appendChild(ul);
+      ul.setAttribute("id", "myUl");
+      ul.classList.add("classUl");
+      last.appendChild(ul);
     }
     
-    client.on('message', (message) => {
-      const li = document.createElement('li');
-      li.innerText = `${message.timestamp} - ${message.nickname}: ${message.chatMessage}`;
-      li.setAttribute('data-testid', 'message');
-     return messageCard.appendChild(li);
-    });
-
-    client.on('html', (message) => {
-      message.forEach(userMessage => {
-        const li = document.createElement('li');
-        li.setAttribute('data-testid', 'message');
-        li.innerText = `${userMessage.timestamp} - ${userMessage.nickname}: ${userMessage.chatMessage}`;
-       return messageCard.appendChild(li);
-      })
-    })
-
-    buttonSave.addEventListener('click', () => {
-      name = document.querySelector('#input-nick-name').value;
-      nickname = name;
-      client.emit('saveUser', name);
-    });
-
     function renderNamesLogados(namesLogados) {
-      remove();
+      removeUl();
       addUl();
-      const ul = document.querySelector("#user-online");
+      const ul = document.getElementById("myUl");
+
       const li = document.createElement("li");
-      li.innerText = nickname;
+      li.appendChild(document.createTextNode(nickname));
+      li.classList.add("content-li");
       li.setAttribute('data-testid', 'online-user');
       ul.appendChild(li);
+
       namesLogados.forEach((names) => {
         if (names !== nickname) {
           const li = document.createElement("li");
           li.appendChild(document.createTextNode(names));
+          li.classList.add("content-li");
           li.setAttribute('data-testid', 'online-user');
           ul.appendChild(li);
         }
       });
     }
+    
+    function renderMessage(user) {
+      const ul = document.getElementById("ul");
+      const li = document.createElement("li");
+      li.innerText = user;
+      li.setAttribute('data-testid', 'message');
+      ul.appendChild(li);
+    }
+    
+    function renderGetMessages(all) {
+      const ul = document.getElementById("ul");
+      all.forEach((messages) => {
+        const { chatMessage, nickname, timestamp } = messages;
+        const li = document.createElement("li");
+        li.innerText = `${timestamp} - ${nickname} : ${chatMessage}`;
+        li.setAttribute('data-testid', 'message');
+        ul.appendChild(li);
+      })
+    };
 
-    client.on('online', (userOnline) => {
-      console.log(userOnline);
-      if(!name){
-        nickname = client.id.slice(0, 16);
-      }else {
+    socket.on('online', randomAll => {
+      console.log('Array do front - ', randomAll);
+      if (!name) {
+        nickname = socket.id.slice(0, 16);
+      } else {
         nickname = name;
       }
-      renderNamesLogados(userOnline);
-    })
+      
+      renderNamesLogados(randomAll);
+    });
+    
+    socket.on('html', (all) => {
+      renderGetMessages(all)
+    });
+    
 
+    socket.on('message', (user) => {
+      renderMessage(user);
+    });
+
+    buttonSave.addEventListener('click', () => {
+      name = document.getElementById('name').value;
+      nickname = name;
+      socket.emit('saveUser', name);
+    });
+
+    buttonSend.addEventListener('click', () => {
+      const chatMessage = document.getElementById('message').value;
+      socket.emit('message', {chatMessage,  nickname});
+    });
   </script>
 </body>
 </html>
