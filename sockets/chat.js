@@ -1,16 +1,10 @@
+const moment = require('moment');
 const model = require('../models/messages');
 
 const users = {};
 
-const getDate = () => {
-  const horas = new Date();
-  const dataFormatada = horas.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-  const horaFormatada = `${horas.getHours()}:${horas.getMinutes()}:${horas.getSeconds()}`;
-  return (`${dataFormatada} ${horaFormatada}`);
-};
-
 const saveMessage = async (message, nickname) => {
-  const timestamp = getDate();
+  const timestamp = moment().format('DD-MM-yyyy LTS');
   await model.create({ message, nickname, timestamp });
   return `${timestamp} ${nickname} ${message}`;
 };
