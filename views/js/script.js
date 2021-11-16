@@ -8,6 +8,8 @@ const newNicknameButton = document.querySelector('.nickname-button');
 const newMessageInput = document.querySelector('.new-message-input');
 const newMessageButton = document.querySelector('.send-message-button');
 
+const TEST_ID = 'data-testid';
+
 // creates the nickname div
 const printNickname = (nickname, boolean) => {
   const div = document.createElement('div');
@@ -16,7 +18,7 @@ const printNickname = (nickname, boolean) => {
   online.setAttribute('class', 'neonText');
   const userNickname = document.createElement('h1');
   userNickname.setAttribute('class', 'user-nickname');
-  userNickname.setAttribute('data-testid', 'online-user');
+  userNickname.setAttribute(TEST_ID, 'online-user');
   userNickname.innerText = nickname;
   div.prepend(userNickname);
   div.prepend(online);
@@ -55,7 +57,7 @@ logo.addEventListener('click', (_e) => {
 socket.on('message', (string) => {
   const messageDiv = document.createElement('div');
   messageDiv.innerText = string;
-  messageDiv.setAttribute('data-testid', 'message');
+  messageDiv.setAttribute(TEST_ID, 'message');
   messageDiv.setAttribute('class', 'message');
   // to use after finish the project
   // allMessages.prepend(messageDiv);
@@ -84,9 +86,29 @@ socket.on('userList', (arr) => {
   });
 });
 
-window.onload = () => {
+const fetchMessages = async () => {
+  const response = await fetch('http://localhost:3000/messages');
+  return response.json();
+};
+
+const getMessages = async () => {
+  const messages = await fetchMessages();
+  console.log(messages);
+
+  messages.forEach((m) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.innerText = `${m.timestamp} - ${m.nickname}: ${m.message}`;
+    messageDiv.setAttribute('data-testid', 'message');
+    messageDiv.setAttribute('class', 'message');
+    allMessages.append(messageDiv);
+  });
+};
+
+window.onload = async () => {
   const nickname = Math.random()
     .toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
 
   socket.emit('newLogin', nickname);
+
+  await getMessages();
 };
