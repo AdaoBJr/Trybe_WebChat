@@ -24,6 +24,7 @@ const createUser = (user) => {
   const usersUl = document.querySelector('#list-nickname');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'online-user');
+  li.className = 'users';
   li.innerText = user;
   usersUl.appendChild(li);
 };
@@ -43,15 +44,17 @@ socket.on('newConnection', ({ user, historic }) => {
   historic.forEach((message) => createMessage(message));
   nickname = user;
   socket.emit('nickname', user);
+  return false;
 });
 
 socket.on('message', (message) => createMessage(message));
 
 socket.on('users', (users) => {
-  const usersUl = document.querySelector('#list-nickname');
+  // const usersUl = document.querySelector('#list-nickname');
+  const ulUsers = document.querySelector('#list-nickname');
 
   document.querySelectorAll('.users').forEach((e) => {
-    usersUl.removeChild(e);
+    ulUsers.removeChild(e);
   });
 
   createUser(nickname);

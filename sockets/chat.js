@@ -13,7 +13,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
   const historic = await model.getAll().then((e) => e.map(({ timestamp, nickname, message }) =>
   `${timestamp} ${nickname} ${message}`));
 
-  users[socket.id] = socket.id.slice(0, 16);
+  users[socket.id] = socket.id.slice(0, 10);
 
   socket.emit('newConnection', { user: users[socket.id], historic });
 
@@ -29,7 +29,6 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   socket.on('disconnect', () => {
     delete users[socket.id];
-    console.log(users);
     io.emit('users', Object.values(users));
   });
 });
