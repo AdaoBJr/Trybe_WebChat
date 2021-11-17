@@ -1,13 +1,15 @@
 const socket = window.io();
 
+const ulMessages = document.querySelector('#list-message');
+const ulUsers = document.querySelector('#list-nickname');
+
 let nickname;
 
 const createMessage = (message) => {
-  const messagesUl = document.querySelector('#list-message');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
   li.innerText = message;
-  messagesUl.appendChild(li);
+  ulMessages.appendChild(li);
 };
 
 const btnMessage = document.querySelector('#btn-message');
@@ -21,12 +23,11 @@ btnMessage.addEventListener('click', (e) => {
 });
 
 const createUser = (user) => {
-  const usersUl = document.querySelector('#list-nickname');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'online-user');
   li.className = 'users';
   li.innerText = user;
-  usersUl.appendChild(li);
+  ulUsers.appendChild(li);
 };
 
 const btnNickname = document.querySelector('#btn-nickname');
@@ -50,9 +51,6 @@ socket.on('newConnection', ({ user, historic }) => {
 socket.on('message', (message) => createMessage(message));
 
 socket.on('users', (users) => {
-  // const usersUl = document.querySelector('#list-nickname');
-  const ulUsers = document.querySelector('#list-nickname');
-
   document.querySelectorAll('.users').forEach((e) => {
     ulUsers.removeChild(e);
   });
