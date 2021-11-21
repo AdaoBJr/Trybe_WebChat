@@ -13,15 +13,13 @@ const io = require('socket.io')(server, {
 
 const port = '3000';
 
-
-
 io.on('connection', (socket) => {
     socket.on('message', ({ nickname, chatMessage }) => {
         const date = new Date();
-        const cdate =`${date.toISOString()}`.slice(0,10).split('-').reverse().join('-')
-        const ctime = String(date.toISOString()).slice(11,19)
+        const cdate = `${date.toISOString()}`.slice(0, 10).split('-').reverse().join('-');
+        const ctime = String(date.toISOString()).slice(11, 19);
 
-        const message = `${cdate} ${ctime} - ${nickname}: ${chatMessage}`
+        const message = `${cdate} ${ctime} - ${nickname}: ${chatMessage}`;
         io.emit('message', message);
     });
 });
