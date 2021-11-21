@@ -14,7 +14,19 @@ form.addEventListener('submit', (event) => {
     };
     socket.emit('message', sendMessage);
   }
+});
+
+// cria lista usuários online
+const onlineUserList = (listOnline) => {
+  const ulList = document.querySelector('.online');
+  ulList.innerHTML = '';
+  listOnline.forEach((user) => {
+    const createList = document.createElement('li');
+    createList.setAttribute('data-testid', 'online-user');
+    createList.innerText = user;
+    ulList.appendChild(createList);
   });
+};
 
 const createMessage = (message) => {
   const messagesUl = document.querySelector('.messages');
@@ -25,22 +37,11 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-socket.on('message', (message) => createMessage(message));
-socket.on('receivedMessage', (message) => createMessage(message));
-
-// https://www.youtube.com/watch?v=Hr5pAAIXjkA&ab_channel=DevPleno
-const randomString = (length) => {
-  let nickname = '';
-  do {
-    nickname += Math.random().toString(36).substr(2);
-  } while (nickname.length < length);
-  nickname = nickname.substr(0, length);
-  return nickname;
-};
-
 const inputRandomNickname = document.querySelector('.randomNickname');
-const stringNickname = randomString(16);
-inputRandomNickname.innerHTML = stringNickname;
+const nicknameRandom = (nickname) => {
+  inputRandomNickname.innerHTML = nickname;
+  onlineUserList([nickname]);
+};
 
 // salva nickname
 const buttonSaveNickname = document.querySelector('.saveNickname');
@@ -55,16 +56,7 @@ buttonSaveNickname.addEventListener('click', (event) => {
   socket.emit('newNickname', newNickname);
 });
 
-// cria lista usuários online
-const onlineUserList = (listOnline) => {
-  const ulList = document.querySelector('.online');
-  ulList.innerHTML = '';
-  listOnline.forEach((user) => {
-    const createList = document.createElement('li');
-    createList.setAttribute('data-testid', 'online-user');
-    createList.innerHTML = user;
-    ulList.appendChild(createList);
-  });
-};
-
 socket.on('onlineUsers', (list) => onlineUserList(list));
+socket.on('message', (message) => createMessage(message));
+socket.on('receivedMessage', (message) => createMessage(message));
+socket.on('nicknameRamdom', (nickname) => nicknameRandom(nickname));

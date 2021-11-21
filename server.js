@@ -22,21 +22,40 @@ const io = require('socket.io')(http, {
   },
 });
 
+const { saveMessages } = require('./models');
+
+// https://www.youtube.com/watch?v=Hr5pAAIXjkA&ab_channel=DevPleno
+const randomString = (length) => {
+  let nickname = '';
+  do {
+    nickname += Math.random().toString(36).substr(2);
+  } while (nickname.length < length);
+  nickname = nickname.substr(0, length);
+  return nickname;
+};
+
+const saveUserDataAndMessage = async (data) => {
+  await saveMessages(data);
+};
+
 const onlineUsers = [];
 let message = [];
 io.on('connection', (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id}`);
-  console.log(onlineUsers);
+  const stringNickname = randomString(16);
+  socket.emit('nicknameRamdom', stringNickname);
 
-  socket.on('message', (data) => {
+  socket.on('message', async (data) => {
     message = `${formattedDate()} - ${data.nickname}: ${data.chatMessage}`;
     io.emit('message', message);
+    await saveUserDataAndMessage(message);
+    // esse vídeo ajudou com o broadcast https://www.youtube.com/watch?v=-jXfKDYJJvo&ab_channel=Rocketseat
     socket.broadcast.emit('receivedMessage', message);
   });
 
   socket.on('newNickname', (nickname) => {
     onlineUsers.push(nickname);
-    io.emit('onlineUsers', onlineUsers);
+    io.emit('onlineUsers', onlineUsers.reverse());
   });
 });
 
