@@ -4,12 +4,12 @@ const { postChatMessage, getChatHistoric } = require('../models/chatModel');
 module.exports = (io) => io.on('connection', (socket) => {
   socket.on('joinChat', async ({ nickname }) => {
     // socket.emit: Emite a msg SOMENTE para o socket que se conectou
-    socket.emit('message', 'Olá, seja bem vindo ao nosso chat');
+    // socket.emit('message', 'Olá, seja bem vindo ao nosso chat');
 
     const chatHistoric = await getChatHistoric();
 
     chatHistoric.forEach((msg) => {
-    const formatedTimestamp = date.format(msg.timestamp, 'YYYY-MM-DD HH:mm:ss');
+    const formatedTimestamp = date.format(msg.timestamp, 'DD-MM-YYYY HH:mm:ss');
 
       socket.emit('message', `${formatedTimestamp} - ${msg.nickname}: ${msg.message}`);
     });
@@ -21,9 +21,9 @@ module.exports = (io) => io.on('connection', (socket) => {
   socket.on('message', async ({ chatMessage, nickname }) => {
     // Source: https://www.geeksforgeeks.org/node-js-date-format-api/
     const now = new Date();
-    const value = date.format(now, 'YYYY-MM-DD HH:mm:ss');
+    const value = date.format(now, 'DD-MM-YYYY HH:mm:ss');
 
-    // oi.emit: Emite a msg pata TODOS os sockets conectados
+    // io.emit: Emite a msg pata TODOS os sockets conectados
     io.emit('message', `${value} - ${nickname}: ${chatMessage}`);
 
     await postChatMessage({ message: chatMessage, nickname });
