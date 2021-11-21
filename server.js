@@ -31,6 +31,7 @@ io.on('connection', (socket) => {
   socket.on('message', (data) => {
     message = `${formattedDate()} - ${data.nickname}: ${data.chatMessage}`;
     io.emit('message', message);
+    socket.broadcast.emit('receivedMessage', message);
   });
 
   socket.on('newNickname', (nickname) => {

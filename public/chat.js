@@ -26,6 +26,7 @@ const createMessage = (message) => {
 };
 
 socket.on('message', (message) => createMessage(message));
+socket.on('receivedMessage', (message) => createMessage(message));
 
 // https://www.youtube.com/watch?v=Hr5pAAIXjkA&ab_channel=DevPleno
 const randomString = (length) => {
@@ -57,7 +58,6 @@ buttonSaveNickname.addEventListener('click', (event) => {
 // cria lista usuários online
 const onlineUserList = (listOnline) => {
   const ulList = document.querySelector('.online');
-  console.log(listOnline);
   ulList.innerHTML = '';
   listOnline.forEach((user) => {
     const createList = document.createElement('li');
