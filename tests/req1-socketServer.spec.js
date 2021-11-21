@@ -17,6 +17,7 @@ describe('1 - Crie um back-end para conexão simultânea de clientes e troca de 
     done();
   });
 
+ 
   it('Será validado que todos os clientes que estão conectados ao chat recebem as mensagens enviadas', async (done) => {
     client1 = io.connect(BASE_URL, { reconnection: false });
     client2 = io.connect(BASE_URL, { reconnection: false });
