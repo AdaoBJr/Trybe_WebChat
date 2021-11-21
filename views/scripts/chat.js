@@ -3,10 +3,10 @@ const socket = window.io();
 // Source: Ajuda do Anderson Pedrosa - T10 - TB
 let nickname = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
 
+socket.emit('joinChat', { nickname });
+
 // Source: https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage
 sessionStorage.setItem('nickname', nickname);
-
-socket.emit('joinChat', { nickname });
 
 const inputNicknameForm = document.querySelector('#inputNicknameForm');
 const inputMessageForm = document.querySelector('#inputMessageForm');
@@ -41,7 +41,17 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
+const onlineUsersListUpdatecreate = (name) => {
+  const usersUL = document.querySelector('#onlineUsers');
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = name;
+  usersUL.appendChild(li);
+};
+
 socket.on('message', (message) => createMessage(message));
+
+socket.on('onlineUser', (name) => onlineUsersListUpdatecreate(name));
 
 window.onbeforeunload = () => {
   socket.disconnect();

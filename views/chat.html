@@ -5,15 +5,35 @@
   </head>
   <body>
     <div>
-      <p id="nicknameLabel" data-testid="online-user"></p>
       <form id="inputNicknameForm" action="">
-        <input id="inputNickname" data-testid="nickname-box" autocomplete="off" placeholder="Insira seu apelido" /><button data-testid="nickname-button">Salvar</button>
+        <input
+          id="inputNickname"
+          data-testid="nickname-box"
+          autocomplete="off"
+          placeholder="Insira seu apelido"
+        />
+        <button data-testid="nickname-button">Salvar</button>
       </form>
     </div>
-    <ul id="messages"></ul>
-    <form id="inputMessageForm" action="">
-      <input id="inputMessage" data-testid="message-box" autocomplete="off" /><button data-testid="send-button">Enviar</button>
-    </form>
+    <div>
+      <ul id="onlineUsers">
+        <li id="nicknameLabel" data-testid="online-user"></li>
+      </ul>
+    </div>
+    <div>
+      <ul id="messages"></ul>
+    </div>
+    <div>
+      <form id="inputMessageForm" action="">
+        <input
+          id="inputMessage"
+          data-testid="message-box"
+          autocomplete="off"
+          placeholder="Insira sua mensagem"
+        />
+        <button data-testid="send-button">Enviar</button>
+      </form>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
     integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4=" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>

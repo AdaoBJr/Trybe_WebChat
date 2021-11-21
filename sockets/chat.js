@@ -3,19 +3,15 @@ const { postChatMessage, getChatHistoric } = require('../models/chatModel');
 
 module.exports = (io) => io.on('connection', (socket) => {
   socket.on('joinChat', async ({ nickname }) => {
-    // socket.emit: Emite a msg SOMENTE para o socket que se conectou
-    // socket.emit('message', 'Olá, seja bem vindo ao nosso chat');
-
     const chatHistoric = await getChatHistoric();
-
     chatHistoric.forEach((msg) => {
     const formatedTimestamp = date.format(msg.timestamp, 'DD-MM-YYYY HH:mm:ss');
-
       socket.emit('message', `${formatedTimestamp} - ${msg.nickname}: ${msg.message}`);
     });
 
     // socket.broadcast.emit: Emite a msg pata TODOS, MENOS para o socket que se conectou
     socket.broadcast.emit('message', `${nickname} acabou de se conectar`);
+    socket.broadcast.emit('onlineUser', `${nickname}`);
   });
 
   socket.on('message', async ({ chatMessage, nickname }) => {
