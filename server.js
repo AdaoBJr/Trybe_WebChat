@@ -12,14 +12,27 @@ const io = require('socket.io')(socketIoServer, {
   },
 });
 
-const messages = [{ nickname: 'Thiago Leite', chatMessage: 'teste' }];
+const messages = [];
+
+const dateFormater = () => {
+  const today = new Date();
+  const options = {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  };
+  return today.toLocaleDateString('pt-br', options);
+};
 
 io.on('connection', (socket) => {
   console.log(`Socket conectado com ID: ${socket.id}`);
-  socket.on('message', (data) => {
-    console.log(messages);
-    messages.push(data);
-    io.emit('message', messages);
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const messageFormated = `${dateFormater()} - ${nickname}: ${chatMessage}`;
+    messages.push(messageFormated);
+    io.emit('message', messageFormated);
   });
 });
 

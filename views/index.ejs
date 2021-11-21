@@ -18,9 +18,11 @@
     <button type="submit" id="send" data-testid="send-button">Enviar mensagem</button>
   </form>
   <ul id="messages">
-    <% messages.forEach((message) => { %> 
-      <li><%= message %></li>
-    <% }) %>
+    <% messages.forEach((message)=> { %>
+      <li>
+        <%= `${message}` %>
+      </li>
+      <% }) %>
   </ul>
 
   <script>
@@ -31,26 +33,22 @@
       event.preventDefault();
       let messageAuthor = document.getElementById('nickname').value;
       let messageText = document.getElementById('message').value;
-      if (messageAuthor.length > 0 && messageText.length > 0) {
-        const data = {
-          nickname: messageAuthor,
-          chatMessage: messageText,
-        }
-        console.log(data, 'envio');
-        socket.emit('message', data)
+      const nickname = messageAuthor
+      const chatMessage = messageText
+      if (messageAuthor.length > 0 && messageText.length > 0) {  
+        socket.emit('message', {chatMessage, nickname})
       }
     });
 
-    socket.on('message', (messages) => {
+    socket.on('message', (...message) => {
+      const messages = message;
       const messagesDiv = document.getElementById('messages')
-      messages.forEach((msg) => {
-        console.log(msg)
-        const ul = document.createElement('ul');
-        ul.textContent = msg.nickname + ' ' + msg.chatMessage;
-        messagesDiv.appendChild(ul);
+      message.forEach((message) => {
+        const li = document.createElement('li');
+        li.textContent = `${message}`;
+        messagesDiv.appendChild(li);
       })
     })
-
   </script>
 </body>
 
