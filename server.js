@@ -34,14 +34,18 @@ const io = require('socket.io')(http, {
 
 let message = [];
 io.on('connection', (socket) => {
-  const newNickname = randomString(16);
+  let newNickname = randomString(16);
   socket.emit('login', newNickname);
   socket.broadcast.emit('newLogin', { usuario: newNickname });
+
+  socket.on('nick', (nick) => {
+    newNickname = nick;
+    io.emit('newNick', nick);
+  });
 
   socket.on('message', (data) => {
     message = `${formattedDate()} - ${data.nickname}: ${data.chatMessage}`;
     io.emit('message', message);
-    socket.broadcast.emit('receivedMessage', message);
   });
 });
 
