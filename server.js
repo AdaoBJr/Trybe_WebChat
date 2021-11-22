@@ -21,10 +21,11 @@ const io = require('socket.io')(http, {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/views/index.ejs`);
+  res.render(`${__dirname}/views/index.ejs`);
 });
 
 io.on('connection', (socket) => {
+  console.log('Alguém se conectou');
   socket.on('message', ({
     nickname,
     chatMessage,
