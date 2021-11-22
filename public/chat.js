@@ -29,7 +29,18 @@ const createMessage = (message) => {
 socket.on('message', (message) => createMessage(message));
 socket.on('receivedMessage', (message) => createMessage(message));
 
+socket.on('message', (message) => createMessage(message));
+socket.on('receivedMessage', (message) => createMessage(message));
 
+// https://www.youtube.com/watch?v=Hr5pAAIXjkA&ab_channel=DevPleno
+const randomString = (length) => {
+  let nickname = '';
+  do {
+    nickname += Math.random().toString(36).substr(2);
+  } while (nickname.length < length);
+  nickname = nickname.substr(0, length);
+  return nickname;
+};
 
 const inputRandomNickname = document.querySelector('.randomNickname');
 const stringNickname = randomString(16);
