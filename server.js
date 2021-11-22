@@ -40,7 +40,7 @@ app.get('/', async (req, res) => {
   const allMessages = await getMessages();
   const messages = allMessages.map(({ message, nickname, timestamp }) =>
   `${timestamp} - ${nickname}: ${message}`);
-  res.render('index.ejs', { messages });
+  res.render('index', { messages });
 });
   
 http.listen(PORT, () => console.log(`listening on port ${PORT}`));

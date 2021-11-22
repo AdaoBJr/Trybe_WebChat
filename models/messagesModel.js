@@ -9,8 +9,8 @@ const getMessages = async () => {
 const sendMessage = async ({ message, nickname, timestamp }) => {
   const db = await connection();
   const newMessage = await db.collection('messages').insertOne({
-    nickname,
     message,
+    nickname,
     timestamp,
   });
   return newMessage;
