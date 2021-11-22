@@ -1,7 +1,13 @@
 const socket = window.io();
 
-// Source: Ajuda do Anderson Pedrosa - T10 - TB
-let nickname = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
+let nickname = '';
+
+if (!sessionStorage.getItem('nickname')) {
+  // Source: Ajuda do Anderson Pedrosa - T10 - TB
+  nickname = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);  
+} else {
+  nickname = sessionStorage.getItem('nickname');
+}
 
 socket.emit('joinChat', { nickname });
 
@@ -20,6 +26,7 @@ inputNicknameForm.addEventListener('submit', (e) => {
   e.preventDefault();
   nicknameLabel.innerText = inputNickname.value;
   sessionStorage.setItem('nickname', inputNickname.value);
+  socket.emit('userNameUpdate', inputNickname.value);
   inputNickname.value = '';
   return false;
 });
@@ -41,7 +48,7 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-const onlineUsersListUpdatecreate = (name) => {
+const onlineUsersListUpdate = (name) => {
   const usersUL = document.querySelector('#onlineUsers');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'online-user');
@@ -51,7 +58,7 @@ const onlineUsersListUpdatecreate = (name) => {
 
 socket.on('message', (message) => createMessage(message));
 
-socket.on('onlineUser', (name) => onlineUsersListUpdatecreate(name));
+socket.on('onlineUser', (name) => onlineUsersListUpdate(name));
 
 window.onbeforeunload = () => {
   socket.disconnect();
