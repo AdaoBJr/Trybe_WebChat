@@ -12,16 +12,14 @@ const io = require('socket.io')(socketIoServer, {
   },
 });
 
-const messages = [];
-
 const dateFormater = () => {
   const today = new Date();
   const dateOptions = {
     day: 'numeric',
     month: 'numeric',
-    year: 'numeric',    
+    year: 'numeric',
   };
-  
+
   return today.toLocaleDateString('pt-br', dateOptions).replace(/\//g, '-');
 };
 
@@ -31,10 +29,16 @@ const hourFormater = () => {
   return `${today.toLocaleTimeString('en-us')}`;
 };
 
+function toFormatMessage(chatMessage, nickname) {
+  return `${dateFormater()} ${hourFormater()} - ${nickname}: ${chatMessage}`;
+}
+
+const messages = [];
+
 io.on('connection', (socket) => {
   console.log(`Socket conectado com ID: ${socket.id}`);
   socket.on('message', ({ chatMessage, nickname }) => {
-    const messageFormated = `${dateFormater()} ${hourFormater()} - ${nickname}: ${chatMessage}`;
+    const messageFormated = toFormatMessage(chatMessage, nickname);
     messages.push(messageFormated);
     io.emit('message', messageFormated);
   });
