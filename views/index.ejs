@@ -11,7 +11,7 @@
 
 <body>
   WebChat
-  <span data-testid="online-user" id="new-user">Novo usuario</span>
+  <span data-testid="online-user" id="new-user"></span>
   <form id="messageInfo">
     <button type="button" data-testid="nickname-button" id="nick-button">Mudar nome</button>
     <input type="text" placeholder="Digite seu nome" id="nickname" data-testid="nickname-box" />
@@ -30,6 +30,8 @@
     const socket = io('http://localhost:3000');
     const sendButton = document.getElementById('send');
     const nickButton = document.getElementById('nick-button');
+    const nicknameInput = document.getElementById('nickname');
+    const newUser = document.getElementById('new-user')
 
     function makeid(length) {
         let result = '';
@@ -56,9 +58,12 @@
     nickButton.addEventListener('click', (event) => {
       event.preventDefault();
       const author = document.getElementById('nickname');
-      const newUser = document.getElementById('new-user')
       author.value = makeid(16);
       newUser.innerText = author.value
+    })
+
+    nicknameInput.addEventListener('keyup', (event) => {
+      newUser.innerText = event.target.value
     })
 
     socket.on('message', (...message) => {
@@ -74,7 +79,6 @@
 
     socket.on('connect', () => {
       const messageAuthor = document.getElementById('nickname');
-      const newUser = document.getElementById('new-user')
       messageAuthor.value = makeid(16);
       newUser.innerText = messageAuthor.value
     });
