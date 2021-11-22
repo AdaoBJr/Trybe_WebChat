@@ -14,6 +14,16 @@ const formattedDate = () => {
   return `${currentDate} ${fullHour} ${pmOrAm}`;
 };
 
+// https://www.youtube.com/watch?v=Hr5pAAIXjkA&ab_channel=DevPleno
+const randomString = (length) => {
+  let nickname = '';
+  do {
+    nickname += Math.random().toString(36).substr(2);
+  } while (nickname.length < length);
+  nickname = nickname.substr(0, length);
+  return nickname;
+};
+
 app.use(cors());
 const io = require('socket.io')(http, {
   cors: {
@@ -22,21 +32,16 @@ const io = require('socket.io')(http, {
   },
 });
 
-const onlineUsers = [];
 let message = [];
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id}`);
-  console.log(onlineUsers);
+  const newNickname = randomString(16);
+  socket.emit('login', newNickname);
+  socket.broadcast.emit('newLogin', { usuario: newNickname });
 
   socket.on('message', (data) => {
     message = `${formattedDate()} - ${data.nickname}: ${data.chatMessage}`;
     io.emit('message', message);
     socket.broadcast.emit('receivedMessage', message);
-  });
-
-  socket.on('newNickname', (nickname) => {
-    onlineUsers.push(nickname);
-    io.emit('onlineUsers', onlineUsers);
   });
 });
 
