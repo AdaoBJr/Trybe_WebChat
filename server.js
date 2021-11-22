@@ -16,21 +16,25 @@ const messages = [];
 
 const dateFormater = () => {
   const today = new Date();
-  const options = {
+  const dateOptions = {
     day: 'numeric',
     month: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
+    year: 'numeric',    
   };
-  return today.toLocaleDateString('pt-br', options);
+  
+  return today.toLocaleDateString('pt-br', dateOptions).replace(/\//g, '-');
+};
+
+const hourFormater = () => {
+  const today = new Date();
+
+  return `${today.toLocaleTimeString('en-us')}`;
 };
 
 io.on('connection', (socket) => {
   console.log(`Socket conectado com ID: ${socket.id}`);
   socket.on('message', ({ chatMessage, nickname }) => {
-    const messageFormated = `${dateFormater()} - ${nickname}: ${chatMessage}`;
+    const messageFormated = `${dateFormater()} ${hourFormater()} - ${nickname}: ${chatMessage}`;
     messages.push(messageFormated);
     io.emit('message', messageFormated);
   });
