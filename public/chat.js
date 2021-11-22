@@ -1,14 +1,14 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 const socket = window.io();
 
 const form = document.querySelector('#chat');
 const dataTestid = 'data-testid';
+const inputRandomNick = '.randomNickname';
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   
   const inputMessage = document.querySelector('.chatMessage').value;
-  const inputRandomNickname = document.querySelector('.randomNickname').innerText;
+  const inputRandomNickname = document.querySelector(inputRandomNick).innerText;
 
   if (inputMessage.length) {
     const sendMessage = {
@@ -26,7 +26,7 @@ buttonSaveNickname.addEventListener('click', (event) => {
 
   const newNickname = document.querySelector('.nickname').value;
   socket.emit('nick', newNickname);
-  const inputRandomNickname = document.querySelector('.randomNickname');
+  const inputRandomNickname = document.querySelector(inputRandomNick);
   inputRandomNickname.innerText = newNickname;
 });
 
@@ -40,7 +40,7 @@ const createMessage = (message) => {
 };
 
 const createUser = (message) => {
-  const usuario = document.querySelector('.randomNickname');
+  const usuario = document.querySelector(inputRandomNick);
   usuario.innerHTML = message;
   const usuarioOnline = document.querySelector('.online');
   const createList = document.createElement('li');
@@ -50,8 +50,6 @@ const createUser = (message) => {
 };
 
 const updateNickname = (message) => {
-  const usuario = document.querySelector('.randomNickname'); 
-  if (message === usuario) usuario.remove();
   const onlineUsersUl = document.querySelector('.online');
   const createList = document.createElement('li');
   createList.setAttribute(dataTestid, 'online-user');
@@ -59,7 +57,7 @@ const updateNickname = (message) => {
   onlineUsersUl.appendChild(createList);
 };
 
-socket.on('message', (message) => createMessage(message));
 socket.on('login', (message) => createUser(message));
-socket.on('newNick', (usuario) => updateNickname(usuario));
 socket.on('newLogin', ({ usuario }) => updateNickname(usuario));
+socket.on('newNick', (usuario) => updateNickname(usuario));
+socket.on('message', (message) => createMessage(message));
