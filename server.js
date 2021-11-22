@@ -22,13 +22,21 @@ const io = require('socket.io')(http, {
   },
 });
 
+const onlineUsers = [];
 let message = [];
 io.on('connection', (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id}`);
+  console.log(onlineUsers);
 
   socket.on('message', (data) => {
     message = `${formattedDate()} - ${data.nickname}: ${data.chatMessage}`;
     io.emit('message', message);
+    socket.broadcast.emit('receivedMessage', message);
+  });
+
+  socket.on('newNickname', (nickname) => {
+    onlineUsers.push(nickname);
+    io.emit('onlineUsers', onlineUsers);
   });
 });
 
