@@ -1,16 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docket.io/3.0.4/socket.io.js"></script>
-    <script>
-      const socket = io();
-    </script>
     <title> MSNC - Mas Só Nos Computer </title>
   </head>
   <body>
-    <script></script>
+    <div class="formDiv">
+      <div class="userDiv">OnLine:
+        <form action="post" class="userForm">
+          <input
+          data-testid="nickname-box"
+          class="nickname-box"
+          type="text"
+          placeholder="Altere seu nick..."
+          autocomplete="off"
+          />
+          <button data-testid="nickname-button" class="nickname-button">
+            Alterar
+          </button>
+        </form>
+      </div>
+      <div class="usersOn"></div>
+    </div>
+    <div class="messageDiv">
+        <form action="">
+          <input
+          data-testid="message-box"
+          class="message-box"
+          type="text"
+          placeholder="Mensagem"
+          autocomplete="off"
+          />
+          <button data-testid="send-button" class="send-button">
+            Enviar
+          </button>
+          <div class="ulDivMessages">>
+            <ul class="messages">
+              <% messages.forEach((msg) => { %>
+              <li data-testid="message">
+                <%= msg %>
+              </li> <%}) %>
+            </ul>
+        </form>
+      </div>
+    </div>
+    <script src="./socket.io/socket.io.js"></script>
+    <script src="./scripts/chat.js"></script>
   </body>
 </html>
