@@ -20,13 +20,14 @@ const nickButton = document.querySelector('.nickname-button');
 const messageInput = document.querySelector('.message-box');
 const messageButton = document.querySelector('.send-button');
 
-let nickname = geraStringAleatoria(16);
+let nickname = '';
 
 const dataTest = 'data-testid';
 
 // mudar nick
 nickButton.addEventListener('click', (e) => {
   e.preventDefault();
+  nickname = geraStringAleatoria(16);
   nickname = changeNick.value;
   socket.emit('changeNick', nickname);
   changeNick.value = '';
@@ -35,7 +36,7 @@ nickButton.addEventListener('click', (e) => {
 // enviar mensagem
 messageButton.addEventListener('click', (e) => {
   e.preventDefault();
-  socket.emit('message', ({ chatMessage: messageInput.value, nickname }));
+  socket.emit('message', ({ chatMessage: messageInput.value, nickname: geraStringAleatoria(16) }));
   messageInput.value = '';
 });
 
@@ -49,10 +50,10 @@ const createMessage = (message) => {
 
 socket.on('message', (message) => createMessage(message));
 socket.on('usersList', (users) => {
-  usersBox.innerHTML = '';
+  usersBox.innerText = '';
   const usersList = document.createElement('li');
   usersList.setAttribute(dataTest, 'online-user');
-  usersList.innerText = nickname;
+  usersList.innerText = nickname || geraStringAleatoria(16);
   usersBox.appendChild(usersList);
   users.forEach((user) => {
     if (user.nickname !== (nickname)) {

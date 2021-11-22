@@ -35,3 +35,9 @@ module.exports = (io) => io.on('connection', async (socket) => {
   io.emit('usersList', usersBox);
   });
 });
+
+// module.exports = (io) => io.on('connection', async (socket) => {
+//   socket.on('disconnect', () => {
+//     socket.removeAllListeners();
+//   });
+// });
