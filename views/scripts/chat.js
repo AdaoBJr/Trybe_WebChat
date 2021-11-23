@@ -2,25 +2,26 @@ const socket = window.io();
 
 // gerar string aleatoria https://www.webtutorial.com.br/funcao-para-gerar-uma-string-aleatoria-random-com-caracteres-especificos-em-javascript/
 
-function geraStringAleatoria(tamanho) {
-  let stringAleatoria = '';
-  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < tamanho; i += 1) {
-      stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-  }
-  return stringAleatoria;
-}
+// function geraStringAleatoria(tamanho) {
+//   let stringAleatoria = '';
+//   const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//   for (let i = 0; i < tamanho; i += 1) {
+//       stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+//   }
+//   return stringAleatoria;
+// }
 
 // let nickname = geraStringAleatoria(16);
 
 const messagesBox = document.querySelector('.messages');
-const usersBox = document.querySelector('.usersOn');
+const usersBox = document.querySelector('#usersOn');
 const changeNick = document.querySelector('.nickname-box');
 const nickButton = document.querySelector('.nickname-button');
 const messageInput = document.querySelector('.message-box');
 const messageButton = document.querySelector('.send-button');
 
-let nickname = geraStringAleatoria(16);
+let nickname = '';
+// let newNickname = '';
 
 const dataTest = 'data-testid';
 
@@ -50,12 +51,13 @@ const createMessage = (message) => {
 socket.on('message', (message) => createMessage(message));
 socket.on('usersList', (users) => {
   usersBox.innerHTML = '';
+  nickname = users.find((user) => user.socketId === socket.id).nickname;
   const usersList = document.createElement('li');
   usersList.setAttribute(dataTest, 'online-user');
   usersList.innerText = nickname;
   usersBox.appendChild(usersList);
   users.forEach((user) => {
-    if (user.nickname !== (nickname || geraStringAleatoria(16))) {
+    if (user.nickname !== nickname) {
       const li = document.createElement('li');
       li.setAttribute(dataTest, 'online-user');
       li.innerText = user.nickname;
@@ -69,6 +71,6 @@ socket.on('usersList', (users) => {
 //   socket.emit('login', newLogin);
 // };
 
-window.onbeforeunload = () => {
-  socket.disconnect();
-};
+// window.onbeforeunload = () => {
+//   socket.disconnect();
+// };

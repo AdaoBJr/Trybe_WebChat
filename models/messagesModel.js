@@ -16,7 +16,16 @@ const sendMessage = async ({ message, nickname, timestamp }) => {
   return newMessage;
 };
 
+// const getUsers = async ({ nickname }) => {
+//   const db = await connection();
+//   const getUser = await db.collection('messages').find({
+//     nickname,
+//   });
+//   return getUser;
+// };
+
 module.exports = { 
   getMessages,
   sendMessage,
+  // getUsers,
 };

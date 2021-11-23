@@ -9,11 +9,13 @@ function geraStringAleatoria(tamanho) {
   for (let i = 0; i < tamanho; i += 1) {
       stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
   }
+  console.log('alo');
   return stringAleatoria;
 }
 
 module.exports = (io) => io.on('connection', async (socket) => {
   usersBox.push({ nickname: geraStringAleatoria(16), socketId: socket.id });
+  // console.log(usersBox);
 
   io.emit('usersList', usersBox);
   const datetime = moment().format('DD-MM-YYYY HH:mm:ss');
@@ -22,9 +24,9 @@ module.exports = (io) => io.on('connection', async (socket) => {
     io.emit('message', `${datetime} - ${nickname}: ${chatMessage}`);
   });
 
-  socket.on('changeNick', (nickname) => {
+  socket.on('changeNick', (newNickname) => {
     usersBox = usersBox.map((user) => {
-      if (user.socketId === socket.id) return { ...user, nickname };
+      if (user.socketId === socket.id) return { ...user, nickname: newNickname };
       return user;
     });
     io.emit('usersList', usersBox);
@@ -32,7 +34,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   socket.on('disconnect', () => {
     usersBox = usersBox.filter((user) => user.socketId !== socket.id);
-  io.emit('usersList', usersBox);
+    io.emit('usersList', usersBox);
   });
 });
 

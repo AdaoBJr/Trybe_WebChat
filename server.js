@@ -26,10 +26,6 @@ require('./sockets/chatSocket')(io);
 
 app.use(express.static(`${__dirname}/views`));
 
-// app.get('/', (req, res) => {
-//   res.render(`${__dirname}/views/index.ejs`); // https://stackoverflow.com/questions/33119221/express-res-sendfile-forces-download-instead-of-serving-of-html/33121279
-// });
-
 const { getMessages } = require('./models/messagesModel');
 
 app.get('/', async (req, res) => {
@@ -38,5 +34,12 @@ app.get('/', async (req, res) => {
   `${timestamp} - ${nickname}: ${message}`);
   res.render('index', { messages });
 });
+
+// app.get('/', async (req, res) => {
+//   const allUsers = await getUsers();
+//   // const users = allUsers.map(({ nickname }) =>
+//   // `${nickname}`);
+//   res.render('index', { allUsers });
+// });
 
 http.listen(PORT, () => console.log(`listening on port ${PORT}`));

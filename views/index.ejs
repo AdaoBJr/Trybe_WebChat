@@ -5,9 +5,9 @@
   </head>
   <body>
     <div class="formDiv">
-      <div>Online users:
-        <ul class="usersOn"></ul>
-      <form action="" class="userForm">
+      <div>Usuários Online:
+        <ul id="usersOn"></ul>
+      <form class="userForm">
         <input
         data-testid="nickname-box"
         class="nickname-box"
@@ -23,7 +23,7 @@
       <ul class="usersOn"></ul>
     </div>
     <div class="messageDiv">
-        <form action="">
+        <form>
           <input
           data-testid="message-box"
           class="message-box"
@@ -44,7 +44,7 @@
         </form>
       </div>
     </div>
-    <script src="./socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="./scripts/chat.js"></script>
   </body>
 </html>
