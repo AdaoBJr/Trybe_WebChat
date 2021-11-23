@@ -1,29 +1,33 @@
 require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 
 const app = express();
-const http = require('http');
-const socketIo = require('socket.io');
+const http = require('http').createServer(app);
 const path = require('path');
-const moment = require('moment');
 
-const server = http.createServer(app);
-const io = socketIo(server);
+app.set('view engine', 'ejs');
+app.set('views', './public');
+
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'https://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+});
 
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
-io.on('connection', (socket) => {
-  console.log('New user connected');
-
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const time = moment().format('DD-MM-yyyy h:mm:ss A');
-    const message = `${time} - ${nickname}: ${chatMessage}`;
-    io.emit('message', message);
-  });
+app.get('/', (_req, res) => {
+  res.status(200).render('index');
 });
 
-server.listen(PORT, () => {
+require('./sockets/chat')(io);
+
+http.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
