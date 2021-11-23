@@ -20,7 +20,7 @@
     <ul id="messages"></ul>
 
     <script>
-      const socket = io();
+      const socketIO = io();
       const msgForm = document.querySelector('.msg-box-form');
       const msgInput = document.querySelector('#msg-box-input');
       const nickName = document.querySelector('#nick-name');
@@ -29,29 +29,29 @@
         event.preventDefault();
         const nickname =  randomNick.innerText;
         const chatMessage = msgInput.value;
-        socket.emit('message', { nickname, chatMessage });
+        socketIO.emit('message', { nickname, chatMessage });
         msgInput.value = '';
         return false;
       });
 
       const createMessage = (msg) => {
-        const messagesList = document.querySelector('#messages');
+        const msgsList = document.querySelector('#messages');
         const li = document.createElement('li');
         li.setAttribute("data-testid", "message")
         li.innerText = msg;
-        messagesList.appendChild(li);
+        msgsList.appendChild(li);
       }
 
-      const randomizeNickName = (length) => {
+      const randomizeNickName = (nick) => {
       let randomizedNick = '';
       const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       const charactersLength = possibleCharacters.length;
-      for (let index = 0; index < length; index += 1) {
+      for (let index = 0; index < nick; index += 1) {
         randomizedNick += possibleCharacters.charAt(Math.floor(Math.random() 
       * charactersLength));
       }
       return randomizedNick;
-}
+    }
       randomNick.innerText = randomizeNickName(16);
       const chosenNickName = document.querySelector('#save-nickname');
       chosenNickName.addEventListener('click', (event)=> {
@@ -60,7 +60,7 @@
       nickName.value = '';
       } )
 
-      socket.on('message', (dateNameMsg) => createMessage(dateNameMsg));
+      socketIO.on('message', (msg) => createMessage(msg));
     </script>
 
   </body>
