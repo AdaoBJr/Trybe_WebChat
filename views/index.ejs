@@ -15,13 +15,13 @@
   <form id="messageInfo">
     <button type="button" data-testid="nickname-button" id="nick-button">Mudar nome</button>
     <input type="text" placeholder="Digite seu nome" id="nickname" data-testid="nickname-box" />
-    <input type="text" placeholder="Digite sua mensagem" id="message" data-testid="message-box" />
+    <input type="text" placeholder="Digite sua mensagem" id="messageInput" data-testid="message-box" />
     <button type="submit" id="send" data-testid="send-button">Enviar mensagem</button>
   </form>
   <ul id="messages" data-testid="message-box">
     <% messages.forEach((message)=> { %>
-      <li>
-        <%= `${message}` %>
+      <li data-testid="message">
+        <%= message %>
       </li>
       <% }) %>
   </ul>
@@ -34,20 +34,20 @@
     const newUser = document.getElementById('new-user')
 
     function makeid(length) {
-        let result = '';
-        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-          result += characters.charAt(Math.floor(Math.random() *
-            charactersLength));
-        }
-        return result;
+      let result = '';
+      let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let charactersLength = characters.length;
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+          charactersLength));
       }
+      return result;
+    }
 
     sendButton.addEventListener('click', (event) => {
       event.preventDefault();
       const messageAuthor = document.getElementById('nickname').value;
-      const messageText = document.getElementById('message').value;
+      const messageText = document.getElementById('messageInput').value;
       const chatMessage = messageText
       const nickname = messageAuthor
       if (messageAuthor.length > 0 && messageText.length > 0) {
@@ -58,23 +58,19 @@
     nickButton.addEventListener('click', (event) => {
       event.preventDefault();
       const author = document.getElementById('nickname');
-      author.value = makeid(16);
       newUser.innerText = author.value
     })
 
-    nicknameInput.addEventListener('keyup', (event) => {
-      newUser.innerText = event.target.value
-    })
+    // nicknameInput.addEventListener('keyup', (event) => {
+    //   newUser.innerText = event.target.value
+    // })
 
-    socket.on('message', (...message) => {
-      const messages = message;
+    socket.on('message', (message) => {
       const messagesDiv = document.getElementById('messages')
-      message.forEach((message) => {
-        const li = document.createElement('li');
-        li.setAttribute('data-testid', 'message')
-        li.textContent = `${message}`;
-        messagesDiv.appendChild(li);
-      })
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'message')
+      li.innerText = message;
+      messagesDiv.appendChild(li);
     });
 
     socket.on('connect', () => {
@@ -82,7 +78,6 @@
       messageAuthor.value = makeid(16);
       newUser.innerText = messageAuthor.value
     });
-
   </script>
 </body>
 
