@@ -5,7 +5,7 @@ const btnSend = document.getElementById('send-button');
 const nicknameField = document.getElementById('nickname-field');
 const btnSendNickname = document.getElementById('send-nickname-button');
 const listOnlineUser = document.getElementById('online-users');
-const messageBox = document.querySelector('#message');
+const messageBox = document.getElementById('message');
 let newNickname = '';
 
 const dataTestId = 'data-testid';
@@ -30,8 +30,6 @@ socket.on('listedUsers', (users) => {
   newDiv.innerText = newNickname || socket.id.slice(0, 16);
   listOnlineUser.appendChild(newDiv);
   users.forEach((elem) => {
-    console.log(elem.nickname);
-    console.log(newNickname);
     if (elem.nickname !== (newNickname || socket.id.slice(0, 16))) {
       const newDiv2 = document.createElement('div');
       newDiv2.setAttribute(dataTestId, 'online-user');
