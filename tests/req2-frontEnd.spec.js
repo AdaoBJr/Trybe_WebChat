@@ -89,7 +89,6 @@ describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => 
     const messages = await page.$$eval(dataTestid('message'), (nodes) => nodes.map((n) => n.innerText));
     const latestMessages = _.takeRight(messages, 3);
 
-
     expect(latestMessages[0]).toMatch(chatMessage);
     expect(latestMessages[1]).toMatch(anotherChatMessage);
     expect(latestMessages[2]).toMatch(yetAnotherChatMessage);

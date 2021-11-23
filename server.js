@@ -15,7 +15,6 @@ const port = '3000';
 
 let users = [];
 const msgs = [];
-let flag = false;
 
 const sendMessage = (socket) => {
     socket.on('message', ({ nickname, chatMessage }) => {
@@ -23,40 +22,41 @@ const sendMessage = (socket) => {
         const cdate = `${date.toISOString()}`.slice(0, 10).split('-').reverse().join('-');
         const ctime = String(date.toISOString()).slice(11, 19);
         const message = `${cdate} ${ctime} - ${nickname}: ${chatMessage}`;
-        msgs.push(message);
+        msgs.push({ chatMessage, nickname, time: `${cdate} ${ctime}`, id: socket.id });
         io.emit('message', message);
     });
 };
 
 const disconnect = (socket) => {
     socket.on('disconnect', () => {
-        const disconected = socket.id.slice(0, 16);
+        const disconected = socket.id;
         users = users.filter((online) => online.id !== disconected);
         io.emit('users', users);
     });
 };
 
 const allFlags = (socket) => {
-    users.push({ nickname: undefined, id: socket.id.slice(0, 16) });
-    if (!flag) { users.pop(); flag = true; }
-    io.emit('id', socket.id.slice(0, 16));
+    users.push({ nickname: undefined, id: socket.id });
+    // if (!flag) { users.pop(); flag = true; }
     io.emit('msgs', msgs);
     io.emit('users', users.reverse());
 };
 
 const changeName = (socket) => {
     socket.on('nick', (nickname) => {
-        const id = socket.id.slice(0, 16);
+        const { id } = socket;
         users.forEach((u, i) => {
-            if (id === u.id) { users[i].nickname = nickname; }
+            if (u.id === id) {
+                users[i].nickname = nickname;
+            }
         });
-        msgs.forEach((_u, i) => {
- msgs[i] = msgs[i].replace(id, nickname);
+        msgs.forEach((msg, i) => {
+            if (msg.id === id) { msgs[i].nickname = nickname; }
+        });
+
+        io.emit('users', users);
+        io.emit('msgs', msgs);
     });
-    io.emit('id', nickname);
-    io.emit('users', users);
-    io.emit('msgs', msgs);
-});
 };
 
 io.on('connection', (socket) => {
