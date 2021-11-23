@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO - Trybe</title>
+  <link rel="stylesheet" href="./chat.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+<body>
+  <main>
+    <div class="container is-fluid">
+      <h2 class="title">TrybeChat!</h2>
+      <div class="notification">
+        <div>
+          <h3 class="subtitle-temp">Nickname</h3>
+          <input type="text" class="input is-small" name="user" id="user">
+        </div>
+        <div>
+          <button class="button is-success">Entrar</button>
+        </div>
+      </div>
+    </div>
+      <section class="forms">
+        <div class="columns">
+          <div class="columns is-half flex-left">
+            <div class="usuarios-logados">
+              <h3>Usuários Logados</h3>
+            </div>
+          </div>
+          <div class="columns is-half flex-right">
+            <div class="box-message">
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer class="footer">
+        <input type="text" class="input is-small" name="send-message" id="send-message">
+        <button class="button is-success">Enviar</button>
+      </footer>
+  </main>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./chat.js"></script>
+</body>
+</html>

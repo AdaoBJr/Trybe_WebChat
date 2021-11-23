@@ -2,18 +2,92 @@
 <html>
 <head>
   <title>Socket.IO - Trybe</title>
-  <link rel="stylesheet" href="./chat.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="./chat.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link
+  rel="stylesheet"
+  href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+  integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+  crossorigin="anonymous">
 </head>
 <body>
-  <main>
-    <h2>TrybeChat!</h2>
-      <section class="nickname-form">
-        <h3>Nickname</h3>
-        <input type="text" name="user" id="user">
-        <button>Entrar</button>
-      </section>
-  </main>
+  <div id="chat-container">
+    <div id="side-bar">
+      <div id="chat-nickname">
+        <div id="input-nickname">
+          <div class="control has-icons-left">
+            <input 
+              data-testid="nickname-box"
+              class="input is-small is-rounded"
+              id="nickname-field"
+              type="text"
+              placeholder="Nickname"
+            >
+            <span class="icon is-small is-left">
+              <span class="material-icons">
+                face
+              </span>
+            </span>
+          </div>
+        </div>
+        <button
+          data-testid="nickname-button"
+          class="button is-small is-rounded"
+          id="send-nickname-button"
+          type="button"
+        >
+          <span class="material-icons">
+          send
+          </span>
+        </button>
+      </div>
+      <div id="online-users">
+      </div>
+    </div>
+    <div id="chat-window">
+      <div id="title-message">
+        <div>
+          <h4 class="title is-4">TrybeChat</h4>
+        </div>
+      </div>
+        <div id="message">
+        </div>
+      <div id="chat-send-message">
+        <div id="chat-send-itens">
+          <span class="material-icons">
+            insert_emoticon
+          </span>
+          <span class="material-icons">
+            attach_file
+          </span>
+          <input
+            data-testid="message-box"
+            class="input is-small is-rounded"
+            id="message-field"
+            type="text"
+            placeholder="Digite sua mensagen aqui..."
+          >
+          <span class="material-icons">
+            mic_none
+          </span>
+          <button
+            data-testid="send-button"
+            class="button is-small is-rounded"
+            id="send-button"
+            type="button"
+          >
+            <span class="material-icons">
+            send
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ServerSocket -->
   <script src="/socket.io/socket.io.js"></script>
-  <script src="./chat.js"></script>
+  <script src="chat.js"></script>
 </body>
 </html>

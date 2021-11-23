@@ -1,0 +1,40 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.forms {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.flex-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-right {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.nickname {
+  display: flex;
+  flex-direction: row;
+}
+
+.box-message {
+  width: 200px;
+  height: 300px;
+  border: solid 1px black;
+}
+
+.usuarios-logados {
+  width: 200px;
+  height: 300px;
+  border: solid 1px black;
+}

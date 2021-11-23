@@ -1,4 +1,149 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
+
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+html {
+  font-family: Arial, Helvetica, sans-serif;
+  /* background: linear-gradient(to right, #eaecec 0%,#8d7261 100%); */
+  background: radial-gradient(#eaecec 0%,#a38775 100%);
+  font-size: 12px;
+}
+
+#chat-container {
+  display: flex;
+  flex-grow: 1;
+  min-width: 800px;
+  max-width: 1000px;
+  max-height: 800px;
+  height: 90vh;
+  background: #FFF;
+  border-radius: 10px;
+  box-shadow: 0 0 15px gray;
+}
+
+#side-bar {
+  background: #0048AA;
+  border-radius: 10px 0 0 10px;
+  width: 250px;
+  height: 100%;
+}
+#chat-window {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background: #999;
+  border-radius: 0 10px 10px 0;
+}
+
+#chat-nickname {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eee;
+  border-radius: 10px 0 0 0px;
+  width: 250px;
+  height: 10%;
+}
+#input-nickname {
+  text-align: center;
+  padding: 5px;
+  width: 100%;
+}
+
+#nickname-field {
+  border: none;
+  box-shadow: none;
+}
+
+#online-users {
+  background: #eee;
+  border-radius: 0 0 0 10px;
+  border-top: rgb(199, 199, 199) solid 1px;
+  width: 250px;
+  height: 90%;
+}
+
+#title-message {
+  background: #eee;
+  border-radius: 0 10px 0 0;
+  border-left: rgb(199, 199, 199) solid 1px;
+  display: flex;
+  padding: 5px;
+  align-items: center;
+  width: 100%;
+  height: 10%;
+}
+
+#message {
+  background: #ffffff;
+  background-image: url('https://neuroup.com.br/wp-content/uploads/2019/12/Fundo-WhatsApp.jpg');
+  border-radius: 0 0 0 0;
+  border-left: rgb(199, 199, 199) solid 1px;
+  border-top: rgb(199, 199, 199) solid 1px;
+  width: 100%;
+  height: 80%;
+}
+
+#chat-send-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eee;
+  border-radius: 0 0 10px 0;
+  border-left: rgb(199, 199, 199) solid 1px;
+  border-top: rgb(199, 199, 199) solid 1px;
+  width: 100%;
+  height: 10%;
+}
+
+
+#message-field {
+  margin-left: 3px;
+  margin-right: 3px;
+  /* border:1px solid rgb(179, 158, 134); */
+  border: none;
+  box-shadow: none;
+}
+
+#send-button {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  width: 20px;
+  height: 20px;
+}
+
+#chat-send-itens {
+  display: flex;
+  width: 100%;
+  padding: 5px;
+  justify-content: space-around;
+}
+
+#message {
+  overflow-y: auto;
+}
+
+.message {
+  color: darkgreen;
+  padding: 10px 10px;
+  line-height: 20px;
+  font-size: 12px;
+  border-radius: 7px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  position: relative;
 }
