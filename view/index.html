@@ -14,7 +14,7 @@
             WebChat
         </header>
         <input id="nick" type="text" data-testid="nickname-box">
-        <button onclick="alterar();"  data-testid="nickname-button">Alterar nickname</button>
+        <button onclick="alterar();" data-testid="nickname-button">Alterar nickname</button>
         <div id="online" data-testid="opa">
 
         </div>
@@ -33,18 +33,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"
         integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
+        integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        let nickname = `${Math.random().toString(36).slice(2)}${Math.random().toString(36).slice(2)}`.slice(0,16)
+        let nickname = `${Math.random().toString(36).slice(2)}${Math.random().toString(36).slice(2)}`.slice(0, 16)
 
         const socket = io();
         let id;
         const message = document.getElementById("message");
-        
+
         socket.emit('nick', nickname);
 
         const opa = () => {
-            socket.emit('message', {chatMessage: message.value, nickname});
+            socket.emit('message', { chatMessage: message.value, nickname });
         }
 
         const alterar = () => {
@@ -58,7 +60,7 @@
             hist.innerHTML = '';
             msgs.forEach(m => {
                 const msgItem = document.createElement('p');
-                msgItem.setAttribute('data-testid','message');
+                msgItem.setAttribute('data-testid', 'message');
                 msgItem.textContent = `${m.nickname}: ${m.chatMessage}`
                 hist.appendChild(msgItem)
             });
@@ -67,9 +69,17 @@
         socket.on('users', users => {
             const online = document.getElementById("online");
             online.innerHTML = '';
-            users.forEach(m => {
+            let onlineOrdered = [];
+            users.forEach((m, i) => {
+                if(m.nickname === nickname)
+                    onlineOrdered[0] = m;
+                else
+                    onlineOrdered[i+1] = m;
+            })
+            
+            onlineOrdered.forEach(m => {
                 const onlineItem = document.createElement('p');
-                onlineItem.setAttribute('data-testid','online-user');
+                onlineItem.setAttribute('data-testid', 'online-user');
                 onlineItem.textContent = m.nickname;
                 online.appendChild(onlineItem)
             });
@@ -80,7 +90,7 @@
         socket.on('message', msg => {
             const hist = document.getElementById("history");
             const msgItem = document.createElement('p');
-            msgItem.setAttribute('data-testid','message');
+            msgItem.setAttribute('data-testid', 'message');
             msgItem.textContent = msg.slice(22);
             hist.appendChild(msgItem);
         })
