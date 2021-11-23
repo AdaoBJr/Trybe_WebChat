@@ -55,7 +55,7 @@ socket.on('usersList', (users) => {
   usersList.innerText = nickname;
   usersBox.appendChild(usersList);
   users.forEach((user) => {
-    if (user.nickname !== (nickname)) {
+    if (user.nickname !== (nickname || geraStringAleatoria(16))) {
       const li = document.createElement('li');
       li.setAttribute(dataTest, 'online-user');
       li.innerText = user.nickname;
@@ -63,6 +63,11 @@ socket.on('usersList', (users) => {
     }
   });
 });
+
+// window.onload = () => {
+//   const newLogin = geraStringAleatoria(16);
+//   socket.emit('login', newLogin);
+// };
 
 window.onbeforeunload = () => {
   socket.disconnect();

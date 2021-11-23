@@ -31,7 +31,17 @@ module.exports = (io) => io.on('connection', async (socket) => {
   });
 
   socket.on('disconnect', () => {
-    usersBox = usersBox.filter((user) => user.socketId !== socket.id);
+    usersBox = usersBox.filter((user) => user.socketId !== user.socket.id);
   io.emit('usersList', usersBox);
   });
 });
+
+// module.exports = (io) => io.on('connection', async (socket) => {
+//   socket.on('login', (nickname) => {
+//     usersBox.push({
+//       nickname,
+//       socketId: socket.id,
+//     });
+//     io.emit('usersList', usersBox);
+//   });
+// });
