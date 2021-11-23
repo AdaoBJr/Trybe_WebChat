@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebChat</title>
+</head>
+
+<body>
+    <div>
+        <header>
+            WebChat
+        </header>
+        <input id="nick" type="text" data-testid="nickname-box">
+        <button onclick="alterar();"  data-testid="nickname-button">Alterar nickname</button>
+        <div id="online" data-testid="opa">
+
+        </div>
+        <div id="history">
+
+        </div>
+        <input type="text" data-testid="message-box" placeholder="message" id="message">
+        <button data-testid="send-button" onclick="opa();">
+            Emitir
+        </button>
+
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"
+        integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // const data = new Data();
+        const socket = io();
+        let id;
+        const message = document.getElementById("message")
+
+        const opa = () => {
+            socket.emit('message', {chatMessage: message.value, nickname: id});
+        }
+
+        const alterar = () => {
+            const nick = document.getElementById("nick").value;
+            socket.emit('nick', nick);
+        }
+    
+        socket.on('msgs', msgs => {
+            const hist = document.getElementById("history");
+            hist.innerHTML = '';
+            msgs.forEach(m => {
+                const msgItem = document.createElement('p');
+                msgItem.setAttribute('data-testid','message');
+                msgItem.textContent = m.slice(22);
+                hist.appendChild(msgItem)
+            });
+        });
+
+        socket.on('users', users => {
+            const online = document.getElementById("online");
+            online.innerHTML = '';
+            users.forEach(m => {
+                const onlineItem = document.createElement('p');
+                onlineItem.setAttribute('data-testid','online-user');
+                onlineItem.textContent = m.nickname || m.id;
+                online.appendChild(onlineItem)
+            });
+        });
+
+        socket.on('id', nickname => {
+            id = nickname;
+        })
+        // socket.emit('message', 'opa');
+
+
+        socket.on('message', msg => {
+            const hist = document.getElementById("history");
+            // hist.innerHTML = '';
+
+            const msgItem = document.createElement('p');
+            msgItem.textContent = msg.slice(22);
+            hist.appendChild(msgItem);
+        })
+    </script>
+</body>
+
+</html>
