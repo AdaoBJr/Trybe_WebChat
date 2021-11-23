@@ -1,4 +1,5 @@
 const express = require('express');
+const { read, write } = require('./models/message');
 
 const app = express();
 
@@ -14,15 +15,16 @@ const io = require('socket.io')(server, {
 const port = '3000';
 
 let users = [];
-const msgs = [];
+let msgs = [];
 
 const sendMessage = (socket) => {
-    socket.on('message', ({ nickname, chatMessage }) => {
+    socket.on('message', async ({ nickname, chatMessage }) => {
         const date = new Date();
         const cdate = `${date.toISOString()}`.slice(0, 10).split('-').reverse().join('-');
         const ctime = String(date.toISOString()).slice(11, 19);
         const message = `${cdate} ${ctime} - ${nickname}: ${chatMessage}`;
         msgs.push({ chatMessage, nickname, time: `${cdate} ${ctime}`, id: socket.id });
+        await write({ chatMessage, nickname, time: `${cdate} ${ctime}`, id: socket.id })
         io.emit('message', message);
     });
 };
@@ -59,7 +61,9 @@ const changeName = (socket) => {
     });
 };
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
+    const m = await read();
+    msgs = m || [];
     allFlags(socket);
     sendMessage(socket);
     disconnect(socket);
