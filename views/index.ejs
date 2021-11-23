@@ -7,7 +7,9 @@
     <h1>Chat</h1>
 
     <ul id="onlineUsers">
-
+      <%nick.forEach((e) => {%>
+        <li data-testid="online-user"><%= e %></li>
+      <%})%>
     </ul>
     
     <div>
@@ -21,9 +23,9 @@
     </div>
 
     <ul id="news">
-      <%arrayMessages.forEach(({ message, nickname, timestamp }) => {%>
-        <li class="mensagens" data-testid="message"><%=`${timestamp} - ${nickname}: ${message}`%></li>
-      <%})%>
+      <!-- <%arrayMessages.forEach(({ message, nickname, timestamp }) => {%>
+        <li data-testid="message"><%=`${timestamp} - ${nickname}: ${message}`%></li>
+      <%})%> -->
     </ul>
 
     <div>
@@ -52,13 +54,24 @@
         messagesUl.prepend(li);
       });
 
-      socket.on('otherNickId', (socketId) => {
+      socket.on('otherNickId', (nick) => {
+        const nickname = JSON.parse(sessionStorage.getItem('nickname'));
+
+        nick.splice(nick.indexOf(nickname), 1);
+
+        nick.unshift(nickname);
+
+        const messagesUl = document.querySelector('#onlineUsers');
+
+        messagesUl.innerText = '';
+
+        nick.forEach((index) => {
         const li = document.createElement('li');
         li.setAttribute('data-testid', 'online-user');
-        li.innerText = socketId;
-        li.id=socketId;
-        const messagesUl = document.querySelector('#onlineUsers');
+        li.innerText = index;
+        li.id = index;
         messagesUl.appendChild(li);
+        })
       });
 
       const btn = document.getElementById('submit');
@@ -80,7 +93,6 @@
 
       socket.on('changeNick', ({ oldNick, newNick }) => {
         const nickList = document.getElementById(oldNick);
-        nickList.id = newNick;
         nickList.innerText = newNick;
       });
 
@@ -97,12 +109,12 @@
         socket.disconnect();
       };
 
-      socket.on('removeNick', ({ nick }) => {
-        const nickList = document.getElementById(nick);
-        console.log(nickList);
-        const messagesUl = document.querySelector('#onlineUsers');
-        messagesUl.removeChild(nickList);
-      });
+      // socket.on('removeNick', ({ socketId }) => {
+      //   const nickList = document.querySelector(`#${socketId}`);
+      //   console.log(socketId);
+      //   const messagesUl = document.querySelector('#onlineUsers');
+      //   messagesUl.removeChild(nickList);
+      // });
     </script>
   </body>
 </html>

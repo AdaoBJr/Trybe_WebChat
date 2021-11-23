@@ -33,16 +33,14 @@ app.use(
   }),
 );
 
-let nick;
-io.on('connection', (socket) => {
-  const socketId = socket.id.substring(socket.id.length - 16);
-  nick = socketId;
+const nick = [];
+const data = `${moment().format('DD-MM-YYYY')} ${moment().format('LTS')}`;
+io.on('connection', (socket) => { 
+  let socketId = socket.id.substring(socket.id.length - 16); nick.push(socketId);
   socket.emit('nickId', socketId);
-  socket.broadcast.emit('otherNickId', socketId);
+  socket.broadcast.emit('otherNickId', nick);
 
-  socket.on('message', async ({ nickname, chatMessage }) => {
-    nick = nickname;
-    const data = `${moment().format('DD-MM-YYYY')} ${moment().format('LTS')}`;
+  socket.on('message', async ({ nickname, chatMessage }) => { 
     const resp = `${data} - ${nickname}: ${chatMessage}`;
     const obj = { message: chatMessage, nickname, timestamp: data };
     await ChatModel.addMsg(obj);
@@ -50,17 +48,21 @@ io.on('connection', (socket) => {
   });
 
   socket.on('changeNick', ({ oldNick, newNick }) => {
-    nick = newNick;
+    nick.splice(nick.indexOf(oldNick), 1, newNick); socketId = newNick;
+    socket.broadcast.emit('otherNickId', nick);
     io.emit('changeNick', { oldNick, newNick });
   });
 
-  socket.on('disconnect', () => { socket.broadcast.emit('removeNick', { nick }); });
+  socket.on('disconnect', () => { 
+    nick.splice(nick.indexOf(socketId), 1); 
+    socket.broadcast.emit('otherNickId', nick);
+  });
 });
 
 app.get('/', async (req, res) => {
   const arrayMessages = await ChatModel.getAll();
 
-  res.status(200).render('index.ejs', { arrayMessages });
+  res.status(200).render('index.ejs', { arrayMessages, nick });
 });
 
 http.listen(3000, () => console.log('Rodando na porta 3000'));
