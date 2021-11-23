@@ -1,5 +1,5 @@
-const express = require('express');
-const { read, write } = require('./models/message');
+import express from 'express';
+import { read, write } from './models/message';
 
 const app = express();
 
@@ -24,7 +24,7 @@ const sendMessage = (socket) => {
         const ctime = String(date.toISOString()).slice(11, 19);
         const message = `${cdate} ${ctime} - ${nickname}: ${chatMessage}`;
         msgs.push({ chatMessage, nickname, time: `${cdate} ${ctime}`, id: socket.id });
-        await write({ chatMessage, nickname, time: `${cdate} ${ctime}`, id: socket.id })
+        await write({ chatMessage, nickname, time: `${cdate} ${ctime}`, id: socket.id });
         io.emit('message', message);
     });
 };
