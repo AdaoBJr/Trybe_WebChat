@@ -19,6 +19,17 @@ const io = require('socket.io')(http, {
   },
 });
 
+const randomizeNickName = (nick) => {
+  let randomizedNick = '';
+  const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = possibleCharacters.length;
+  for (let index = 0; index < nick; index += 1) {
+    randomizedNick += possibleCharacters.charAt(Math.floor(Math.random() 
+  * charactersLength));
+  }
+  return randomizedNick;
+};
+
 // Fonte moment().format(): https://ifpb.github.io/jaguaribetech/2016/09/01/moment-js/#:~:text=Para%20rodar%20a%20Moment%20no,funcionalidades%20de%20manipula%C3%A7%C3%A3o%20de%20datas.
 io.on('connection', (socket) => {
   socket.on('message', ({ chatMessage, nickname }) => {
@@ -26,6 +37,8 @@ io.on('connection', (socket) => {
     io.emit('message', `${date} - ${nickname} - ${chatMessage}`);
     console.log(`Usuário conectado. ID: ${socket.id}`);
   });
+
+  socket.emit('random', randomizeNickName(16));
 });
 
 app.use('/', (_req, res) => {

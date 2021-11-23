@@ -41,17 +41,7 @@
         li.innerText = msg;
         msgsList.appendChild(li);
       }
-
-      const randomizeNickName = (nick) => {
-      let randomizedNick = '';
-      const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      const charactersLength = possibleCharacters.length;
-      for (let index = 0; index < nick; index += 1) {
-        randomizedNick += possibleCharacters.charAt(Math.floor(Math.random() 
-      * charactersLength));
-      }
-      return randomizedNick;
-    }
+      
       randomNick.innerText = randomizeNickName(16);
       const chosenNickName = document.querySelector('#save-nickname');
       chosenNickName.addEventListener('click', (event)=> {
@@ -61,6 +51,7 @@
       } )
 
       socketIO.on('message', (msg) => createMessage(msg));
+      socketIO.on('random', (randomNickName) => randomNick.innerText = random);
     </script>
 
   </body>
