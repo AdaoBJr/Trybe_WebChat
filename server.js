@@ -53,6 +53,7 @@ const changeName = (socket) => {
         msgs.forEach((_u, i) => {
  msgs[i] = msgs[i].replace(id, nickname);
     });
+    io.emit('id', nickname);
     io.emit('users', users);
     io.emit('msgs', msgs);
 });
