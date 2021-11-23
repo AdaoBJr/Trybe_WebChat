@@ -1,4 +1,4 @@
-@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" ;
+@import 'https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css' ;
 
 * {
   box-sizing: border-box;
@@ -20,7 +20,7 @@ html {
   font-size: 12px;
 }
 
-#chat-container {
+.chat-container {
   background: white;
   border-radius: 10px;
   box-shadow: 0px 0px 15px gray;
@@ -32,13 +32,14 @@ html {
   min-width: 800px;
 }
 
-#side-bar {
+.side-bar {
   background: #0048aa;
   border-radius: 10px 0px 0px 10px;
   height: 100%;
   width: 250px;
 }
-#chat-window {
+
+.chat-window {
   background: #999;
   border-radius: 0px 10px 10px 0px;
   display: flex;
@@ -46,7 +47,7 @@ html {
   flex-grow: 1;
 }
 
-#chat-nickname {
+.chat-nickname {
   align-items: center;
   background: #eee;
   border-radius: 10px 0px;
@@ -55,18 +56,18 @@ html {
   justify-content: center;
   width: 250px;
 }
-#input-nickname {
+.input-nickname {
   padding: 5px;
   text-align: center;
   width: 100%;
 }
 
-#nickname-field {
+.nickname-field {
   border: none;
   box-shadow: none;
 }
 
-#online-users {
+.online-users {
   background: #eee;
   border-radius: 0px 0px 0px 10px;
   border-top: rgb(199, 199, 199) solid 1px;
@@ -74,7 +75,7 @@ html {
   width: 250px;
 }
 
-#title-message {
+.title-message {
   align-items: center;
   background: #eee;
   border-left: rgb(199, 199, 199) solid 1px;
@@ -85,22 +86,22 @@ html {
   width: 100%;
 }
 
-#message {
+.message-container {
   background: white;
   background-image: url('https://neuroup.com.br/wp-content/uploads/2019/12/Fundo-WhatsApp.jpg');
   border-left: rgb(199, 199, 199) solid 1px;
-  border-radius: 0px 0px 0px 0px;
+  border-radius: 0px;
   border-top: rgb(199, 199, 199) solid 1px;
   height: 80%;
   overflow-y: auto;
   width: 100%;
 }
 
-#chat-send-message {
+.chat-send-message {
   align-items: center;
   background: #eee;
   border-left: rgb(199, 199, 199) solid 1px;
-  border-radius: 0px 0px 10px 0px;
+  border-radius: 0px 0px 10px;
   border-top: rgb(199, 199, 199) solid 1px;
   display: flex;
   height: 10%;
@@ -109,7 +110,7 @@ html {
 }
 
 
-#message-field {
+.message-field {
   border: none;
   box-shadow: none;
   margin-left: 3px;
@@ -117,7 +118,7 @@ html {
   /* border:1px solid rgb(179, 158, 134); */
 }
 
-#send-button {
+.send-button {
   background-color: transparent;
   border: none;
   box-shadow: none;
@@ -125,14 +126,11 @@ html {
   width: 20px;
 }
 
-#chat-send-itens {
+.chat-send-itens {
   display: flex;
   justify-content: space-around;
   padding: 5px;
   width: 100%;
-}
-
-#message {
 }
 
 .message {
@@ -143,6 +141,6 @@ html {
   margin-bottom: 5px;
   margin-left: 5px;
   margin-right: 5px;
-  padding: 10px 10px;
+  padding: 10px;
   position: relative;
 }

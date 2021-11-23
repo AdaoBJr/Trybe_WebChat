@@ -13,14 +13,14 @@
   crossorigin="anonymous">
 </head>
 <body>
-  <div id="chat-container">
-    <div id="side-bar">
-      <div id="chat-nickname">
-        <div id="input-nickname">
+  <div id="chat-container" class="chat-container">
+    <div id="side-bar" class="side-bar">
+      <div id="chat-nickname" class="chat-nickname">
+        <div id="input-nickname" class="input-nickname">
           <div class="control has-icons-left">
             <input 
               data-testid="nickname-box"
-              class="input is-small is-rounded"
+              class="input is-small is-rounded nickname-field"
               id="nickname-field"
               type="text"
               placeholder="Nickname"
@@ -43,19 +43,19 @@
           </span>
         </button>
       </div>
-      <div id="online-users">
+      <div id="online-users" class="online-users">
       </div>
     </div>
-    <div id="chat-window">
-      <div id="title-message">
+    <div id="chat-window" class="chat-window">
+      <div id="title-message" class="title-message">
         <div>
           <h4 class="title is-4">TrybeChat</h4>
         </div>
       </div>
-        <div id="message">
+        <div id="message" class="message-container">
         </div>
-      <div id="chat-send-message">
-        <div id="chat-send-itens">
+      <div id="chat-send-message" class="chat-send-message">
+        <div id="chat-send-itens" class="chat-send-itens">
           <span class="material-icons">
             insert_emoticon
           </span>
@@ -64,7 +64,7 @@
           </span>
           <input
             data-testid="message-box"
-            class="input is-small is-rounded"
+            class="input is-small is-rounded message-field"
             id="message-field"
             type="text"
             placeholder="Digite sua mensagen aqui..."
@@ -74,7 +74,7 @@
           </span>
           <button
             data-testid="send-button"
-            class="button is-small is-rounded"
+            class="button is-small is-rounded send-button"
             id="send-button"
             type="button"
           >
