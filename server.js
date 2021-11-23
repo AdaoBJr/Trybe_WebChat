@@ -1,14 +1,15 @@
 // Faça seu código aqui
-// require('dotenv').config();
+require('dotenv').config();
 
 const express = require('express');
-// const cors = require('cors');
+const cors = require('cors');
 // const moment = require('moment');
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
