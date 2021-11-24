@@ -4,14 +4,7 @@ const controller = require('../controllers/chatControllers');
 let users = [];
 
 module.exports = (io) => io.on('connection', (socket) => {
-  const newNickname = socket.id.slice(0, 16);
-  users.push({ nickname: newNickname, socketId: socket.id });
-  // socket.emit('message', 'Bem vindos ao TrybeChat!');
-  // socket.broadcast.emit('message', `${socket.id} Entrou no chat`);
-  // socket.on('disconnect', () => {
-  //   io.emit('message', `${socket.id} Saiu do chat`);
-  // });
-  // Trocar o nickname
+  users.push({ nickname: socket.id.slice(0, 16), socketId: socket.id });
   io.emit('listedUsers', users);
   socket.on('changedNickname', (nickname) => {
     users = users.map((elem) => {
@@ -27,14 +20,7 @@ module.exports = (io) => io.on('connection', (socket) => {
     io.emit('message', `${timeStamp} - ${nickname}: ${chatMessage}`);
   });
   socket.on('disconnect', () => { 
-    users = users.filter((user) => user.socketId !== socket.id); io.emit('listUsers', users);
+    users = users.filter((elem) => elem.socketId !== socket.id); 
+    io.emit('listedUsers', users);
   });
 });
-
-// `<div class="message-data">
-      // <span class="message-data-name"><i class="fa fa-circle online"></i> ${socket.id}</span>
-      // <span class="message-data-time"> ${timeStamp} </span>
-      // </div>
-      // <div class="message my-message">
-      //   ${message}.
-      // </div>` teste
