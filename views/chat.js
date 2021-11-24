@@ -74,3 +74,7 @@ messageText.addEventListener('keyup', (e) => {
 btnSend.addEventListener('click', () => {
   sendMsg();
 });
+
+window.onbeforeunload = () => {
+  socket.disconnect();
+};
