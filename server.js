@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -36,11 +37,12 @@ app.use(
 const nick = [];
 const data = `${moment().format('DD-MM-YYYY')} ${moment().format('LTS')}`;
 io.on('connection', (socket) => { 
-  let socketId = socket.id.substring(socket.id.length - 16); nick.push(socketId);
+  let cryptoNick = socket.id.substring(socket.id.length - 16); 
+  nick.push(cryptoNick);
   // console.log(`conectionnick ${nick}`);
-  console.log(typeof nick);
-  socket.emit('nickId', socketId);
-  socket.broadcast.emit('otherNickId', nick);
+  // console.log(typeof nick);
+  socket.emit('nickId', cryptoNick);
+  io.emit('onlineNicks', nick);
 
   socket.on('message', async ({ nickname, chatMessage }) => { 
     const resp = `${data} - ${nickname}: ${chatMessage}`;
@@ -50,22 +52,23 @@ io.on('connection', (socket) => {
   });
 
   socket.on('changeNick', ({ oldNick, newNick }) => {
-    nick.splice(nick.indexOf(oldNick), 1, newNick); socketId = newNick;
-    console.log('changenick', nick);
-    io.emit('changeNick', { oldNick, newNick });
-    socket.broadcast.emit('otherNickId', nick);
+    nick.splice(nick.indexOf(oldNick), 1, newNick); 
+    cryptoNick = newNick;
+    // console.log('changenick', nick);
+    // io.emit('changeNick', { oldNick, newNick });
+    io.emit('onlineNicks', nick);
   });
 
   socket.on('disconnect', () => { 
-    nick.splice(nick.indexOf(socketId), 1); 
-    socket.broadcast.emit('otherNickId', nick);
+    nick.splice(nick.indexOf(cryptoNick), 1); 
+    io.emit('onlineNicks', nick);
   });
 });
 
 app.get('/', async (req, res) => {
   const arrayMessages = await ChatModel.getAll();
 
-  res.status(200).render('index.ejs', { arrayMessages, nick });
+  res.status(200).render('index.ejs', { arrayMessages });
 });
 
 http.listen(3000, () => console.log('Rodando na porta 3000'));

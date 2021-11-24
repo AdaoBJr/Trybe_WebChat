@@ -42,27 +42,32 @@
         nick.innerText = nickname;
       }
 
-      socket.on('nickId', (socketId) => {
-        setNick(socketId);
-        const li = document.createElement('li');
-        li.setAttribute('data-testid', 'online-user');
-        li.innerText = socketId;
-        li.id=socketId;
-        const messagesUl = document.querySelector('#onlineUsers');
-        messagesUl.prepend(li);
+      function getNick() {
+        const result = JSON.parse(sessionStorage.getItem('nickname'));
+
+        return result;
+      }
+
+      socket.on('nickId', (cryptoNick) => {
+        setNick(cryptoNick);
+        // const li = document.createElement('li');
+        // li.setAttribute('data-testid', 'online-user');
+        // li.innerText = socketId;
+        // li.id=socketId;
+        // const messagesUl = document.querySelector('#onlineUsers');
+        // messagesUl.prepend(li);
       });
 
-      socket.on('otherNickId', (nick) => {
-        const nickname = JSON.parse(sessionStorage.getItem('nickname'));
+      socket.on('onlineNicks', (nick) => {
 
-        nick.splice(nick.indexOf(nickname), 1);
+        nick.splice(nick.indexOf(getNick()), 1);
 
-        nick.unshift(nickname);
+        nick.unshift(getNick());
 
         const messagesUl = document.querySelector('#onlineUsers');
 
         messagesUl.innerText = '';
-        console.log(nick);
+        // console.log(nick);
         nick.forEach((index) => {
         const li = document.createElement('li');
         li.setAttribute('data-testid', 'online-user');
@@ -74,7 +79,7 @@
 
       const btn = document.getElementById('submit');
       btn.addEventListener('click', () => {
-        const nickname = JSON.parse(sessionStorage.getItem('nickname'));
+        const nickname = getNick();
         const chatMessage = document.getElementById('text');
         socket.emit('message', { nickname, chatMessage: chatMessage.value });
         chatMessage.value = '';
@@ -89,30 +94,24 @@
         messagesUl.appendChild(li);
       });
 
-      socket.on('changeNick', ({ oldNick, newNick }) => {
-        const nickList = document.getElementById(oldNick);
-        nickList.innerText = newNick;
-      });
-
       const btnNick = document.getElementById('submitNick');
       btnNick.addEventListener('click', () => {
         const newNick = document.getElementById('nickText');
-        const nickname = JSON.parse(sessionStorage.getItem('nickname'));
-        socket.emit('changeNick', { oldNick: nickname, newNick: newNick.value });
+        const nickname = getNick();
         setNick(newNick.value);
+        socket.emit('changeNick', { oldNick: nickname, newNick: newNick.value });
         newNick.value = '';
       });
+      
+      // socket.on('changeNick', ({ oldNick, newNick }) => {
+      //   const nickList = document.getElementById(oldNick);
+      //   nickList.innerText = newNick;
+      // });
 
       window.onbeforeunload = function(event) {
         socket.disconnect();
       };
 
-      // socket.on('removeNick', ({ socketId }) => {
-      //   const nickList = document.querySelector(`#${socketId}`);
-      //   console.log(socketId);
-      //   const messagesUl = document.querySelector('#onlineUsers');
-      //   messagesUl.removeChild(nickList);
-      // });
     </script>
   </body>
 </html>
