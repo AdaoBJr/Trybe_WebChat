@@ -2,9 +2,20 @@ const socket = window.io();
 
 let nickname = '';
 
-socket.on('connect', () => {
-  nickname = socket.id.substr(0, 16);
+const createNickname = () => {
+  const createdNickname = sessionStorage.getItem('createdNickname');
+  if (createdNickname) {
+    nickname = createdNickname;
+  } else {
+    nickname = socket.id.substr(0, 16);
+  }
+  // socket.nickname = nickname;
+  // // console.log(socket.nickname);
   socket.emit('nickname', nickname);
+};
+
+socket.on('connect', () => {
+  createNickname();
 });
 
 const userForm = document.getElementById('user-form');
@@ -32,7 +43,7 @@ userForm.addEventListener('submit', (e) => {
   socket.emit('newNickname', nicknameInput.value);
   nickname = nicknameInput.value;
   nicknameInput.value = '';
-  // return false;
+  sessionStorage.setItem('createdNickname', nickname);
 });
 
 const newUser = (nick) => {
@@ -50,5 +61,17 @@ const renderUserList = (users) => {
   users.forEach((user) => newUser(user));
 };
 
+const renderMessageList = (messages) => {
+  messages.forEach((message) => {
+    const formatMessage = `${message.timestamp} - ${message.nickname}: ${message.message}`;
+    newMessage(formatMessage);
+  });
+};
+
 socket.on('message', (message) => newMessage(message));
 socket.on('userList', (userList) => renderUserList(userList));
+socket.on('messageList', (messages) => renderMessageList(messages));
+
+// socket.on('disconnect', () => {
+//   socket.emit('removeUser');
+// });
