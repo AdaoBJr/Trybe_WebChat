@@ -13,10 +13,10 @@ function generateNickname(n) {
 }
 
 module.exports = (io) => io.on('connection', async (socket) => {
-  io.emit('nickname', generateNickname(16));
+  io.emit('users', { nickname: generateNickname(16), userID: socket.id });
   
   socket.on('users', (user) => {
-    io.emit('users', user);
+    io.emit('nickname', user);
   });
 
   socket.on('message', async ({ chatMessage, nickname }) => {
