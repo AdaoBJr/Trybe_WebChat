@@ -15,10 +15,10 @@
       <input type="text" id="msg-box" data-testid="message-box" placeholder="Digite sua mensagem"/>
       <button id="send-btn" data-testid="send-button">Enviar Mensagem</button>
     </form>
-    
-    <ul id="userId"></ul>
+
+    <ul id="user-id"></ul>
     <ul id="messages"></ul>
-    <p class="random-nick-element" autocomplete='off'></p>
+    <p class="random-nick-element"></p>
 
     <script>
       const socket = io();
@@ -45,8 +45,8 @@
       }
 
       // Cria lista de usuários e atribui o data testid ao elemento 'li', e exibe a lista de usuários na tela;
-      const onlineUserList = (onlineUsers) => {
-      const userUl = document.querySelector('#userId');
+      const usersList = (onlineUsers) => {
+      const userUl = document.querySelector('#user-id');
       userUl.innerHTML = '';
       onlineUsers.forEach((user) => {
         const li = document.createElement('li');
@@ -77,8 +77,8 @@
       
       findMsgs();
       socket.on('message', (msg) => showMsgOnScreen(msg));
-      socket.on('random', (random) =>  randomNickName.innerText = random);
-      socket.on('onlineUser', (list) => onlineUserList(list));
+      socket.on('randomNickName', (random) =>  randomNickName.innerText = random);
+      socket.on('userOnline', (list) => usersList(list));
     </script>
   </body>
 </html>

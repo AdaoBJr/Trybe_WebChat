@@ -62,19 +62,19 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     usersOnline.splice(usersOnline.indexOf(user), 1);
-    io.emit('onlineUser', usersOnline);
+    io.emit('userOnline', usersOnline);
   });
 
-  socket.emit('random', user);
+  socket.emit('randomNickName', user);
 
-  socket.emit('onlineUser', newUserOnTop(user));
+  socket.emit('userOnline', newUserOnTop(user));
 
   socket.broadcast.emit('onlineUser', usersOnline);
 
   socket.on('nickNameChange', (changedNickName) => { 
     usersOnline.splice(usersOnline.indexOf(user), 1, changedNickName);
     user = changedNickName;
-    io.emit('onlineUser', newUserOnTop(user));
+    io.emit('userOnline', newUserOnTop(user));
   });
 
   socket.on('message', async ({ nickname, chatMessage }) => {
