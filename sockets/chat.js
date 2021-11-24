@@ -1,7 +1,5 @@
 const model = require('../models/message');
 
-// const users = [];
-
 // https://github.com/tryber/sd-010-b-project-talker-manager/pull/34/files
 function generateNickname(n) {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -13,6 +11,14 @@ function generateNickname(n) {
 }
 
 module.exports = (io) => io.on('connection', async (socket) => {
+  const historic = await model.getAllMessage()
+    .then((e) => e.map(({ timestamp, nickname, message }) =>
+    `${timestamp} - ${nickname}: ${message}`));
+
+  console.log('histórico', historic);
+
+  socket.emit('newConnection', historic);
+
   io.emit('users', { nickname: generateNickname(16), userID: socket.id });
   
   socket.on('users', (user) => {

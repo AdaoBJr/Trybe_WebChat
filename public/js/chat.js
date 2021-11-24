@@ -49,3 +49,5 @@ btnNickname.addEventListener('click', () => {
 socket.on('users', (user) => createUser(user));
 socket.on('message', (message) => createMessage(message));
 socket.on('nickname', (newNickname) => updateUser(newNickname));
+socket.on('newConnection', (historic) => historic
+  .forEach((message) => createMessage(message)));
