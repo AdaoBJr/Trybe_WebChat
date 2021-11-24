@@ -7,9 +7,7 @@
     <h1>Chat</h1>
 
     <ul id="onlineUsers">
-      <%nick.forEach((e) => {%>
-        <li data-testid="online-user"><%= e %></li>
-      <%})%>
+     
     </ul>
     
     <div>
@@ -23,9 +21,9 @@
     </div>
 
     <ul id="news">
-      <!-- <%arrayMessages.forEach(({ message, nickname, timestamp }) => {%>
+      <%arrayMessages.forEach(({ message, nickname, timestamp }) => {%>
         <li data-testid="message"><%=`${timestamp} - ${nickname}: ${message}`%></li>
-      <%})%> -->
+      <%})%>
     </ul>
 
     <div>
@@ -64,7 +62,7 @@
         const messagesUl = document.querySelector('#onlineUsers');
 
         messagesUl.innerText = '';
-
+        console.log(nick);
         nick.forEach((index) => {
         const li = document.createElement('li');
         li.setAttribute('data-testid', 'online-user');

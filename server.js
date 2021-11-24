@@ -37,6 +37,8 @@ const nick = [];
 const data = `${moment().format('DD-MM-YYYY')} ${moment().format('LTS')}`;
 io.on('connection', (socket) => { 
   let socketId = socket.id.substring(socket.id.length - 16); nick.push(socketId);
+  // console.log(`conectionnick ${nick}`);
+  console.log(typeof nick);
   socket.emit('nickId', socketId);
   socket.broadcast.emit('otherNickId', nick);
 
@@ -49,8 +51,9 @@ io.on('connection', (socket) => {
 
   socket.on('changeNick', ({ oldNick, newNick }) => {
     nick.splice(nick.indexOf(oldNick), 1, newNick); socketId = newNick;
-    socket.broadcast.emit('otherNickId', nick);
+    console.log('changenick', nick);
     io.emit('changeNick', { oldNick, newNick });
+    socket.broadcast.emit('otherNickId', nick);
   });
 
   socket.on('disconnect', () => { 
