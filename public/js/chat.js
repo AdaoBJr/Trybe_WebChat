@@ -22,27 +22,24 @@ const createUser = (user) => {
   const ul = document.querySelector('#user');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'online-user');
-  li.setAttribute('id', user.nickname);
-  sessionStorage.setItem('nickname', user.nickname);
-  li.innerText = user.nickname;
-  ul.appendChild(li);
+  li.setAttribute('id', user.userID);
   nickname = user.nickname;
+  li.innerText = nickname;
+  ul.appendChild(li);
 };
 
 const updateUser = (newNickname) => {
   console.log(newNickname);
-  const nome = sessionStorage.getItem('nickname');
-  const li = document.getElementById(nome);
-  li.id = newNickname.nickname;
-  li.innerText = newNickname.nickname;
-  sessionStorage.setItem('nickname', newNickname);
+  const li = document.getElementById(newNickname.userID);
+  if (socket.id === newNickname.userID) nickname = newNickname.nickname;
+  li.innerText = newNickname.nickname;  
 };
 
 const btnNickname = document.querySelector('#btnNickname');
 const inputUser = document.querySelector('#inputNickname');
 btnNickname.addEventListener('click', () => {
   nickname = inputUser.value;
-  socket.emit('users', { nickname: inputUser.value });
+  socket.emit('users', { nickname: inputUser.value, userID: socket.id });
   inputUser.value = '';
 });
 

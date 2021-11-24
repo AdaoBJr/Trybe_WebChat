@@ -15,8 +15,6 @@ module.exports = (io) => io.on('connection', async (socket) => {
     .then((e) => e.map(({ timestamp, nickname, message }) =>
     `${timestamp} - ${nickname}: ${message}`));
 
-  console.log('histórico', historic);
-
   socket.emit('newConnection', historic);
 
   io.emit('users', { nickname: generateNickname(16), userID: socket.id });
