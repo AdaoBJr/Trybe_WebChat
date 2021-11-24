@@ -59,7 +59,8 @@
       });
 
       socket.on('onlineNicks', (nick) => {
-
+        console.log('Entrei onlinenicks');
+        
         nick.splice(nick.indexOf(getNick()), 1);
 
         nick.unshift(getNick());
@@ -67,7 +68,7 @@
         const messagesUl = document.querySelector('#onlineUsers');
 
         messagesUl.innerText = '';
-        // console.log(nick);
+      
         nick.forEach((index) => {
         const li = document.createElement('li');
         li.setAttribute('data-testid', 'online-user');
@@ -102,11 +103,6 @@
         socket.emit('changeNick', { oldNick: nickname, newNick: newNick.value });
         newNick.value = '';
       });
-      
-      // socket.on('changeNick', ({ oldNick, newNick }) => {
-      //   const nickList = document.getElementById(oldNick);
-      //   nickList.innerText = newNick;
-      // });
 
       window.onbeforeunload = function(event) {
         socket.disconnect();

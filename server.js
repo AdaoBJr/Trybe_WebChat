@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -36,26 +35,22 @@ app.use(
 
 const nick = [];
 const data = `${moment().format('DD-MM-YYYY')} ${moment().format('LTS')}`;
+
 io.on('connection', (socket) => { 
   let cryptoNick = socket.id.substring(socket.id.length - 16); 
   nick.push(cryptoNick);
-  // console.log(`conectionnick ${nick}`);
-  // console.log(typeof nick);
   socket.emit('nickId', cryptoNick);
   io.emit('onlineNicks', nick);
 
   socket.on('message', async ({ nickname, chatMessage }) => { 
     const resp = `${data} - ${nickname}: ${chatMessage}`;
-    const obj = { message: chatMessage, nickname, timestamp: data };
-    await ChatModel.addMsg(obj);
+    await ChatModel.addMsg({ message: chatMessage, nickname, timestamp: data });
     io.emit('message', resp);
   });
 
   socket.on('changeNick', ({ oldNick, newNick }) => {
     nick.splice(nick.indexOf(oldNick), 1, newNick); 
     cryptoNick = newNick;
-    // console.log('changenick', nick);
-    // io.emit('changeNick', { oldNick, newNick });
     io.emit('onlineNicks', nick);
   });
 
