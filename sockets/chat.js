@@ -10,26 +10,30 @@ const newMessage = (io, socket) => {
   });
 };
 
-const users = [];
+let users = [];
 
-const checkNickname = (nickname) => {
+const checkNickname = (nickname, socket) => {
   if (!users.includes(nickname)) {
-    users.push(nickname);
+    users.push({ name: nickname, id: socket.id });
   }
   return nickname;
 };
 
 const newUser = (io, socket) => {
   socket.on('newNickname', (nickname) => {
-    checkNickname(nickname);
+    users = users.map((user) => {
+      if (user.id === socket.id) {
+        return { ...user, name: nickname };
+      } return user;
+    });
+    // console.log(users);
     io.emit('userList', users);
   });
 };
 
 const startNickname = (io, socket) => {
   socket.on('nickname', (nickname) => {
-    // socket.nickname = nickname;
-    checkNickname(nickname);
+    checkNickname(nickname, socket);
     io.emit('userList', users);
   });
 };
@@ -39,20 +43,17 @@ const getMessages = async (socket) => {
   socket.emit('messageList', messages);
 };
 
-// const disconnectUser = (io, socket) => {
-//   socket.on('removeUser', () => {
-//     users = users.filter((user) => user !== socket.nickname);
-//     io.emit('userList', users);
-//   });
-// };
+const removeUser = (socket) => {
+  users = users.filter((user) => user.id !== socket.id);
+};
 
 module.exports = (io) => io.on('connection', (socket) => {
   newMessage(io, socket);
   newUser(io, socket);
   startNickname(io, socket);
   getMessages(socket);
-  // socket.on('disconnect', () => {
-  //   checkNickname(nickname);
-  // });
-  // disconnectUser(io, socket);
+  socket.on('disconnect', () => {
+    removeUser(socket);
+    io.emit('userList', users);
+  });
 });

@@ -9,8 +9,6 @@ const createNickname = () => {
   } else {
     nickname = socket.id.substr(0, 16);
   }
-  // socket.nickname = nickname;
-  // // console.log(socket.nickname);
   socket.emit('nickname', nickname);
 };
 
@@ -57,8 +55,7 @@ const newUser = (nick) => {
 const renderUserList = (users) => {
   const userList = document.querySelector('#user-list');
   userList.innerHTML = '';
-  // userList.forEach(newUser);
-  users.forEach((user) => newUser(user));
+  users.forEach((user) => newUser(user.name));
 };
 
 const renderMessageList = (messages) => {
@@ -72,6 +69,8 @@ socket.on('message', (message) => newMessage(message));
 socket.on('userList', (userList) => renderUserList(userList));
 socket.on('messageList', (messages) => renderMessageList(messages));
 
-// socket.on('disconnect', () => {
-//   socket.emit('removeUser');
-// });
+socket.on('disconnect', () => {
+  socket.on('userList', (users) => {
+    renderUserList(users);
+  });
+});
