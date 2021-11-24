@@ -5,54 +5,80 @@
   </head>
   <body>
     <h3>TRYBE-Chat</h3>
-    <h5 class="nick-name-random" data-testid="online-user" autocomplete='off'></h5>
-    
-    <form class="nick-name-form" action=''>
-      <input type="text" id="nick-name" data-testid="nickname-box" placeholder="Apelido" autocomplete='off'/>
-      <button id="save-nickname" data-testid="nickname-button">Salvar Apelido</button>
+    <ul id="userId"></ul>
+    <form class="nick-name-form">
+      <input type="text" id="nick-name-box" data-testid="nickname-box" placeholder="Apelido"/>
+      <button id="save-nick-btn" data-testid="nickname-button">Salvar Apelido</button>
     </form>
     
-    <form class="msg-box-form" action=''>
-      <input type="text" id="msg-box-input" data-testid="message-box" placeholder="Digite sua mensagem" autocomplete='off'/>
-      <button id="msg-btn" data-testid="send-button">Enviar mensagem</button>
+    <form class="msg-form">
+      <input type="text" id="msg-box" data-testid="message-box" placeholder="Digite sua mensagem"/>
+      <button id="send-btn" data-testid="send-button">Enviar Mensagem</button>
     </form>
     
+    <ul id="userId"></ul>
     <ul id="messages"></ul>
+    <p class="random-nick-element" autocomplete='off'></p>
 
     <script>
-      const socketIO = io();
-      const msgForm = document.querySelector('.msg-box-form');
-      const msgInput = document.querySelector('#msg-box-input');
-      const nickName = document.querySelector('#nick-name');
-      const randomNick = document.querySelector('.nick-name-random');
+      const socket = io();
+      const msgForm = document.querySelector('.msg-form');
+      const msgInput = document.querySelector('#msg-box');
+      const nickInput = document.querySelector('#nick-name-box');
+      const randomNickName = document.querySelector('.random-nick-element');     
       msgForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        const nickname =  randomNick.innerText;
+        const nickname =  randomNickName.innerText;
         const chatMessage = msgInput.value;
-        socketIO.emit('message', { nickname, chatMessage });
+
+        socket.emit('message', { nickname, chatMessage });
         msgInput.value = '';
-        return false;
       });
 
-      const createMessage = (msg) => {
+      // Cria mensagem com o que for digitado no input de mensagens, ao clicar no botão `Enviar mensagem`. Cria um elemento 'li' e adiciona ao elemento 'ul' que tem id='messages', e exibe na tela do usuário;
+      const showMsgOnScreen = (msg) => {
         const msgsList = document.querySelector('#messages');
-        const li = document.createElement('li');
-        li.setAttribute("data-testid", "message")
-        li.innerText = msg;
-        msgsList.appendChild(li);
+        const list = document.createElement('li');
+        list.setAttribute("data-testid", "message")
+        list.innerText = msg;
+        msgsList.appendChild(list);
       }
-      
-      randomNick.innerText = randomizeNickName(16);
-      const chosenNickName = document.querySelector('#save-nickname');
-      chosenNickName.addEventListener('click', (event)=> {
+
+      // Cria lista de usuários e atribui o data testid ao elemento 'li', e exibe a lista de usuários na tela;
+      const onlineUserList = (onlineUsers) => {
+      const userUl = document.querySelector('#userId');
+      userUl.innerHTML = '';
+      onlineUsers.forEach((user) => {
+        const li = document.createElement('li');
+        li.setAttribute("data-testid", "online-user" );
+        li.innerText = user;
+        userUl.appendChild(li)
+      });
+      }
+
+      // Manipula 'salva' a troca de apelido ao clicar no botão Salvar apelido
+      const handleNickChoice = document.querySelector('#save-nick-btn');
+      handleNickChoice.addEventListener('click', (event)=> {
         event.preventDefault();
-      randomNick.innerText = nickName.value;
-      nickName.value = '';
-      } )
+       randomNickName.innerText = nickInput.value;
 
-      socketIO.on('message', (msg) => createMessage(msg));
-      socketIO.on('random', (randomNickName) => randomNick.innerText = random);
+       socket.emit('nickNameChange', nickInput.value);
+       nickInput.value = '';
+      });
+
+      // Busca as mensagens e as exibe na tela do usuário
+      const findMsgs = async () => {
+        const fetchMsg = await fetch('http://localhost:3000/messages');
+        const jsonMsg = await fetchMsg.json();
+        return jsonMsg.forEach((messages) => {
+          showMsgOnScreen(messages.message);
+        });
+      };
+      
+      findMsgs();
+      socket.on('message', (msg) => showMsgOnScreen(msg));
+      socket.on('random', (random) =>  randomNickName.innerText = random);
+      socket.on('onlineUser', (list) => onlineUserList(list));
     </script>
-
   </body>
-</html> 
+</html>
