@@ -55,6 +55,14 @@ const newUser = (nick) => {
 const renderUserList = (users) => {
   const userList = document.querySelector('#user-list');
   userList.innerHTML = '';
+  users.sort((a, b) => {
+    if (a.id === socket.id) return -1;
+    if (b.id === socket.id) return 1;
+    return 0;
+  });
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+  // > 0 sort b defore a | < 0 sort a before b | === 0 original order a and b
+
   users.forEach((user) => newUser(user.name));
 };
 
