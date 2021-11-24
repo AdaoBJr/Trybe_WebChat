@@ -34,8 +34,7 @@ btnNickname.addEventListener('click', () => {
   inputUser.value = '';
 });
 
+socket.on('nickname', (user) => createUser(user));
 socket.on('message', (message) => createMessage(message));
 
 socket.on('users', (user) => createUser(user));
-
-socket.on('connected', () => console.log('char.js'));

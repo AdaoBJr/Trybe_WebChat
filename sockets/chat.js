@@ -2,18 +2,25 @@ const model = require('../models/message');
 
 // const users = [];
 
+// https://github.com/tryber/sd-010-b-project-talker-manager/pull/34/files
+function generateNickname(n) {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let newNickname = '';
+  for (let i = 0; i < n; i += 1) {
+    newNickname += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return newNickname;
+}
+
 module.exports = (io) => io.on('connection', async (socket) => {
-  console.log('estou aqui conectado');
+  io.emit('nickname', generateNickname(16));
+  
   socket.on('users', (user) => {
-    // console.log(user);
     io.emit('users', user);
   });
 
   socket.on('message', async ({ chatMessage, nickname }) => {
-    // console.log(chatMessage);
     const response = await model.createMessage({ chatMessage, nickname });
-    // console.log('erro', chatMessage);
-    console.log('estou no Socket', response);
     io.emit('message', response);    
   });
 });
