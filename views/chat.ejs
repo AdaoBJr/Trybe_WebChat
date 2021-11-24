@@ -34,7 +34,7 @@
         </div>
         <button
           data-testid="nickname-button"
-          class="button is-small is-rounded"
+          class="button is-light is-small is-rounded send-button"
           id="send-nickname-button"
           type="button"
         >
@@ -53,6 +53,9 @@
         </div>
       </div>
         <div id="message" class="message-container">
+          <% messages.forEach((msg) => { %>
+            <div data-testid="message" class="message"><%= msg %></div>
+          <% }) %>
         </div>
       <div id="chat-send-message" class="chat-send-message">
         <div id="chat-send-itens" class="chat-send-itens">
@@ -74,7 +77,7 @@
           </span>
           <button
             data-testid="send-button"
-            class="button is-small is-rounded send-button"
+            class="button is-light is-small is-rounded send-button"
             id="send-button"
             type="button"
           >

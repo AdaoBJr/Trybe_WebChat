@@ -11,8 +11,9 @@ const io = require('socket.io')(http, {
   },
 });
 
-// app.set('view engine', 'ejs');
-// app.set('views', './views');
+const controller = require('./controllers/chatControllers');
+
+app.set('view engine', 'ejs');
 
 app.use(express.static(`${__dirname}/views`));
 
@@ -22,8 +23,12 @@ require('./sockets/chat')(io);
 //   res.status(200).render('chat');
 // });
 
-app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/views/chat.html`);
+app.get('/', async (_req, res) => {
+  // res.sendFile(`${__dirname}/views/chat.html`);
+  const getMessages = await controller.getAllMessages();
+  const messages = getMessages.map(({ message, nickname, timeStamp }) => 
+  `${timeStamp} - ${nickname}: ${message}`);
+  res.render('chat', { messages });
  });
 
 // app.get('/', (req, res) => {

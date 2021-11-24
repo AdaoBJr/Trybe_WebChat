@@ -1,4 +1,5 @@
 const moment = require('moment');
+const controller = require('../controllers/chatControllers');
 
 let users = [];
 
@@ -21,7 +22,8 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
   // Escutando mensagem dos usuários
   const timeStamp = moment().format('DD-MM-yyyy LTS');
-  socket.on('message', ({ chatMessage, nickname }) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    await controller.saveMessage({ message: chatMessage, nickname, timeStamp });
     io.emit('message', `${timeStamp} - ${nickname}: ${chatMessage}`);
   });
   socket.on('disconnect', () => { 

@@ -1,14 +1,15 @@
 const model = require('../models/chatModels');
 
-const saveMessage = async (message) => {
-  await model.saveMessage(message);
+const saveMessage = async ({ message, nickname, timeStamp }) => {
+  await model.saveMessage({ message, nickname, timeStamp });
 };
 
-const getMessages = async () => {
-  await model.getMessages();
+const getAllMessages = async () => {
+  const messages = await model.getMessages();
+  return messages;
 };
 
 module.exports = {
   saveMessage,
-  getMessages,
+  getAllMessages,
 };
