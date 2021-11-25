@@ -7,6 +7,10 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 const http = require('http').createServer(app);
+
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
 const io = require('socket.io')(http, {
   cors: {
     origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:3001/'],
