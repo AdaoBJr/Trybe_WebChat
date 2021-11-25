@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 });
   
 require('./controllers/messageSocket')(io);
+require('./controllers/userSocket')(io);
 
 http.listen(PORT, () => {
   console.log(`Online na porta ${PORT}`);

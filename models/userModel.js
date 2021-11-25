@@ -2,28 +2,53 @@
 
 const connection = require('./connection');
 
-const createUser = async ({ name }) => {
+const addUserToList = async ({ socketId, nickname }) => {
   try {
     const userColletion = await connection()
-    .then((db) => db.collection('users'));
-  
-    const user = await userColletion.insertOne({ name });
-  
-    return user;
+      .then((db) => db.collection('users'));
+    const name16 = nickname || socketId.slice(0, 16);
+    await userColletion.insertOne({ socketId, nickname: name16 });
+    console.log(name16);
+    return name16;
   } catch (error) {
     console.log(error);
   }
 };
 
-// const getAll = async () => {
-//   const productsCollection = await mongoConnection
-//     .connection()
-//     .then((db) => db.collection('products'));
+const removeUserFromOnlineList = async ({ socketId }) => {
+  const userColletion = await connection()
+  .then((db) => db.collection('users'));
 
-//   const products = await productsCollection.find({});
+  await userColletion.deleteOne({ socketId });
+};
 
-//   return products;
-// };
+const getAllUsers = async () => {
+  const userColletion = await connection()
+  .then((db) => db.collection('users'));
+
+  const users = await userColletion.find({}).toArray();
+
+  return users;
+};
+
+const setUserNickName = async ({ socketId, nickname }) => {
+  const userColletion = await connection()
+  .then((db) => db.collection('users'));
+
+  const user = await userColletion.findOne({ socketId });
+
+  if (!user) {
+    await addUserToList({ socketId, nickname });
+
+    return true; 
+  }
+  await userColletion.updateOne(
+    { socketId }, 
+    { $set: { nickname } },
+  );
+  
+  return true;
+};
 
 // const updateCurrentOffer = async (id = '617717d7d23ede171536dc55') => {
 //   const productsCollection = await mongoConnection
@@ -44,5 +69,8 @@ const createUser = async ({ name }) => {
 // };
 
 module.exports = {
-  createUser,
+  addUserToList,
+  removeUserFromOnlineList,
+  getAllUsers,
+  setUserNickName,
 };
