@@ -32,6 +32,15 @@ const addUser = (id, nickname) => {
   ];
 };
 
+const setMessage = (message) => {
+  const { nickname, chatMessage } = message;
+  // date & time source: https://phoenixnap.com/kb/how-to-get-the-current-date-and-time-javascript
+  const today = new Date();
+  const date = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
+  const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+  return `${date} ${time} - ${nickname}: ${chatMessage}`;
+};
+
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
 
@@ -46,14 +55,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (message) => {
-    const { nickname, chatMessage } = message;
-    // date & time source: https://phoenixnap.com/kb/how-to-get-the-current-date-and-time-javascript
-    const today = new Date();
-    const date = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
-    const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-    const messageData = `${date} ${time} - ${nickname}: ${chatMessage}`;
-
-    io.emit('message', messageData);
+    io.emit('message', setMessage(message));
   });
 });
 
