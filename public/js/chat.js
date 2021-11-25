@@ -30,8 +30,9 @@ const firstLoad = ({ chatMessages, newNickname }) => {
     const setNickName = document.querySelector(nickNameButtonName);
     const userNickName = sessionStorage.getItem('nickname');
     if (!userNickName) {
-      setNickName.innerHTML = newNickname;
-      sessionStorage.setItem('nickname', newNickname);
+      const nick16 = newNickname.slice(0, 16);
+      setNickName.innerHTML = nick16;
+      sessionStorage.setItem('nickname', nick16);
     } else {
       setNickName.innerHTML = userNickName;
     }
