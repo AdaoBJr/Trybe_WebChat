@@ -17,13 +17,14 @@
 </body>
 
 <script>
-  const socket = io("http://localhost:3001/");
+  const socket = io("http://localhost:3000/");
   const button = document.querySelector('#newMessage');
 
   
-  const setMessage = (message) => {
+  const setMessage = (messages) => {
     const text = document.querySelector('#message');
-    text.innerHTML = message.chatMessage
+    console.log(messages);
+    text.innerHTML = messages;
   }
 
   socket.on('message', (message)=> {
