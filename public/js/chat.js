@@ -1,25 +1,25 @@
 /* eslint-disable max-lines-per-function */
 const socket = window.io();
-const nickNameButtonName = '#showUserNickName';
 const sendMessageButton = document.querySelector('#newMessage');
-const saveNickButton = document.querySelector('#saveNick');
 const testId = 'data-testid';
 
-sendMessageButton.addEventListener('click', () => {
-  const nickname = document.querySelector(nickNameButtonName).innerHTML;
+sendMessageButton.addEventListener('click', (e) => {
+  e.preventDefault();
   const newUserMessage = document.querySelector('#newUserMessage');
-  const message = { chatMessage: newUserMessage.value, nickname };
+  const message = { chatMessage: newUserMessage.value };
   socket.emit('message', message);
   newUserMessage.value = '';
   return false;
 });
 
-saveNickButton.addEventListener('click', () => {
-  const newNickname = document.querySelector('#userName').value;
-  const nickNameBox = document.querySelector(nickNameButtonName);
-  sessionStorage.setItem('nickname', newNickname);
-  nickNameBox.innerHTML = newNickname;
+const form = document.querySelector('#form');
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const newNickname = document.querySelector('#nickname-box').value;
   socket.emit('setUserName', newNickname);
+  newNickname.value = '';
+  sessionStorage.setItem('nickname', newNickname);
+  return false;
 });
 
 const setMessage = (message) => {
@@ -43,8 +43,6 @@ const showLoggedUsers = (users) => {
 };
 
 const setData = ({ nickname }) => {
-    const setNickName = document.querySelector(nickNameButtonName);
-    setNickName.innerHTML = nickname;
     sessionStorage.setItem('nickname', nickname);
 };
 

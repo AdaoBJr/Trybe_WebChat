@@ -23,8 +23,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.status(200).render('index');
 });
-  
-require('./controllers/messageSocket')(io);
+
 require('./controllers/userSocket')(io);
 
 http.listen(PORT, () => {

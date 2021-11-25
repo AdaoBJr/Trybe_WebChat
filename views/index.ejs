@@ -12,10 +12,10 @@
 <body>
   <div>
     <div>
-    <span id="showUserNickName"></span>
-    <label for="userName">Username: </label>
-    <input id="userName" type="text" data-testid="nickname-box"/>
-    <button data-testid="nickname-button" id="saveNick">Salvar</button>
+    <form id="form">
+      <input type="text" name="nickname-box" id="nickname-box" data-testid="nickname-box">
+      <button  data-testid="nickname-button" id="saveNick">Salvar</button>
+    </form>
     <label for="newUserMessage">Message: </label>
     <input id="newUserMessage" type="text" data-testid="message-box"/>
     <button type="button" id="newMessage" data-testid="send-button">Send</button>
