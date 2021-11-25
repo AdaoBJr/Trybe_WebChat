@@ -9,10 +9,26 @@
 </head>
 <body>
   <main>
-    <h1>Notícias</h1>
+    <section>
+      <form>
+        <input type="text" name="nickname-box" id="nickname-box" value=<%=username%> data-testid="nickname-box">
+
+        <button type="submit" id="nickname-button" data-testid="nickname-button">Salvar</button>
+
+        <ul id="online-user" data-testid="online-user"></ul>
+
+        <ul id="message">
+          <%chatHistory.forEach((message) => {%>
+            <li data-testid="message"><%=message%></li>
+          <%})%>
+        </ul>
+
+        <input type="text" name="message-box" id="message-box" data-testid="message-box">
+
+        <button type="submit" data-testid="send-button">Enviar</button>
+      </form>
+    </section>
   </main>
-  <script>
-    const socket = io();
-  </script>
+  <script type="text/javascript" src="/script.js"></script>
 </body>
 </html>
