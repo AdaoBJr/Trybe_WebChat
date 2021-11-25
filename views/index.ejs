@@ -12,7 +12,12 @@
     <input class="input-nickname" data-testid="nickname-box" type="text" autocomplete="off" placeholder="Nickname here">
     <button data-testid="nickname-button">Change Nick</button>
   </form>
-  <ul class="messages"></ul>
+  <ul class="users-on"></ul>
+  <ul class="messages">
+    <li>Coffee</li>
+    <li>Tea</li>
+    <li>Milk</li>
+  </ul>
   <form class="form" action="">
     <div id="display-nick"></div>
     <input class="input" data-testid="message-box" autocomplete="off" />
@@ -32,14 +37,15 @@
       let randomNick = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10); //source: https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
       const displayNick = document.querySelector('#display-nick');
       const span = document.createElement('span');
-      span.setAttribute('data-testid', 'online-user');
       span.setAttribute('id', 'nickname');
       span.textContent = randomNick;
       displayNick.appendChild(span);
+      socket.emit('userlogedin', randomNick);
     };
 
     formNick.addEventListener('submit', (e) => {
       e.preventDefault();
+      /* onde ficam armazenados esses users para que eu possa organizá-los no na tela como eu quiser? */
       if (inputNick.value) {
         let nickDisplayed = document.querySelector('#nickname');
         nickDisplayed.textContent = inputNick.value;
@@ -63,6 +69,22 @@
       li.setAttribute('data-testid', 'message')
       messages.appendChild(li);
       window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    socket.on('userloged', (usersLogedIn) => {
+      console.log('USERS LOGED:', usersLogedIn);
+      let usersOn = document.querySelector('.users-on');
+      console.log('BEFORE: ', usersOn);
+      usersOn.innerHTML = "";
+      console.log('AFTER: ', usersOn);
+
+      usersLogedIn.map((user) => {
+        const li = document.createElement('li');
+        console.log(user.nickname);
+        li.textContent = user.nickname;
+        li.setAttribute('data-testid', 'online-user');
+        usersOn.appendChild(li);
+      });
     });
   </script>
 </body>

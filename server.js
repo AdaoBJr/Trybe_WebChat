@@ -5,6 +5,8 @@ const { Server } = require('socket.io');
 
 const ChatController = require('./controllers/chatController');
 
+let usersLogedIn = [];
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -16,10 +18,31 @@ app.use('/views', express.static('views'));
 
 app.get('/', ChatController.chat);
 
+const removeUser = (id) => {
+  usersLogedIn = usersLogedIn.filter((user) => user.id !== id);
+};
+
+const addUser = (id, nickname) => {
+  usersLogedIn = [
+    ...usersLogedIn,
+    {
+      id,
+      nickname,
+    },
+  ];
+};
+
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
+
+  socket.on('userlogedin', (nickname) => {
+    addUser(socket.id, nickname);
+    io.emit('userloged', usersLogedIn);
+  });
+
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    removeUser(socket.id);
+    io.emit('userloged', usersLogedIn);
   });
 
   socket.on('message', (message) => {
