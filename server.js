@@ -12,8 +12,7 @@ const io = require('socket.io')(socketIoServer, {
   },
 });
 
-const { newMessageService } = require('./services/webchat');
-const { requestAllMessages } = require('./controllers/webchat');
+const { newMessageService, allMessagesService } = require('./services/webchat');
 
 const dateFormater = () => {
   const today = new Date();
@@ -52,11 +51,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async (req, res) => {
-  const messages = await requestAllMessages();
+  const messages = await allMessagesService();
 
   res.render('index', { messages });
 });
-
-app.get('/teste', requestAllMessages);
 
 socketIoServer.listen(PORT, () => console.log(`listening on port ${PORT}`));
