@@ -23,8 +23,8 @@ const createUser = (user) => {
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'online-user');
   li.setAttribute('id', user.userID);
-  nickname = user.nickname;
-  li.innerText = nickname;
+  if (socket.id === user.userID) nickname = user.nickname;
+  li.innerText = user.nickname;
   ul.appendChild(li);
 };
 
@@ -48,3 +48,5 @@ socket.on('message', (message) => createMessage(message));
 socket.on('nickname', (newNickname) => updateUser(newNickname));
 socket.on('newConnection', (historic) => historic
   .forEach((message) => createMessage(message)));
+socket.on('userOnline', (userList) => userList
+  .forEach((user) => createUser(user)));

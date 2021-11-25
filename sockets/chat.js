@@ -10,6 +10,8 @@ function generateNickname(n) {
   return newNickname;
 }
 
+const userList = [];
+
 module.exports = (io) => io.on('connection', async (socket) => {
   const historic = await model.getAllMessage()
     .then((e) => e.map(({ timestamp, nickname, message }) =>
@@ -17,7 +19,12 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   socket.emit('newConnection', historic);
 
-  io.emit('users', { nickname: generateNickname(16), userID: socket.id });
+  socket.emit('userOnline', userList);
+
+  const usuario = { nickname: generateNickname(16), userID: socket.id };
+  userList.push(usuario);
+
+  io.emit('users', usuario);
   
   socket.on('users', (user) => {
     io.emit('nickname', user);
@@ -27,4 +34,6 @@ module.exports = (io) => io.on('connection', async (socket) => {
     const response = await model.createMessage({ chatMessage, nickname });
     io.emit('message', response);    
   });
+
+  // socket.on('disconnect', () => io.emit('disconnect', socket.id));
 });
