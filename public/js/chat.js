@@ -23,6 +23,7 @@ const setMessage = (message) => {
   const messageBox = document.querySelector('#messageBox');
   const li = document.createElement('li');
   li.innerHTML = message;
+  li.setAttribute('data-testid', 'message');
   messageBox.appendChild(li);
 };
 
