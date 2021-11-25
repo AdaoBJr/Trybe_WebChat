@@ -23,7 +23,6 @@ describe('1 - Crie um back-end para conexão simultânea de clientes e troca de 
     client3 = io.connect(BASE_URL, { reconnection: false });
 
     client1.emit('message', { chatMessage, nickname });
-    //console.log('#####################\n\n', message, '\n\n#####################');
 
     client1.on('message', (message) => {
       expect(message.includes(chatMessage)).toBeTruthy();

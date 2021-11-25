@@ -1,11 +1,11 @@
 /* eslint-disable max-lines-per-function */
 const socket = window.io();
-const sendMessageButton = document.querySelector('#newMessage');
 const testId = 'data-testid';
 
-sendMessageButton.addEventListener('click', (e) => {
+const messageForm = document.querySelector('#form2');
+messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  const newUserMessage = document.querySelector('#newUserMessage');
+  const newUserMessage = document.querySelector('#message-box');
   const message = { chatMessage: newUserMessage.value };
   socket.emit('message', message);
   newUserMessage.value = '';
@@ -17,7 +17,6 @@ form.addEventListener('submit', (e) => {
   e.preventDefault();
   const newNickname = document.querySelector('#nickname-box').value;
   socket.emit('setUserName', newNickname);
-  newNickname.value = '';
   sessionStorage.setItem('nickname', newNickname);
   return false;
 });
@@ -31,10 +30,14 @@ const setMessage = (message) => {
 };
 
 const showLoggedUsers = (users) => {
+  const currentUser = sessionStorage.getItem('nickname');
+  const usersToArray = Object.values(users).reverse();
+  usersToArray.splice(usersToArray.indexOf(currentUser), 1);
+  usersToArray.unshift(currentUser);
+  console.log(usersToArray);
   const userList = document.querySelector('#loggedUsersList');
   userList.innerHTML = '';
-  Object.values(users).reverse().forEach((user) => {
-    console.log(user);
+  usersToArray.forEach((user) => {
     const li = document.createElement('li');
     li.setAttribute(testId, 'online-user');
     li.innerHTML = user;
@@ -43,7 +46,7 @@ const showLoggedUsers = (users) => {
 };
 
 const setData = ({ nickname }) => {
-    sessionStorage.setItem('nickname', nickname);
+  sessionStorage.setItem('nickname', nickname);
 };
 
 const loadData = (chatMessages) => {

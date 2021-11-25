@@ -11,14 +11,16 @@
 
 <body>
   <div>
+    <!-- <h1 id="online-user" data-testid="online-user"></h1> -->
     <div>
     <form id="form">
       <input type="text" name="nickname-box" id="nickname-box" data-testid="nickname-box">
       <button  data-testid="nickname-button" id="saveNick">Salvar</button>
     </form>
-    <label for="newUserMessage">Message: </label>
-    <input id="newUserMessage" type="text" data-testid="message-box"/>
-    <button type="button" id="newMessage" data-testid="send-button">Send</button>
+    <form id="form2">
+      <input type="text" name="message-box" id="message-box" data-testid="message-box">
+      <button  data-testid="send-button" id="send-button">Send</button>
+    </form>
   </div>
   <div>
     <ul id='messageBox'/>
