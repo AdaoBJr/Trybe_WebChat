@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="./style.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+</head>
+
+<body>
+  <div>
+    <h1 id='message'>0</h1>
+    <button id='newMessage'>Offer</button>
+  </div>
+</body>
+
+<script>
+  const socket = io("http://localhost:3001/");
+  const button = document.querySelector('#newMessage');
+
+  
+  const setMessage = (message) => {
+    const text = document.querySelector('#message');
+    text.innerHTML = message.chatMessage
+  }
+
+  socket.on('message', (message)=> {
+    setMessage(message)
+  })
+
+  button.addEventListener('click', (e) => {
+    const message = { chatMessage: 'teste', nickname: 'Boni' }
+    socket.emit('message', message);
+    return false;
+  });
+</script>
+
+</html>
