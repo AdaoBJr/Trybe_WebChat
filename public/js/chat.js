@@ -19,3 +19,4 @@ button.addEventListener('click', () => {
 });
 
 socket.on('message', (message) => setMessage(message));
+socket.on('connected', (messages) => setMessage(messages));

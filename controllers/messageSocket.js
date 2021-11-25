@@ -1,14 +1,16 @@
-const moment = require('moment');
-const { addMessageToChat } = require('../models/messages');
+const { addMessageToChat, getAllMessages } = require('../models/messages');
 
 module.exports = (io) => {
-  io.on('connection', (socket) => {
-    // console.log(`Connected user: ${socket.id}`);
+  io.on('connection', async (socket) => {
+    console.log(`Connected user: ${socket.id}`);
+
+    const chatMessages = await getAllMessages();
+    socket.emit('connected', chatMessages);
+
     socket.on('message', async ({ chatMessage, nickname }) => {
-      const date = moment().format('DD-MM-YYYY HH:mm:ss a');
-      const message = `${date} - ${nickname}: ${chatMessage}`;
-      await addMessageToChat(message);
-      io.emit('message', message);
+      const newMessage = await addMessageToChat({ chatMessage, nickname });
+
+      io.emit('message', newMessage);
     });
   });
 };
