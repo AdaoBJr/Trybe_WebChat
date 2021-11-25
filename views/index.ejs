@@ -11,31 +11,15 @@
 
 <body>
   <div>
-    <h1 id='message'>0</h1>
-    <button id='newMessage'>Offer</button>
+    <label for="userName">Username: </label>
+    <input id="userName" type="text"/>
+    <label for="newUserMessage">Message: </label>
+    <input id="newUserMessage" type="text"/>
+    <ul id='messageBox'/>
+    <button id='newMessage'>Send</button>
   </div>
 </body>
 
-<script>
-  const socket = io("http://localhost:3000/");
-  const button = document.querySelector('#newMessage');
-
-  
-  const setMessage = (messages) => {
-    const text = document.querySelector('#message');
-    console.log(messages);
-    text.innerHTML = messages;
-  }
-
-  socket.on('message', (message)=> {
-    setMessage(message)
-  })
-
-  button.addEventListener('click', (e) => {
-    const message = { chatMessage: 'teste', nickname: 'Boni' }
-    socket.emit('message', message);
-    return false;
-  });
-</script>
+<script src='./js/chat.js'></script>
 
 </html>
