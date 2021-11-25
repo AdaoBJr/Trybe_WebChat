@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>trybeChat</title>
+  </head>
+  <body>
+    <form id="form-nickname">
+      <input
+        type="text"
+        name="nickname-box"
+        class="nickname-box"
+        data-testid="nickname-box"
+        placeholder="Digite seu nickname"
+      />
+      <button
+        type="submit"
+        name="nickname-button"
+        class="btn btn-nickname"
+        data-testid="nickname-button"
+      >
+        Salvar nickname
+      </button>
+    </form>
+
+    <ul class="all-users"></ul>
+
+    <div class="messages"></div>
+
+    <form id="form-chat">
+      <input
+        type="text"
+        name="message-box"
+        class="message-box"
+        data-testid="message-box"
+        placeholder="Digite sua mensagem"
+      />
+      <button
+        type="submit"
+        name="send-button"
+        class="btn btn-send"
+        data-testid="send-button"
+      >
+        Enviar
+      </button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="scripts.js"></script>
+  </body>
+</html>
