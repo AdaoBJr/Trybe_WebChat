@@ -11,12 +11,14 @@
 
 <body>
   <div>
+    <span id="showUserNickName" data-testid="online-user"></span>
     <label for="userName">Username: </label>
-    <input id="userName" type="text"/>
+    <input id="userName" type="text" data-testid="online-user"/>
+    <button data-testid="nickname-button" id="saveNick">save nick</button>
     <label for="newUserMessage">Message: </label>
-    <input id="newUserMessage" type="text"/>
+    <input id="newUserMessage" type="text" data-testid="message-box"/>
     <ul id='messageBox'/>
-    <button id='newMessage'>Send</button>
+    <button type="button" id="newMessage" data-testid="send-button">Send</button>
   </div>
 </body>
 

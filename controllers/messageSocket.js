@@ -5,7 +5,7 @@ module.exports = (io) => {
     console.log(`Connected user: ${socket.id}`);
 
     const chatMessages = await getAllMessages();
-    socket.emit('connected', chatMessages);
+    socket.emit('connected', { chatMessages, newNickname: socket.id });
 
     socket.on('message', async ({ chatMessage, nickname }) => {
       const newMessage = await addMessageToChat({ chatMessage, nickname });
