@@ -19,9 +19,9 @@
     <button type="submit" id="send" data-testid="send-button">Enviar mensagem</button>
   </form>
   <ul id="messages" data-testid="message-box">
-    <% messages.forEach((message)=> { %>
+    <% messages.forEach(({timestamp, nickname, message})=> { %>
       <li data-testid="message">
-        <%= message %>
+        <%= `${timestamp} - ${nickname}: ${message}` %>
       </li>
       <% }) %>
   </ul>
@@ -60,10 +60,6 @@
       const author = document.getElementById('nickname');
       newUser.innerText = author.value
     })
-
-    // nicknameInput.addEventListener('keyup', (event) => {
-    //   newUser.innerText = event.target.value
-    // })
 
     socket.on('message', (message) => {
       const messagesDiv = document.getElementById('messages')

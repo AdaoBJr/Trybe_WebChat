@@ -12,6 +12,9 @@ const io = require('socket.io')(socketIoServer, {
   },
 });
 
+const { newMessageService } = require('./services/webchat');
+const { requestAllMessages } = require('./controllers/webchat');
+
 const dateFormater = () => {
   const today = new Date();
   const dateOptions = {
@@ -33,13 +36,11 @@ function toFormatMessage(chatMessage, nickname) {
   return `${dateFormater()} ${hourFormater()} - ${nickname}: ${chatMessage}`;
 }
 
-const messages = [];
-
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log(`Socket conectado com ID: ${socket.id}`);
-  socket.on('message', ({ chatMessage, nickname }) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    await newMessageService(chatMessage, nickname);
     const messageFormated = toFormatMessage(chatMessage, nickname);
-    messages.push(messageFormated);
     io.emit('message', messageFormated);
   });
 });
@@ -50,8 +51,12 @@ app.set('views', './views');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+  const messages = await requestAllMessages();
+
   res.render('index', { messages });
 });
+
+app.get('/teste', requestAllMessages);
 
 socketIoServer.listen(PORT, () => console.log(`listening on port ${PORT}`));
