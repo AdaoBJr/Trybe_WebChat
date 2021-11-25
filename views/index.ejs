@@ -26,6 +26,11 @@
     <input type="text" data-testid="message-box" name="inputMessage" value="" class="chatMessage" placeholder="Escreva aqui...">
     <div class="messages">
     <button data-testid="send-button" type="submit">Enviar</button>
+    <div class="chat">
+      <%messages.forEach(({ nickname, chatMessage, timestamp }) => {%>
+        <li class="semStyle" data-testid="message"><%=`${timestamp} - ${nickname}: ${chatMessage}`%></li>
+      <%})%>
+    </div>
   </form>
 
 </body>

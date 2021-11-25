@@ -15,6 +15,7 @@ form.addEventListener('submit', (event) => {
       nickname: inputRandomNickname,
       chatMessage: inputMessage,
     };
+    
     socket.emit('message', sendMessage);
   }
 });

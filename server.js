@@ -6,14 +6,6 @@ const PORT = 3000;
 const app = express();
 const http = require('http').createServer(app);
 
-const formattedDate = () => {
-  const date = new Date();
-  const currentDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-  const fullHour = `${date.getHours()}:${date.getMinutes()}`;
-  const pmOrAm = fullHour < 12 ? 'AM' : 'PM';
-  return `${currentDate} ${fullHour} ${pmOrAm}`;
-};
-
 // https://www.youtube.com/watch?v=Hr5pAAIXjkA&ab_channel=DevPleno
 const randomString = (length) => {
   let nickname = '';
@@ -32,29 +24,39 @@ const io = require('socket.io')(http, {
   },
 });
 
+const { formattedDateAndHour } = require('./helpers/dateAndHour');
+const chatController = require('./controller/chatController');
+
 let message = [];
 io.on('connection', (socket) => {
   let newNickname = randomString(16);
   socket.emit('login', newNickname);
   socket.broadcast.emit('newLogin', { usuario: newNickname });
-
+  
   socket.on('nick', (nick) => {
     newNickname = nick;
     io.emit('newNick', nick);
   });
-
-  socket.on('message', (data) => {
-    message = `${formattedDate()} - ${data.nickname}: ${data.chatMessage}`;
+  
+  socket.on('message', async (data) => {
+    await chatController.saveMessages(data);
+    message = `${formattedDateAndHour()} - ${data.nickname}: ${data.chatMessage}`;
     io.emit('message', message);
   });
 });
+
+const getMessages = async () => {
+  const allMessages = await chatController.getAllMessages();
+  console.log('server all messages', allMessages);
+  return allMessages;
+};
 
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
 
-app.use('/', (_req, res) => {
-  res.render('index', { message });
+app.get('/', async (_req, res) => {
+  res.render('index', { messages: await getMessages() });
 });
 
 http.listen(PORT, () => {
