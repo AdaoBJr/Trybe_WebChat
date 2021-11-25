@@ -1,6 +1,5 @@
 // Faça seu código aqui
 const express = require('express');
-const cors = require('cors');
 require('dotenv');
 
 const PORT = process.env.PORT || 3000;
@@ -11,14 +10,13 @@ const http = require('http').createServer(app);
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-const io = require('socket.io')(http, {
-  cors: {
-    origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:3001/'],
-    methods: ['GET', 'POST'],
-  } });
+const io = require('socket.io')(http);
 
 app.use(express.json());
-app.use(cors());
+
+app.get('/', (req, res) => {
+  res.status(200).render('index');
+});
   
 require('./controllers/messageSocket')(io);
 
