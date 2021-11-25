@@ -1,11 +1,10 @@
 // const { ObjectId } = require('mongodb');
 
-const mongoConnection = require('./connection');
+const connection = require('./connection');
 
 const addMessageToChat = async ({ chatMessage, nickname }) => {
   try {
-    const userColletion = await mongoConnection
-    .connection()
+    const userColletion = await connection()
     .then((db) => db.collection('messages'));
   
     const insertedMessage = await userColletion.insertOne({ 

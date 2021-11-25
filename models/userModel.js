@@ -1,11 +1,10 @@
 // const { ObjectId } = require('mongodb');
 
-const mongoConnection = require('./connection');
+const connection = require('./connection');
 
 const createUser = async ({ name }) => {
   try {
-    const userColletion = await mongoConnection
-    .connection()
+    const userColletion = await connection()
     .then((db) => db.collection('users'));
   
     const user = await userColletion.insertOne({ name });
