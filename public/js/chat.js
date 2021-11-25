@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 const socket = window.io();
 const testId = 'data-testid';
 
