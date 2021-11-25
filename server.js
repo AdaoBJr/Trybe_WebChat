@@ -33,8 +33,8 @@ app.use(
   }),
 );
 
-const nick = [];
 const data = `${moment().format('DD-MM-YYYY')} ${moment().format('LTS')}`;
+const nick = [];
 
 io.on('connection', (socket) => { 
   let cryptoNick = socket.id.substring(socket.id.length - 16); 
@@ -49,8 +49,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('changeNick', ({ oldNick, newNick }) => {
-    nick.splice(nick.indexOf(oldNick), 1, newNick); 
-    cryptoNick = newNick;
+    nick.splice(nick.indexOf(oldNick), 1, newNick); cryptoNick = newNick;
     io.emit('onlineNicks', nick);
   });
 

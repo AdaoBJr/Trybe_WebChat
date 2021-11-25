@@ -50,17 +50,11 @@
 
       socket.on('nickId', (cryptoNick) => {
         setNick(cryptoNick);
-        // const li = document.createElement('li');
-        // li.setAttribute('data-testid', 'online-user');
-        // li.innerText = socketId;
-        // li.id=socketId;
-        // const messagesUl = document.querySelector('#onlineUsers');
-        // messagesUl.prepend(li);
       });
 
       socket.on('onlineNicks', (nick) => {
         console.log('Entrei onlinenicks');
-        
+
         nick.splice(nick.indexOf(getNick()), 1);
 
         nick.unshift(getNick());
@@ -69,11 +63,10 @@
 
         messagesUl.innerText = '';
       
-        nick.forEach((index) => {
+        nick.forEach((nick) => {
         const li = document.createElement('li');
         li.setAttribute('data-testid', 'online-user');
-        li.innerText = index;
-        li.id = index;
+        li.innerText = nick;
         messagesUl.appendChild(li);
         })
       });
