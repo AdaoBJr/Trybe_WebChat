@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebChat - Project</title>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <ul id="users-online"></ul>
+  <form id="form-nickname">
+    <input data-testid="nickname-box" autocomplete="off" id="input-nickname" type="text">
+    <button data-testid="nickname-button">Alterar Nickname</button>
+  </form>
+  <form id="form-message">
+    <input data-testid="message-box" autocomplete="off" id="input-text" type="text">
+    <button data-testid="send-button">Enviar Mensagem</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/chat.js"></script>
+</body>
+</html>
