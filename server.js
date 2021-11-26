@@ -1,5 +1,10 @@
 const app = require('./app');
 
-const PORT = process.env.PORT || 8080;
+// const Server = require('./server/index');
 
-app.express.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+// const chatServer = new Server(app.io);
+// console.log(chatServer);
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
