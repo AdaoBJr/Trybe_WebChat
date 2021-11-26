@@ -56,6 +56,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
+    console.log('disconnecting', socket.id);
     removeUser(socket.id);
     io.emit('userloged', usersLogedIn);
   });

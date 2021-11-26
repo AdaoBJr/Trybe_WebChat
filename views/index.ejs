@@ -63,6 +63,13 @@
       }
     });
 
+    const appendUser = (user, usersOn) => {
+      const li = document.createElement('li');
+      li.textContent = user.nickname;
+      li.setAttribute('data-testid', 'online-user');
+      usersOn.appendChild(li);
+    };
+
     socket.on('message', (message) => {
       const li = document.createElement('li');
       li.textContent = message;
@@ -72,19 +79,15 @@
     });
 
     socket.on('userloged', (usersLogedIn) => {
+      const index = usersLogedIn.findIndex((user) => user.id === socket.id);
+      const firstUser = usersLogedIn[index];
+      usersLogedIn.splice(index, 1);
+      usersLogedIn.unshift(firstUser);
       let usersOn = document.querySelector('.users-on');
       usersOn.innerHTML = "";
-      usersLogedIn.map((user) => {
-        const li = document.createElement('li');
-        li.textContent = user.nickname;
-        li.setAttribute('data-testid', 'online-user');
-        usersOn.appendChild(li);
-      });
+      usersLogedIn.map((user) => appendUser(user, usersOn));
     });
 
-    // socket.on('nickChanged', (usersLogedIn) => {
-
-    // });
   </script>
 </body>
 
