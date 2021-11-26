@@ -1,6 +1,7 @@
 // setting up application like Doc: https://socket.io/get-started/chat#the-web-framework
 const express = require('express');
 const http = require('http');
+const moment = require('moment');
 const { Server } = require('socket.io');
 
 const ChatController = require('./controllers/chatController');
@@ -10,6 +11,8 @@ let usersLogedIn = [];
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+
+const connection = require('./models/connection');
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -32,8 +35,18 @@ const addUser = (id, nickname) => {
   ];
 };
 
-const setMessage = (message) => {
+const setMessage = async (message) => {
   const { nickname, chatMessage } = message;
+
+  // helped by Gustavo's PR: https://github.com/tryber/sd-010-b-project-webchat/blob/gmcerqueira/server.js
+  const newMessage = {
+    message: chatMessage,
+    nickname,
+    timestamp: moment(new Date()).format('DD-MM-yyyy HH:mm:ss'),
+  };
+
+  await connection().then((db) => db.collection('messages').insertOne(newMessage));
+
   // date & time source: https://phoenixnap.com/kb/how-to-get-the-current-date-and-time-javascript
   const today = new Date();
   const date = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
@@ -61,8 +74,8 @@ io.on('connection', (socket) => {
     io.emit('userloged', usersLogedIn);
   });
 
-  socket.on('message', (message) => {
-    io.emit('message', setMessage(message));
+  socket.on('message', async (message) => {
+    io.emit('message', await setMessage(message));
   });
 
   socket.on('nickname', (nickname) => {
