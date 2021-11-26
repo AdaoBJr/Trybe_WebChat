@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Web -- Chat</title>
+  </head>
+
+  <body>
+    <div id="users">
+      <form id="user-form" action="">
+        <input type="text" id="nickname-input" data-testid="nickname-box" />
+        <button data-testid="nickname-button">Enter</button>
+      </form>
+
+      <ul id="user-list"></ul>
+    </div>
+
+    <div id="messages">
+      <ul id="message-list"></ul>
+
+      <form id="message-form" action="">
+        <input
+          type="text"
+          id="message-input"
+          autocomplete="off"
+          data-testid="message-box"
+        />
+        <button id="send-button" data-testid="send-button">Send</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/client.js"></script>
+  </body>
+</html>
