@@ -41,6 +41,12 @@ const setMessage = (message) => {
   return `${date} ${time} - ${nickname}: ${chatMessage}`;
 };
 
+// helped by Zózimo
+const editNickname = (nick, id) => {
+  const index = usersLogedIn.findIndex((user) => user.id === id);
+  usersLogedIn[index].nickname = nick;
+};
+
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
 
@@ -56,6 +62,11 @@ io.on('connection', (socket) => {
 
   socket.on('message', (message) => {
     io.emit('message', setMessage(message));
+  });
+
+  socket.on('nickname', (nickname) => {
+    editNickname(nickname, socket.id);
+    io.emit('userloged', usersLogedIn);
   });
 });
 

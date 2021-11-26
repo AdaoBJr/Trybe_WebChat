@@ -45,11 +45,11 @@
 
     formNick.addEventListener('submit', (e) => {
       e.preventDefault();
-      /* onde ficam armazenados esses users para que eu possa organizá-los no na tela como eu quiser? */
       if (inputNick.value) {
         let nickDisplayed = document.querySelector('#nickname');
         nickDisplayed.textContent = inputNick.value;
         inputNick.value = '';
+        socket.emit('nickname', nickDisplayed.textContent);
       }
     });
 
@@ -72,20 +72,19 @@
     });
 
     socket.on('userloged', (usersLogedIn) => {
-      console.log('USERS LOGED:', usersLogedIn);
       let usersOn = document.querySelector('.users-on');
-      console.log('BEFORE: ', usersOn);
       usersOn.innerHTML = "";
-      console.log('AFTER: ', usersOn);
-
       usersLogedIn.map((user) => {
         const li = document.createElement('li');
-        console.log(user.nickname);
         li.textContent = user.nickname;
         li.setAttribute('data-testid', 'online-user');
         usersOn.appendChild(li);
       });
     });
+
+    // socket.on('nickChanged', (usersLogedIn) => {
+
+    // });
   </script>
 </body>
 
