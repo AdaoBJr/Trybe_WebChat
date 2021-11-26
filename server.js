@@ -6,16 +6,6 @@ const PORT = 3000;
 const app = express();
 const http = require('http').createServer(app);
 
-// https://www.youtube.com/watch?v=Hr5pAAIXjkA&ab_channel=DevPleno
-const randomString = (length) => {
-  let nickname = '';
-  do {
-    nickname += Math.random().toString(36).substr(2);
-  } while (nickname.length < length);
-  nickname = nickname.substr(0, length);
-  return nickname;
-};
-
 app.use(cors());
 const io = require('socket.io')(http, {
   cors: {
@@ -26,18 +16,45 @@ const io = require('socket.io')(http, {
 
 const { formattedDateAndHour } = require('./helpers/dateAndHour');
 const chatController = require('./controller/chatController');
+const randomString = require('./helpers/randomNickname');
 
 let message = [];
+const users = [];
+let nickName = '';
+
+const addUsers = (nickname, socket) => {
+  const getId = users.findIndex((user) => user.id === socket.id);
+  users[getId].nickname = nickname;
+  return users;
+};
+
+const onlineUsers = (IO, socket, nickname) => {
+  io.emit('usersOnline', { nickname, id: socket.id });
+  console.log('onlieUsers', nickname);
+
+  if (users.length > 0) {
+    users.forEach((user) => {
+      socket.emit('usersOnline', user);
+    });
+  }
+
+  users.push({ id: socket.id, nickname });
+};
+
 io.on('connection', (socket) => {
-  let newNickname = randomString(16);
-  socket.emit('login', newNickname);
-  socket.broadcast.emit('newLogin', { usuario: newNickname });
-  
-  socket.on('nick', (nick) => {
-    newNickname = nick;
-    io.emit('newNick', nick);
+  nickName = randomString(16);
+  console.log('aqui', nickName);
+  onlineUsers(io, socket, nickName);
+  socket.on('updateNickname', (nickname) => {
+    addUsers(nickname, socket);
+    io.emit('updateNickname', { nickname, id: socket.id });
   });
-  
+
+  socket.on('disconnect', () => {
+    users.splice({ id: socket.id }, 1);
+    io.emit('disconnectUser', socket.io);
+  });
+
   socket.on('message', async (data) => {
     await chatController.saveMessages(data);
     message = `${formattedDateAndHour()} - ${data.nickname}: ${data.chatMessage}`;
@@ -47,7 +64,6 @@ io.on('connection', (socket) => {
 
 const getMessages = async () => {
   const allMessages = await chatController.getAllMessages();
-  console.log('server all messages', allMessages);
   return allMessages;
 };
 

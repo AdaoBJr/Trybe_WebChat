@@ -3,6 +3,7 @@ const socket = window.io();
 const form = document.querySelector('#chat');
 const dataTestid = 'data-testid';
 const inputRandomNick = '.randomNickname';
+let nickname = '';
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -26,10 +27,25 @@ buttonSaveNickname.addEventListener('click', (event) => {
   event.preventDefault();
 
   const newNickname = document.querySelector('.nickname').value;
-  socket.emit('nick', newNickname);
-  const inputRandomNickname = document.querySelector(inputRandomNick);
-  inputRandomNickname.innerText = newNickname;
+  const liOnlineUsers = document.querySelector('.online');
+  nickname = newNickname;
+  liOnlineUsers.innerHTML = newNickname;
+  console.log('novo nickname', newNickname);
+  socket.emit('updateNickname', nickname);
 });
+
+// lista usuários online
+const createListUsersOnline = (nickname, id) => {
+  console.log('nickname no chat.js', nickname);
+  const ulUsers = document.querySelector('.users');
+  const createLi = document.createElement('li');
+  createLi.setAttribute(dataTestid, 'oline-user');
+  createLi.setAttribute('class', 'online');
+  createLi.setAttribute('id', id);
+  createLi.innerHTML = nickname;
+  ulUsers.appendChild(createLi);
+};
+socket.on('usersOnline', ({ nickname, id }) => createListUsersOnline(nickname, id));
 
 const createMessage = (message) => {
   const messagesUl = document.querySelector('.messages');
@@ -40,25 +56,17 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-const createUser = (message) => {
-  const usuario = document.querySelector(inputRandomNick);
-  usuario.innerHTML = message;
-  const usuarioOnline = document.querySelector('.online');
-  const createList = document.createElement('li');
-  createList.setAttribute(dataTestid, 'online-user');
-  createList.innerHTML = message;
-  usuarioOnline.appendChild(createList);
+const updateNickname = (nickName, id) => {
+  const listOnlineUsers = document.getElementById(id);
+  listOnlineUsers.innerHTML = nickName;
 };
 
-const updateNickname = (message) => {
-  const onlineUsersUl = document.querySelector('.online');
-  const createList = document.createElement('li');
-  createList.setAttribute(dataTestid, 'online-user');
-  createList.innerText = message;
-  onlineUsersUl.appendChild(createList);
+const offUsers = (id) => {
+  const ulUsers = document.querySelector('.users');
+  const listOnlineUsers = document.getElementById(id);
+  ulUsers.removeChild(listOnlineUsers);
 };
 
-socket.on('login', (message) => createUser(message));
-socket.on('newLogin', ({ usuario }) => updateNickname(usuario));
-socket.on('newNick', (usuario) => updateNickname(usuario));
 socket.on('message', (message) => createMessage(message));
+socket.on('updateNickname', ({ nickName, id }) => updateNickname(nickName, id));
+socket.on('disconnectUser', (id) => offUsers(id));
