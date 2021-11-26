@@ -9,16 +9,16 @@
 </head>
 <body>
   <h1>Trybe Web Chat</h1>
-  *******************************************
+  *********************************
   <section>
-    <h2>Usuários online</h2>
-    <ol class="online"></ol>
+    <p>Usuários online</p>
+    <ul class="users"></ul>
   </section>
-  *******************************************
-  <br>
+***********************************
+<br>
 
   <input type="text" data-testid="nickname-box" name="nickname" class="nickname" placeholder="Digite seu nickname...">
-  <button type="button" data-testid="nickname-button" class="saveNickname" value="">Alterar nickname</button>
+  <button type="button" data-testid="nickname-button" class="saveNickname" value="">Salvar</button>
   <p class="message-saveNickname" value=""></p>
   
   <form id="chat">
@@ -26,6 +26,11 @@
     <input type="text" data-testid="message-box" name="inputMessage" value="" class="chatMessage" placeholder="Escreva aqui...">
     <div class="messages">
     <button data-testid="send-button" type="submit">Enviar</button>
+    <div class="chat">
+      <%messages.forEach(({ nickname, chatMessage, timestamp }) => {%>
+        <li class="semStyle" data-testid="message"><%=`${timestamp} - ${nickname}: ${chatMessage}`%></li>
+      <%})%>
+    </div>
   </form>
 
 </body>

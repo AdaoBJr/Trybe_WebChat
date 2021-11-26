@@ -6,14 +6,6 @@ const PORT = 3000;
 const app = express();
 const http = require('http').createServer(app);
 
-const formattedDate = () => {
-  const date = new Date();
-  const currentDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-  const fullHour = `${date.getHours()}:${date.getMinutes()}`;
-  const pmOrAm = fullHour < 12 ? 'AM' : 'PM';
-  return `${currentDate} ${fullHour} ${pmOrAm}`;
-};
-
 app.use(cors());
 const io = require('socket.io')(http, {
   cors: {
@@ -22,49 +14,62 @@ const io = require('socket.io')(http, {
   },
 });
 
-const { saveMessages } = require('./models');
+const { formattedDateAndHour } = require('./helpers/dateAndHour');
+const chatController = require('./controller/chatController');
+const randomString = require('./helpers/randomNickname');
 
-// https://www.youtube.com/watch?v=Hr5pAAIXjkA&ab_channel=DevPleno
-const randomString = (length) => {
-  let nickname = '';
-  do {
-    nickname += Math.random().toString(36).substr(2);
-  } while (nickname.length < length);
-  nickname = nickname.substr(0, length);
-  return nickname;
-};
-
-const saveUserDataAndMessage = async (data) => {
-  await saveMessages(data);
-};
-
-const onlineUsers = [];
 let message = [];
+const users = [];
+let nickName = '';
+
+const addUsers = (nickname, socket) => {
+  const getId = users.findIndex((user) => user.id === socket.id);
+  users[getId].nickname = nickname;
+  return users;
+};
+
+const onlineUsers = (IO, socket, nickname) => {
+  io.emit('usersOnline', { nickname, id: socket.id });
+
+  if (users.length > 0) {
+    users.forEach((user) => {
+      socket.emit('usersOnline', user);
+    });
+  }
+
+  users.push({ id: socket.id, nickname });
+  console.log('populou', users);
+};
+
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id}`);
-  const stringNickname = randomString(16);
-  socket.emit('nicknameRamdom', stringNickname);
+  nickName = randomString(16);
+  onlineUsers(io, socket, nickName);
+  socket.on('updateNickname', (nickname) => {
+    addUsers(nickname, socket);
+    io.emit('updateNickname', { nickname, id: socket.id });
+  });
+
+  socket.on('disconnect', () => {
+    const getId = users.findIndex((user) => user.id === socket.id);
+    users.splice(getId, 1);
+    io.emit('disconnectUser', socket.io);
+  });
 
   socket.on('message', async (data) => {
-    message = `${formattedDate()} - ${data.nickname}: ${data.chatMessage}`;
+    await chatController.saveMessages(data);
+    message = `${formattedDateAndHour()} - ${data.nickname}: ${data.chatMessage}`;
     io.emit('message', message);
-    await saveUserDataAndMessage(message);
-    // esse vídeo ajudou com o broadcast https://www.youtube.com/watch?v=-jXfKDYJJvo&ab_channel=Rocketseat
-    socket.broadcast.emit('receivedMessage', message);
-  });
-
-  socket.on('newNickname', (nickname) => {
-    onlineUsers.push(nickname);
-    io.emit('onlineUsers', onlineUsers.reverse());
   });
 });
+
+const getMessages = async () => chatController.getAllMessages();
 
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
 
-app.use('/', (_req, res) => {
-  res.render('index', { message });
+app.get('/', async (_req, res) => {
+  res.render('index', { messages: await getMessages() });
 });
 
 http.listen(PORT, () => {
