@@ -30,7 +30,6 @@ const addUsers = (nickname, socket) => {
 
 const onlineUsers = (IO, socket, nickname) => {
   io.emit('usersOnline', { nickname, id: socket.id });
-  console.log('onlieUsers', nickname);
 
   if (users.length > 0) {
     users.forEach((user) => {
@@ -43,7 +42,6 @@ const onlineUsers = (IO, socket, nickname) => {
 
 io.on('connection', (socket) => {
   nickName = randomString(16);
-  console.log('aqui', nickName);
   onlineUsers(io, socket, nickName);
   socket.on('updateNickname', (nickname) => {
     addUsers(nickname, socket);
@@ -51,7 +49,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    users.splice({ id: socket.id }, 1);
+    const getId = users.findIndex((user) => user.id === socket.id);
+    users.splice(getId, 1);
     io.emit('disconnectUser', socket.io);
   });
 
@@ -62,10 +61,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const getMessages = async () => {
-  const allMessages = await chatController.getAllMessages();
-  return allMessages;
-};
+const getMessages = async () => chatController.getAllMessages();
 
 app.set('view engine', 'ejs');
 

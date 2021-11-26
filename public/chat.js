@@ -2,23 +2,22 @@ const socket = window.io();
 
 const form = document.querySelector('#chat');
 const dataTestid = 'data-testid';
-const inputRandomNick = '.randomNickname';
-let nickname = '';
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   
+  const idSocket = `#${socket.id}`;
   const inputMessage = document.querySelector('.chatMessage').value;
-  const inputRandomNickname = document.querySelector(inputRandomNick).innerText;
+  const inputRandomNickname = document.querySelector(idSocket).innerText;
 
-  if (inputMessage.length) {
-    const sendMessage = {
-      nickname: inputRandomNickname,
-      chatMessage: inputMessage,
-    };
-    
-    socket.emit('message', sendMessage);
-  }
+  if (inputMessage.length === 0) return;
+
+  const sendMessage = {
+    nickname: inputRandomNickname,
+    chatMessage: inputMessage,
+  };
+
+  socket.emit('message', sendMessage);
 });
 
 // salva nickname
@@ -28,15 +27,12 @@ buttonSaveNickname.addEventListener('click', (event) => {
 
   const newNickname = document.querySelector('.nickname').value;
   const liOnlineUsers = document.querySelector('.online');
-  nickname = newNickname;
   liOnlineUsers.innerHTML = newNickname;
-  console.log('novo nickname', newNickname);
-  socket.emit('updateNickname', nickname);
+  socket.emit('updateNickname', newNickname);
 });
 
 // lista usuários online
 const createListUsersOnline = (nickname, id) => {
-  console.log('nickname no chat.js', nickname);
   const ulUsers = document.querySelector('.users');
   const createLi = document.createElement('li');
   createLi.setAttribute(dataTestid, 'oline-user');
@@ -56,9 +52,9 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-const updateNickname = (nickName, id) => {
+const updateNickname = ({ nickname, id }) => {
   const listOnlineUsers = document.getElementById(id);
-  listOnlineUsers.innerHTML = nickName;
+  listOnlineUsers.innerHTML = nickname;
 };
 
 const offUsers = (id) => {
@@ -68,5 +64,6 @@ const offUsers = (id) => {
 };
 
 socket.on('message', (message) => createMessage(message));
-socket.on('updateNickname', ({ nickName, id }) => updateNickname(nickName, id));
+// socket.on('updateNickname', ({ nickname, id }) => updateNickname({ nickname, id }));
+socket.on('updateNickname', updateNickname);
 socket.on('disconnectUser', (id) => offUsers(id));
