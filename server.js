@@ -35,12 +35,20 @@ function toFormatMessage(chatMessage, nickname) {
   return `${dateFormater()} ${hourFormater()} - ${nickname}: ${chatMessage}`;
 }
 
-io.on('connection', async (socket) => {
-  console.log(`Socket conectado com ID: ${socket.id}`);
+const nickInfo = [];
+
+io.on('connection', (socket) => {
   socket.on('message', async ({ chatMessage, nickname }) => {
     await newMessageService(chatMessage, nickname);
     const messageFormated = toFormatMessage(chatMessage, nickname);
     io.emit('message', messageFormated);
+  });
+  socket.on('disconnect', (data) => {
+    nickInfo.filter(({ id }) => id !== data.id);
+  });
+  socket.on('newuser', (data) => {
+    nickInfo.push(data);
+    io.emit('usersonline', nickInfo);
   });
 });
 

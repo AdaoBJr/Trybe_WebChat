@@ -11,7 +11,8 @@
 
 <body>
   WebChat
-  <span data-testid="online-user" id="new-user"></span>
+  <div data-testid="online-user" id="new-user"></div>
+  <ul id=users-online></ul>
   <form id="messageInfo">
     <button type="button" data-testid="nickname-button" id="nick-button">Mudar nome</button>
     <input type="text" placeholder="Digite seu nome" id="nickname" data-testid="nickname-box" />
@@ -32,6 +33,7 @@
     const nickButton = document.getElementById('nick-button');
     const nicknameInput = document.getElementById('nickname');
     const newUser = document.getElementById('new-user')
+    const usersOnline = document.getElementById('users-online');
 
     function makeid(length) {
       let result = '';
@@ -61,6 +63,18 @@
       newUser.innerText = author.value
     })
 
+    socket.on('connect', () => {
+      const messageAuthor = document.getElementById('nickname');
+      messageAuthor.value = makeid(16);
+      newUser.innerText = messageAuthor.value
+      const nick = newUser.innerText;
+      socket.emit('newuser', { nick, id: socket.id });
+    });
+
+    socket.on('disconnect', () => {
+      socket.emit('offline', { nick: newUser.innerText, id: socket.id });
+    })
+
     socket.on('message', (message) => {
       const messagesDiv = document.getElementById('messages')
       const li = document.createElement('li');
@@ -69,11 +83,19 @@
       messagesDiv.appendChild(li);
     });
 
-    socket.on('connect', () => {
-      const messageAuthor = document.getElementById('nickname');
-      messageAuthor.value = makeid(16);
-      newUser.innerText = messageAuthor.value
-    });
+    socket.on('usersonline', (data) => {
+      for(let i = 0; i < usersOnline.childNodes.length; i += 1) {
+        usersOnline.removeChild(usersOnline.childNodes[i]);
+      }
+
+      data.forEach((el) => {
+        if (el.nick === newUser.innerText) return null;
+        const div = document.createElement('div');
+        div.innerText = el.nick;
+        div.setAttribute('data-testid', 'online-user')
+        usersOnline.appendChild(div);
+      })
+    })
   </script>
 </body>
 
