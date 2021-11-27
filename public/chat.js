@@ -67,14 +67,14 @@ const updateNickname = ({ nickname, id }) => {
   listOnlineUsers.innerHTML = nickname;
 };
 
-const offUsers = (id) => {
+// const offUsers = (id) => {
   // const ulUsers = document.querySelector('.users');
-  const listOnlineUsers = document.getElementById(id);
+  // const listOnlineUsers = document.getElementById(id);
   // ulUsers.removeChild(listOnlineUsers);
-  listOnlineUsers.parentNode.removeChild(listOnlineUsers);
-};
+  // listOnlineUsers.parentNode.removeChild(listOnlineUsers);
+// };
 
 socket.on('message', (message) => createMessage(message));
 // socket.on('updateNickname', ({ nickname, id }) => updateNickname({ nickname, id }));
 socket.on('updateNickname', updateNickname);
-socket.on('disconnectUser', (id) => offUsers(id));
+// socket.on('disconnectUser', (id) => offUsers(id));

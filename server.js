@@ -29,6 +29,7 @@ const addUsers = (nickname, socket) => {
 };
 
 const onlineUsers = (IO, socket, nickname) => {
+  console.log(users);
   users.push({ id: socket.id, nickname });
   io.emit('usersOnline', users);
 
@@ -42,7 +43,7 @@ const onlineUsers = (IO, socket, nickname) => {
 };
 
 io.on('connection', (socket) => {
-  // socket.disconnect(0);
+  // if (users.length === 0) socket.disconnect(0);
   nickName = randomString(16);
   onlineUsers(io, socket, nickName);
   socket.on('updateNickname', (nickname) => {
@@ -53,7 +54,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     const getId = users.findIndex((user) => user.id === socket.id);
     users.splice(getId, 1);
-    socket.disconnect(0);
+    // socket.disconnect(0);
     io.emit('usersOnline', users);
   });
 
