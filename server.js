@@ -35,11 +35,11 @@ const io = require('socket.io')(httpServer, options);
 const chatHistory = [];
 const usersOnline = {};
 
-const { generateUsername } = require('unique-username-generator');
+// const { generateUsername } = require('unique-username-generator');
 
 io.on('connection', (socket) => {
   // socket.disconnect(0);  
-  usersOnline[socket.id] = { username: generateUsername('', 6, 16), id: socket.id };
+  usersOnline[socket.id] = { username: socket.id.substring(0, 16), id: socket.id };
   console.log(`${usersOnline[socket.id].username} conectou`);
 
   io.emit('updateUsersOnline', { usersOnline: Object.values(usersOnline) });

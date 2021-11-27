@@ -52,7 +52,7 @@ const updateChat = (message) => {
   //   .appendChild(createElementByTag({tag: 'li', text: message.nickname}));
 
   document.querySelector('#message')
-    .appendChild(createElementByTag({ tag: 'li', text: message }));
+    .appendChild(createElementByTag({ tag: 'li', text: message, dataTestId: 'message' }));
 };
 
 // socket.on('chatHistory', (chatHistory) => {
