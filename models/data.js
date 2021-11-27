@@ -10,7 +10,8 @@ const createMessage = async ({ chatMessage, nickname }) => {
 
 const getAllMessages = async () => {
   const db = await connection();
-  return db.collection('messages').find().toArray();
+  return db.collection('messages').find().toArray().then((e) => e
+  .map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`));
 };
 
 module.exports = { createMessage, getAllMessages };

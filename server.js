@@ -14,8 +14,8 @@ const io = require('socket.io')(socketIoServer, {
     methods: ['GET', 'POST'],
   },
 });
-const model = require('./models/data');
 
+// const model = require('./models/data');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
@@ -26,7 +26,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(`${__dirname}/public`));
 
 app.get('/', (req, res) => res.render('webchat'));
-app.get('/ping', async (req, res) => res.send(await model.getAllMessage()));
 
 socketIoServer.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

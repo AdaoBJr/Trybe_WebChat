@@ -1,7 +1,14 @@
 const socket = window.io();
 
-socket.on('joined', (randomUser) => {
-    Object.entries(randomUser).forEach((user) => {
+// Source: https://www.geeksforgeeks.org/remove-all-the-child-elements-of-a-dom-node-in-javascript/#:~:text=Child%20nodes%20can%20be%20removed,which%20produces%20the%20same%20output.
+const createUsersList = (userList) => {
+    const ul = document.querySelector('#online-user');
+    let child = ul.lastElementChild; 
+        while (child) {
+            ul.removeChild(child);
+            child = ul.lastElementChild;
+        }
+    Object.entries(userList).forEach((user) => {
         const li = document.createElement('li');
         const liText = document.createTextNode(user[1]);
         li.setAttribute('data-testid', 'online-user');
@@ -9,7 +16,11 @@ socket.on('joined', (randomUser) => {
         li.append(liText);
         document.getElementById('online-user').appendChild(li);
     });
-});
+};
+
+socket.on('joined', createUsersList);
+socket.on('newUser', createUsersList);
+socket.on('changeAllNick', createUsersList);
 
 const nickBtn = document.getElementById('nick-btn');
 const nickInput = document.getElementById('nick-input');
@@ -37,4 +48,9 @@ msgbtn.addEventListener('click', () => {
     const text = document.getElementById('msg');
     const nickname = document.getElementById(socket.id).innerText;
     socket.emit('message', { chatMessage: text.value, nickname });
+});
+
+socket.on('userDisconected', (userId) => {
+    const userLi = document.getElementById(userId);
+    userLi.remove();
 });

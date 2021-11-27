@@ -5,20 +5,19 @@ const generateUserName = () => crypto.randomBytes(8).toString('hex');
 const users = {};
 
 module.exports = (io) => io.on('connection', async (socket) => {
-  const getMessages = await model.getAllMessages()
-  .then((e) => e
-  .map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`));
-
+  const getMessages = await model.getAllMessages();
   socket.emit('histories', getMessages);
-  
   users[socket.id] = generateUserName();
-  socket.emit('joined', users);
+  if (socket.connected) {
+    socket.emit('joined', users);
+  }
+  
+  socket.broadcast.emit('newUser', users);
   
   socket.on('updateNick', ({ nickname, socketId }) => {
     users[socketId] = nickname;
+    io.emit('changeAllNick', users);
   });
-  
-  socket.broadcast.emit('joined', { newUser: users[socket.id] });
 
   socket.on('message', async ({ chatMessage, nickname }) => {
     io.emit('message', await model.createMessage({ chatMessage, nickname }));
@@ -26,5 +25,6 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   socket.on('disconnect', () => {
     delete users[socket.id];
+    io.emit('userDisconected', socket.id);
   });
 });
