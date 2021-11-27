@@ -6,15 +6,15 @@ const users = {};
 
 module.exports = (io) => io.on('connection', async (socket) => {
   users[socket.id] = generateUserName();
-  console.log('usersObj', users);
   socket.emit('joined', users);
   
-  // socket.on('updateNick', async () => {
-  //       io.emit('updateNick', await model.updateUser(socket.id));
-  //   });
-    
-  socket.on('message', async ({ chatMessage }) => {
-    const nickname = users[socket.id];
+  socket.on('updateNick', ({ nickname, socketId }) => {
+    users[socketId] = nickname;
+  });
+  
+  socket.broadcast.emit('joined', { newUser: users[socket.id] });
+
+  socket.on('message', async ({ chatMessage, nickname }) => {
     io.emit('message', await model.createMessage({ chatMessage, nickname }));
   });
 
