@@ -33,26 +33,42 @@ const io = require('socket.io')(httpServer, options);
 // );
 
 const chatHistory = [];
+const usersOnline = {};
 
-io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id}`);
-  socket.on('onload', () => console.log('teste'));
- 
-  socket.on('message', ({ nickname, chatMessage }) => {
-    const timestamp = moment().format('DD-MM-yyyy h:mm:ss A');
-    // console.log('date: ', date);
-    // console.log('OI GALERA:', nickname);
-    
-    // console.log(`SERVER message: ${nickname}: ${chatMessage}`);
-    chatHistory.push(`${timestamp} - ${nickname}: ${chatMessage}`);
-    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
-  });
-});
 const { generateUsername } = require('unique-username-generator');
 
+io.on('connection', (socket) => {
+  // socket.disconnect(0);  
+  usersOnline[socket.id] = { username: generateUsername('', 6, 16), id: socket.id };
+  console.log(`${usersOnline[socket.id].username} conectou`);
+
+  io.emit('updateUsersOnline', { usersOnline: Object.values(usersOnline) });
+  
+  socket.on('setNickname', ({ username }) => {
+    // const oldUsername = usersOnline[socket.id].username;
+    usersOnline[socket.id].username = username;
+    io.emit('updateUsersOnline', { usersOnline: Object.values(usersOnline) });
+  });
+
+  socket.on('message', ({ nickname, chatMessage }) => {
+    const timestamp = moment().format('DD-MM-yyyy h:mm:ss A');    
+    const { username } = usersOnline[socket.id];
+    chatHistory.push(`${timestamp} - ${nickname || username}: ${chatMessage}`);
+    io.emit('message', `${timestamp} - ${nickname || username}: ${chatMessage}`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`${usersOnline[socket.id].username} desconectou`);
+    delete usersOnline[socket.id];
+    socket.broadcast.emit('updateUsersOnline', { usersOnline: Object.values(usersOnline) });
+  });
+});
+
 app.get('/', (req, res) => {
+  // const username = generateUsername('', 0, 16);
+  
   res.status(200).render('board', { 
-    username: generateUsername('', 0, 16), chatHistory, 
+    /* username, */ chatHistory, usersOnline: Object.values(usersOnline),
   });
 });
 

@@ -11,32 +11,39 @@
 //   }
 
 const socket = window.io();
-window.onload = () => {
-  socket.emit('onload');
+// window.onload = () => {
+//   socket.emit('onload');
+// };
+
+// Força a desconexão do usuário
+window.onbeforeunload = () => {
+  socket.disconnect('this');
 };
 
-const form = document.querySelector('form');
-form.addEventListener('submit', (event) => {
+const btnNickname = document.querySelector('#nickname-button');
+btnNickname.addEventListener('click', (event) => {
   event.preventDefault();
-  
+  const nickname = document.querySelector('#nickname-box');
+  socket.emit('setNickname', { username: nickname.value });
+  nickname.value = '';
+});
+
+const btnSendMessage = document.querySelector('#send-button');
+btnSendMessage.addEventListener('click', (event) => {
+  event.preventDefault();
   const chatMessage = document.querySelector('#message-box');
-  const nickname = document.querySelector('#nickname-box').value;
-  console.log('nickname: ', nickname, 'chatMessage: ', chatMessage.value);
-  const message = { nickname, chatMessage: chatMessage.value };
-  
-  // if (nickname.value !== '') { message.nickname = generateUsername('', 0, 16); }
+  const message = { chatMessage: chatMessage.value };
   
   socket.emit('message', message);
 
   chatMessage.value = '';
-
-  return false;
 });
 
-const createElementByTag = ({ tag, text }) => {
+const createElementByTag = ({ tag, text, dataTestId }) => {
   const tagElement = document.createElement(tag);
   const tagText = document.createTextNode(text);
   tagElement.append(tagText);
+  tagElement.setAttribute('data-testid', dataTestId);
   return tagElement;
 };
 
@@ -53,3 +60,26 @@ const updateChat = (message) => {
 // });
 
 socket.on('message', updateChat);
+
+const updateUsersOnline = ({ usersOnline }) => {
+  const onlineUser = document.querySelector('#online-user');
+  onlineUser.innerHTML = '';
+  const me = usersOnline.find((user) => user.id === socket.id);
+  onlineUser.appendChild(
+    createElementByTag({ tag: 'li', text: me.username, dataTestId: 'online-user' }),
+    );
+  // const index = usersOnline.indexOf(me.);
+  // console.log('usersOnline: ', socket.id);
+  // usersOnline.slice(index, 1);
+  // console.log('usersOnlin ', usersOnline);
+
+  usersOnline.forEach((user) => {
+    if (user !== me) {
+      onlineUser.appendChild(
+        createElementByTag({ tag: 'li', text: user.username, dataTestId: 'online-user' }),
+      );
+    }
+  });
+};
+
+socket.on('updateUsersOnline', updateUsersOnline);
