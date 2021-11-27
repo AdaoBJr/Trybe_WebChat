@@ -1,6 +1,9 @@
 const socket = window.io();
 
+const onlineUser = 'online-user';
+
 // Source: https://www.geeksforgeeks.org/remove-all-the-child-elements-of-a-dom-node-in-javascript/#:~:text=Child%20nodes%20can%20be%20removed,which%20produces%20the%20same%20output.
+
 const createUsersList = (userList) => {
     const ul = document.querySelector('#online-user');
     let child = ul.lastElementChild; 
@@ -11,10 +14,15 @@ const createUsersList = (userList) => {
     Object.entries(userList).forEach((user) => {
         const li = document.createElement('li');
         const liText = document.createTextNode(user[1]);
-        li.setAttribute('data-testid', 'online-user');
+        li.setAttribute('data-testid', onlineUser);
         li.setAttribute('id', user[0]);
         li.append(liText);
-        document.getElementById('online-user').appendChild(li);
+        // Pescando de Alessandra Rezende
+        if (user[0] === socket.id) {
+            document.getElementById(onlineUser).prepend(li);
+        } else {
+            document.getElementById(onlineUser).appendChild(li);
+        }
     });
 };
 
