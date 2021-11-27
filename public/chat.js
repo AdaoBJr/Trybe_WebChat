@@ -32,7 +32,7 @@ buttonSaveNickname.addEventListener('click', (event) => {
 });
 
 // lista usuários online
-const createListUsersOnline = (nickname, id) => {
+const createListUsersOnline = ({ nickname, id }) => {
   const ulUsers = document.querySelector('.users');
   const createLi = document.createElement('li');
   createLi.setAttribute(dataTestid, 'online-user');
@@ -41,7 +41,17 @@ const createListUsersOnline = (nickname, id) => {
   createLi.innerHTML = nickname;
   ulUsers.appendChild(createLi);
 };
-socket.on('usersOnline', ({ nickname, id }) => createListUsersOnline(nickname, id));
+
+socket.on('usersOnline', (users) => {
+  const ulUsers = document.querySelector('.users');
+  ulUsers.innerHTML = '';
+  const getId = users.findIndex((user) => user.id === socket.id);
+  createListUsersOnline(users[getId]);
+
+  users.forEach((user) => {
+    if (user.id !== socket.id) { createListUsersOnline(user); }
+  });
+});
 
 const createMessage = (message) => {
   const messagesUl = document.querySelector('.messages');
@@ -58,9 +68,10 @@ const updateNickname = ({ nickname, id }) => {
 };
 
 const offUsers = (id) => {
-  const ulUsers = document.querySelector('.users');
+  // const ulUsers = document.querySelector('.users');
   const listOnlineUsers = document.getElementById(id);
-  ulUsers.removeChild(listOnlineUsers);
+  // ulUsers.removeChild(listOnlineUsers);
+  listOnlineUsers.parentNode.removeChild(listOnlineUsers);
 };
 
 socket.on('message', (message) => createMessage(message));

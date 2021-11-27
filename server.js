@@ -29,30 +29,32 @@ const addUsers = (nickname, socket) => {
 };
 
 const onlineUsers = (IO, socket, nickname) => {
-  io.emit('usersOnline', { nickname, id: socket.id });
-
-  if (users.length > 0) {
-    users.forEach((user) => {
-      socket.emit('usersOnline', user);
-    });
-  }
-
   users.push({ id: socket.id, nickname });
+  io.emit('usersOnline', users);
+
+  // if (users.length > 0) {
+  //   users.forEach((user) => {
+  //     socket.emit('usersOnline', user);
+  //   });
+  // }
+
   console.log('populou', users);
 };
 
 io.on('connection', (socket) => {
+  // socket.disconnect(0);
   nickName = randomString(16);
   onlineUsers(io, socket, nickName);
   socket.on('updateNickname', (nickname) => {
     addUsers(nickname, socket);
     io.emit('updateNickname', { nickname, id: socket.id });
   });
-
+  
   socket.on('disconnect', () => {
     const getId = users.findIndex((user) => user.id === socket.id);
     users.splice(getId, 1);
-    io.emit('disconnectUser', socket.io);
+    socket.disconnect(0);
+    io.emit('usersOnline', users);
   });
 
   socket.on('message', async (data) => {
