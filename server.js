@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const getMessages = async () => chatController.getAllMessages();
+const getMessages = () => chatController.getAllMessages();
 
 app.set('view engine', 'ejs');
 

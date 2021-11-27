@@ -6,6 +6,6 @@ const saveMessages = async (body) => {
   return messages;
 };
 
-const getAllMessages = async () => getAll();
+const getAllMessages = () => getAll();
 
 module.exports = { saveMessages, getAllMessages };
