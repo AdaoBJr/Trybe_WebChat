@@ -14,12 +14,13 @@ const io = require('socket.io')(server, {
 });
 
 app.use(express.json());
+app.use(express.static(`${__dirname}/public`));
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
 app.get('/', async (req, res) => {
-  res.status(200).render('view');
+  res.status(200).render('chat');
 });
 
 io.on('connection', (socket) => {

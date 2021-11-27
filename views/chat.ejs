@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="./styles/chat.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <title>Web Chat</title>
+</head>
+<body>
+  <main>
+    <div>
+      <div>
+        <form>
+          <input id="nickname" autocomplete="false" /><button>Salvar</button>
+        </form>
+        <div></div>
+      </div>
+      <div id="messages"></div>  
+    </div>
+    <form id="form" action="">
+      <input id="input" autocomplete="false"/><button>Send</button>
+    </form>
+  </main>
+</body>
+<script>
+  const socket = io();
+
+  // SOURCE: https://gist.github.com/6174/6062387
+  const nickname = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
+
+  const form = document.getElementById('form');
+  const input = document.getElementById('input');
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (input.value) {
+      const data = { nickname, chatMessage: input.value }
+      socket.emit('message', data);
+      input.value = '';
+    }
+  });
+
+</script>
+</html>
