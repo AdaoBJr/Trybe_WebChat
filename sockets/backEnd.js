@@ -5,6 +5,12 @@ const generateUserName = () => crypto.randomBytes(8).toString('hex');
 const users = {};
 
 module.exports = (io) => io.on('connection', async (socket) => {
+  const getMessages = await model.getAllMessages()
+  .then((e) => e
+  .map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`));
+
+  socket.emit('histories', getMessages);
+  
   users[socket.id] = generateUserName();
   socket.emit('joined', users);
   

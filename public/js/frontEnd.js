@@ -2,7 +2,6 @@ const socket = window.io();
 
 socket.on('joined', (randomUser) => {
     Object.entries(randomUser).forEach((user) => {
-        console.log(user);
         const li = document.createElement('li');
         const liText = document.createTextNode(user[1]);
         li.setAttribute('data-testid', 'online-user');
@@ -22,17 +21,19 @@ nickBtn.addEventListener('click', () => {
     nickInput.value = '';
 });
 
-socket.on('message', (data) => {
+const generateHistory = (data) => {
     const li = document.createElement('li');
     const liText = document.createTextNode(data);
     li.setAttribute('data-testid', 'message');
     li.append(liText);
     document.getElementById('messages').appendChild(li);
-});
+};
 
-const btn = document.getElementById('send-btn');
+socket.on('message', generateHistory);
+socket.on('histories', (data) => data.forEach((obj) => generateHistory(obj)));
 
-btn.addEventListener('click', () => {
+const msgbtn = document.getElementById('send-btn');
+msgbtn.addEventListener('click', () => {
     const text = document.getElementById('msg');
     const nickname = document.getElementById(socket.id).innerText;
     socket.emit('message', { chatMessage: text.value, nickname });
