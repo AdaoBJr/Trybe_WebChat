@@ -25,6 +25,7 @@ nickBtn.addEventListener('click', () => {
 socket.on('message', (data) => {
     const li = document.createElement('li');
     const liText = document.createTextNode(data);
+    li.setAttribute('data-testid', 'message');
     li.append(liText);
     document.getElementById('messages').appendChild(li);
 });
@@ -33,5 +34,6 @@ const btn = document.getElementById('send-btn');
 
 btn.addEventListener('click', () => {
     const text = document.getElementById('msg');
-    socket.emit('message', { chatMessage: text.value, socketId: socket.id });
+    const nickname = document.getElementById(socket.id).innerText;
+    socket.emit('message', { chatMessage: text.value, nickname });
 });
