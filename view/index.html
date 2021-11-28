@@ -10,41 +10,94 @@
       const socket = io();
     </script>
   </head>
+
   <body>
-    <div id="nickname" action="">
-      <input id="nickname" autocomplete="off" /><button>Save</button>
+    <div id="users">
+      <form id="user-form" action="">
+        <input type="text" id="nickname-input" data-testid="nickname-box" />
+        <button data-testid="nickname-button">Save</button>
+      </form>
+      <ul id="user-list"></ul>
     </div>
-    <div>
-      <ul id="users-online"></ul>
-    </div>
-    <div>
-      <ul id="messages"></ul>
-      <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Send</button>
+    <div id="messages">
+      <ul id="message-list"></ul>
+
+      <form id="message-form" action="">
+        <input
+          type="text"
+          id="message-input"
+          autocomplete="off"
+          data-testid="message-box"
+        />
+        <button id="send-button" data-testid="send-button">Send</button>
       </form>
     </div>
-    <script>
-      const form = document.querySelector('form');
-      const inputMessage = document.querySelector('#input');
 
-      form.addEventListener('submit', (e) => {
+    <script>
+      // https://dev.to/oyetoket/fastest-way-to-generate-random-strings-in-javascript-2k5a
+      const rand = () => Math.random(0).toString(36).substr(2);
+      const generateNick = (length) =>
+        (rand() + rand() + rand() + rand()).substr(0, length);
+
+      let nickname = generateNick(16);
+
+      sessionStorage.setItem('user', JSON.stringify(nickname));
+
+      socket.on('connect', () => {
+        socket.emit('nickname', nickname);
+      });
+
+      const messageForm = document.querySelector('#message-form');
+      const messageInput = document.querySelector('#message-input');
+
+      messageForm.addEventListener('submit', (e) => {
         e.preventDefault();
         socket.emit('message', {
-          chatMessage: inputMessage.value,
-          nickname: socket.id,
+          chatMessage: messageInput.value,
+          nickname,
         });
-        inputMessage.value = '';
-        return false;
+        messageInput.value = '';
       });
 
       const createMessage = (message) => {
-        const messagesUl = document.querySelector('#messages');
+        const messagesUl = document.querySelector('#message-list');
         const li = document.createElement('li');
         li.innerText = message;
+        li.setAttribute('data-testid', 'message');
         messagesUl.appendChild(li);
       };
 
+      const userForm = document.querySelector('#user-form');
+      const nicknameInput = document.querySelector('#nickname-input');
+
+      userForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        socket.emit('changeNickname', {
+          oldNickname: JSON.parse(sessionStorage.getItem('user')),
+          newNickname: nicknameInput.value,
+        });
+        sessionStorage.setItem('user', JSON.stringify(nicknameInput.value));
+        nickname = nicknameInput.value;
+        nicknameInput.value = '';
+      });
+
+      const userList = document.querySelector('#user-list');
+
+      const newUser = (user) => {
+        const li = document.createElement('li');
+        li.innerText = user;
+        li.setAttribute('data-testid', 'online-user');
+        userList.appendChild(li);
+      };
+
+      const renderAllUsers = (users) => {
+        const userList = document.querySelector('#user-list');
+        userList.innerText = '';
+        users.forEach((user) => newUser(user));
+      };
+
       socket.on('message', (message) => createMessage(message));
+      socket.on('users', (users) => renderAllUsers(users));
     </script>
   </body>
 </html>

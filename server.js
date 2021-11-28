@@ -22,6 +22,20 @@ io.on('connection', (socket) => {
     console.log(message);
     io.emit('message', message);
   });
+
+  let users = [];
+
+  socket.on('nickname', (nickname) => {
+    users.push(nickname);
+    io.emit('users', users);
+  });
+
+  socket.on('changeNickname', ({ oldNickname, newNickname }) => {
+    const excludeOldNickname = users.filter((user) => user !== oldNickname);
+    users = excludeOldNickname;
+    users.push(newNickname);
+    io.emit('users', users);
+  });
 });
 
 const PORT = '3000';
