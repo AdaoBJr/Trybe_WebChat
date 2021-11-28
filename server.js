@@ -23,6 +23,7 @@ const options = {
 };
 
 const io = require('socket.io')(httpServer, options);
+const { createMessage, findAllMessages } = require('./models/messageModel');
 
 // app.use(
 //   cors({
@@ -32,7 +33,7 @@ const io = require('socket.io')(httpServer, options);
 //   }),
 // );
 
-const chatHistory = [];
+// const chatHistory = [];
 const usersOnline = {};
 
 // const { generateUsername } = require('unique-username-generator');
@@ -50,10 +51,11 @@ io.on('connection', (socket) => {
     io.emit('updateUsersOnline', { usersOnline: Object.values(usersOnline) });
   });
 
-  socket.on('message', ({ nickname, chatMessage }) => {
-    const timestamp = moment().format('DD-MM-yyyy h:mm:ss A');    
+  socket.on('message', async ({ nickname, chatMessage }) => {
+    const timestamp = moment().format('DD-MM-yyyy h:mm:ss A');   
     const { username } = usersOnline[socket.id];
-    chatHistory.push(`${timestamp} - ${nickname || username}: ${chatMessage}`);
+    // chatHistory.push(`${timestamp} - ${nickname || username}: ${chatMessage}`);//DB
+    await createMessage({ message: chatMessage, nickname: nickname || username, timestamp });
     io.emit('message', `${timestamp} - ${nickname || username}: ${chatMessage}`);
   });
 
@@ -64,9 +66,12 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   // const username = generateUsername('', 0, 16);
-  
+  const result = await findAllMessages();
+  const chatHistory = result.map(
+    ({ message, nickname, timestamp }) => `${timestamp} - ${nickname}: ${message}`,
+  );
   res.status(200).render('board', { 
     /* username, */ chatHistory, usersOnline: Object.values(usersOnline),
   });
