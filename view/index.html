@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <title>ULTIMO DESAFIO</title>
+  <title>zapzap :D</title>
 </head>
 <body>
   <form>
     <input data-testid="nickname-box" type="text" id="nicknameInput" />
-    <button data-testid="nickname-button" type="button" id="chooseNickname">Salvar Nick</button>
+    <button data-testid="nickname-button" type="button" id="chooseNickname">Salvar apelido</button>
   </form>
-  <p data-testid="online-user" id="userNickname"></p>
+  <ul id="onlineUsers">
+    <li data-testid="online-user" id="userNickname"></li>
+  </ul>
   <form>
     <input data-testid="message-box" type="text" id="messageInput" />
-    <button data-testid="send-button" type="button" id="sendButton">Enviar</button>
+    <button data-testid="send-button" type="button" id="sendButton">Enviar mensagem</button>
   </form>
-  <ul data-testid="message" id="messages"></ul>
+  <ul id="messages"></ul>
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="js/script.js"></script>
 </body>
-</html> 
+</html>

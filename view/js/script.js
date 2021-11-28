@@ -1,7 +1,7 @@
 const socket = window.io();
 
-const enviar = document.querySelector('#enviar');
-const chatBox = document.querySelector('#chatBox');
+const sendButton = document.querySelector('#sendButton');
+const messageInput = document.querySelector('#messageInput');
 const nicknameInput = document.querySelector('#nicknameInput');
 const chooseNickname = document.querySelector('#chooseNickname');
 const userNickname = document.querySelector('#userNickname');
@@ -26,8 +26,8 @@ chooseNickname.addEventListener('click', () => {
   userNickname.textContent = nickname;
 });
 
-enviar.addEventListener('click', () => {
-  const chatMessage = chatBox.value;
+sendButton.addEventListener('click', () => {
+  const chatMessage = messageInput.value;
   socket.emit('message', { chatMessage, nickname });
 });
 
