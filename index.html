@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link href="index.css" rel="stylesheet">
     <title>Socket.IO chat</title>
     <style>
       body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -17,9 +18,22 @@
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
+    <div class="content">
+      <div class="users">
+        <form id="users-form" action="">
+          <input id="user-input" data-testid="nickname-box" autocomplete="off" />
+          <button data-testid="nickname-button">Salvar</button>
+        </form>
+        <ul id=users></ul>
+      </div>
+      <div class="messages">
+        <ul id="messages"></ul>
+      </div>
+    </div>
+
     <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
+      <input id="message-input" data-testid="message-box" autocomplete="off" />
+      <button data-testid="send-button">Send</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
