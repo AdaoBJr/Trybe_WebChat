@@ -5,8 +5,13 @@ const bodyParser = require('body-parser');
 
 const app = express();
 app.use(bodyParser.json());
+// const path = require('path');
 
 const http = require('http').createServer(app);
+
+app.set('view engine', 'ejs');
+app.use(express.static(`${__dirname}/views`));
+// app.set('views', path.join(__dirname, 'views'));
 
 const io = require('socket.io')(http, {
   cors: {
@@ -15,8 +20,10 @@ const io = require('socket.io')(http, {
   },
 });
 
-io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id} `);
+require('./sockets/chat')(io);
+
+app.get('/', (_req, res) => {
+  res.status(200).render('index');
 });
 
 const PORT = process.env.PORT || 3000;
