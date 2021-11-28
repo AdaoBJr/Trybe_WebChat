@@ -41,8 +41,6 @@
 
       let nickname = generateNick(16);
 
-      sessionStorage.setItem('user', JSON.stringify(nickname));
-
       socket.on('connect', () => {
         socket.emit('nickname', nickname);
       });
@@ -73,10 +71,9 @@
       userForm.addEventListener('submit', (e) => {
         e.preventDefault();
         socket.emit('changeNickname', {
-          oldNickname: JSON.parse(sessionStorage.getItem('user')),
+          oldNickname: nickname,
           newNickname: nicknameInput.value,
         });
-        sessionStorage.setItem('user', JSON.stringify(nicknameInput.value));
         nickname = nicknameInput.value;
         nicknameInput.value = '';
       });
@@ -96,8 +93,16 @@
         users.forEach((user) => newUser(user));
       };
 
+      const renderAllMessages = (messages) => {
+        messages.forEach((message) => {
+          const formatedMessage = `${message.timestamp} - ${message.nickname}: ${message.message}`;
+          createMessage(formatedMessage);
+        });
+      };
+
       socket.on('message', (message) => createMessage(message));
       socket.on('users', (users) => renderAllUsers(users));
+      socket.on('messages', (messages) => renderAllMessages(messages));
     </script>
   </body>
 </html>

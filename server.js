@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const moment = require('moment');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -14,16 +15,20 @@ const io = require('socket.io')(http, {
   },
 });
 
-const now = require('./utils/now');
+const { addNewMessage, getAllMessages } = require('./models/message');
 
-io.on('connection', (socket) => {
-  socket.on('message', ({ chatMessage, nickname }) => {
+let users = [];
+
+io.on('connection', async (socket) => {
+  const allMessages = await getAllMessages();
+  socket.emit('messages', allMessages);
+
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    const now = moment().format('DD-MM-yyyy h:mm:ss A');
     const message = `${now} - ${nickname}: ${chatMessage}`;
-    console.log(message);
+    await addNewMessage(chatMessage, nickname, now);
     io.emit('message', message);
   });
-
-  let users = [];
 
   socket.on('nickname', (nickname) => {
     users.push(nickname);
