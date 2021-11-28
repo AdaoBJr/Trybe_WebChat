@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/chat.css">
+  <title>Socket.IO</title>
+</head>
+<body>
+  <main>
+    <section>
+      <form action="">
+        <input 
+          data-testid="nickname-box"
+          id="nickname-box" 
+          autocomplete="off"
+          placeholder="Digite como gostaria de ser chamado"
+        />
+        <button data-testid="nickname-button" type="submit">Salvar</button>
+        
+        <input 
+          data-testid="message-box" 
+          id="messageInput" 
+          autocomplete="off"
+          placeholder="Digite sua mensagem"
+        />
+        <button data-testid="send-button" type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+
+  <ul data-testid="message" id="messages"></ul>
+
+
+
+
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src='./js/chat.js'></script>
+</body>
+</html>
