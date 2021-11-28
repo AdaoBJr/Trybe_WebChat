@@ -1,6 +1,11 @@
+const date = require('../helpers/formatDate');
+
 module.exports = (io) => io.on('connection', (socket) => {
-  socket.on('clientMessage', (message) => {
-    console.log(`Mensagem ${message}`);
-    io.emit('serverMessage', message);
+  socket.on('message', ({ chatMessage, nickname }) => {
+    io.emit('message', `${date()} - ${nickname}: ${chatMessage}`);
+
+    socket.on('disconnect', () => {
+      socket.broadcast.emit('serverMessage', `${socket.id} acabou de se desconectar! :(`);
+    });
   });
-});
+}); 
