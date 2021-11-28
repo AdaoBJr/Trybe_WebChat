@@ -18,9 +18,9 @@ const socket = require('socket.io')(server, {
 
   cors: {
 
-    origin: `http://localhost:${PORT}`,
-    
     methods: ['GET', 'POST'],
+    
+    origin: urlOrigin,
 
   },
 
@@ -35,15 +35,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use('/', (requisition, response) => {
-
   response.render('index.ejs');
-
 });
 
 require('./sockets/chat.js')(socket);
 
 server.listen(PORT, () => {
-
   console.log(`Metendo marcha na porta ${PORT}`);
-
 });
