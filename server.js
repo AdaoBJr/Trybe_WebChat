@@ -24,6 +24,7 @@ const users = [];
 io.on('connection', (socket) => {
   socket.on('userConnected', (nickname) => {
     users.push({ id: socket.id, nickname });
+    console.log('=============== users ===============', users);
     io.emit('updateUsers', users);
   });
   
@@ -31,6 +32,12 @@ io.on('connection', (socket) => {
     const dateNow = new Date().toLocaleString().replace(/\//g, '-');
     // await userControllers.newMessage(nickname, chatMessage);
     io.emit('message', `${dateNow} ${nickname}: ${chatMessage}`);
+  });
+  
+  socket.on('changeNickname', ({ nickname, lastNickname }) => {
+    const user = users.findIndex((item) => item.nickname === lastNickname);
+    users.splice(user, 1, { id: socket.id, nickname });
+  io.emit('updateUsers', users);
   });
 });
 

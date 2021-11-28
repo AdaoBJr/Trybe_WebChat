@@ -10,16 +10,24 @@
 
 <body>
   <h1>WebChat</h1>
-  <form>
-    <input type="text" id="message-input" />
-    <button type="button" id="send-message">
-      Enviar
-    </button>
-  </form>
   <section>
     <h2>Chat:</h2>
     <ul id="chat"></ul>
   </section>
+  <section>
+    <div>
+      <h2>Usuários:</h2>
+      <ul id="online-users"></ul>
+    </div>
+    <form>
+      <input type="text" id="nickname-input" />
+      <button type="button" id="change-nickname">Change nickname</button>
+    </form>
+  </section>
+  <form>
+    <input type="text" id="message-input" />
+    <button type="button" id="send-message">Send message</button>
+  </form>
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/script.js"></script>
 </body>
