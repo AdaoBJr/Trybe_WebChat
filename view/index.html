@@ -90,7 +90,9 @@
       const renderAllUsers = (users) => {
         const userList = document.querySelector('#user-list');
         userList.innerText = '';
-        users.forEach((user) => newUser(user));
+        newUser(nickname);
+        const filterUsers = users.filter((user) => user !== nickname);
+        filterUsers.forEach((user) => newUser(user));
       };
 
       const renderAllMessages = (messages) => {
