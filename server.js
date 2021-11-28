@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const { StatusCodes } = require('http-status-codes');
 
 const { PORT } = process.env;
 
@@ -17,20 +18,19 @@ const io = require('socket.io')(http, {
   },
 });
 
-// const userControllers = require('./controllers/userController');
+const webchatControllers = require('./controllers/webchatControllers');
 
 const users = [];
 
 io.on('connection', (socket) => {
   socket.on('userConnected', (nickname) => {
     users.push({ id: socket.id, nickname });
-    console.log('=============== users ===============', users);
     io.emit('updateUsers', users);
   });
   
   socket.on('message', async ({ nickname, chatMessage }) => {
     const dateNow = new Date().toLocaleString().replace(/\//g, '-');
-    // await userControllers.newMessage(nickname, chatMessage);
+    await webchatControllers.newMessage(chatMessage, nickname, dateNow);
     io.emit('message', `${dateNow} ${nickname}: ${chatMessage}`);
   });
   
@@ -39,6 +39,16 @@ io.on('connection', (socket) => {
     users.splice(user, 1, { id: socket.id, nickname });
   io.emit('updateUsers', users);
   });
+});
+
+app.get('/messages', async (req, res) => {
+  try {
+    const messages = await webchatControllers.getAllMessages();
+    if (!messages) return res.status(StatusCodes.NOT_FOUND).json(messages); 
+    return res.status(StatusCodes.OK).json(messages);
+  } catch (error) {
+    return res.status(StatusCodes.BAD_REQUEST).json({ error });
+  }
 });
 
 app.get('/', (req, res) => res.render(`${__dirname}/views/chat.ejs`));

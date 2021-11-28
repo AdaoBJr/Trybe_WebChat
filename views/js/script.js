@@ -57,3 +57,12 @@ changeNickname.addEventListener('click', (event) => {
 });
 
 socket.on('message', (text) => newMessage(text));
+
+window.onload = async () => {
+  const response = await fetch('http://localhost:3000/messages');
+  const data = await response.json();
+  data.forEach(({ message, nickname: username, timestamp }) => {
+    const renderMessage = `${timestamp} - ${username} ${message}`;
+      newMessage(renderMessage);
+    });
+};
