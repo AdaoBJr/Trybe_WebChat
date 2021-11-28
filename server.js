@@ -1,11 +1,12 @@
 const cors = require('cors');
 const express = require('express');
+const path = require('path');
+
+const messages = [];
+const users = [];
 
 const app = express();
 const http = require('http').createServer(app);
-
-app.use(express.json());
-app.use(cors());
 
 const io = require('socket.io')(http, {
   cors: {
@@ -14,36 +15,40 @@ const io = require('socket.io')(http, {
   },
 });
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.json());
+app.use(cors());
+
+// https://stackoverflow.com/questions/60240603/nodejs-mime-type-text-html-is-not-a-supported-stylesheet-mime-type
+app.use('/css', express.static(`${__dirname}/views/css`));
+
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado: ${socket.id}`);
+  socket.emit('messageHistory', messages);
+  socket.emit('userHistory', users);
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const currentDate = new Date();
+    
+    const date = `${currentDate.getDate()}-${
+      (currentDate.getMonth() + 1)}-${currentDate.getFullYear()}`;
 
-    const day = currentDate.getDate();
-    const month = currentDate.getMonth() + 1;
-    const year = currentDate.getFullYear();
-
-    const date = `${day}-${month}-${year}`;
-
-    const hours = currentDate.getHours();
-    const minutes = currentDate.getMinutes();
-    const seconds = currentDate.getSeconds();
-
-    let time;
-
-    if (hours > 12) time = `${hours}:${minutes}:${seconds} PM`; 
-    else time = `${hours}:${minutes}:${seconds} AM`; 
-
-    console.log(`${date} ${time}`);
+    const time = `${currentDate.getHours()}:${
+      (currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes()}`;
+    
+    messages.push(`${date} ${time} - ${nickname}: ${chatMessage}`);
     io.emit('message', `${date} ${time} - ${nickname}: ${chatMessage}`);
   });
 
-  socket.on('disconnect', () => { console.log(`Usuário desconectou: ${socket.id}`); });
+  socket.on('changeNickname', ({ nickname }) => {
+    users.push(nickname);
+    io.emit('changeNickname', users);
+  });
 });
 
-app.get('/', (_req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
+app.get('/', async (_req, res) => {
+  res.status(200).render('index');
 });
 
 http.listen(3000, () => {

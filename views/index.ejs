@@ -37,18 +37,20 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
-      // Baseado em: https://gist.github.com/6174/6062387
-      let nickname = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 8);
-      console.log(nickname.length);
+
+      // https://gist.github.com/6174/6062387
+      let nickname = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 7);
+
       const users = document.getElementById('users');
       const userForm = document.getElementById('users-form');
       const userInput = document.getElementById('user-input');
-      // Cria a lista com o usuário atual
+
       const item = document.createElement('li');
       item.textContent = nickname;
       item.id = nickname;
       item.dataset.testid='online-user';
       users.appendChild(item);
+
       userForm.addEventListener('submit', (e) => {
         e.preventDefault();
         if(userInput.value) {
@@ -72,19 +74,35 @@
     
       socket.on('message', (msg) => {
         const item = document.createElement('li');
+
         item.textContent = msg;
-        item.dataset.testid='message';
+        item.dataset.testid = 'message';
+
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
+
       socket.on('messageHistory', (messageHistory) => {
         messageHistory.forEach((element) => {
           const item = document.createElement('li');
+
           item.textContent = element;
           item.dataset.testid='message';
+
           messages.appendChild(item);
           window.scrollTo(0, document.body.scrollHeight);
         });
+      })
+
+      socket.on('userHistory', (userHistory) => {
+        userHistory.forEach((element) => {
+          const item = document.createElement('li');
+
+          item.textContent = element;
+          item.dataset.testid = 'user';
+          
+          users.appendChild(item);
+        })
       })
     </script>
   </body>
