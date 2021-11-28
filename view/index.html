@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WEBCHAT</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+    <script>
+      const socket = io();
+    </script>
+  </head>
+  <body>
+    <div id="nickname" action="">
+      <input id="nickname" autocomplete="off" /><button>Save</button>
+    </div>
+    <div>
+      <ul id="users-online"></ul>
+    </div>
+    <div>
+      <ul id="messages"></ul>
+      <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+    <script>
+      const form = document.querySelector('form');
+      const inputMessage = document.querySelector('#input');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        socket.emit('message', {
+          chatMessage: inputMessage.value,
+          nickname: socket.id,
+        });
+        inputMessage.value = '';
+        return false;
+      });
+
+      const createMessage = (message) => {
+        const messagesUl = document.querySelector('#messages');
+        const li = document.createElement('li');
+        li.innerText = message;
+        messagesUl.appendChild(li);
+      };
+
+      socket.on('message', (message) => createMessage(message));
+    </script>
+  </body>
+</html>
