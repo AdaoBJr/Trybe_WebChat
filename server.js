@@ -19,12 +19,15 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   },
 });
+const messageController = require('./controller/messageController');
 
 require('./sockets/chat')(io);
 
 app.get('/', (_req, res) => {
   res.status(200).render('index');
 });
+
+app.get('/messages', messageController.getAll);
 
 const PORT = process.env.PORT || 3000;
 
