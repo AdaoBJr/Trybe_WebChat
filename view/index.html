@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <title>ULTIMO DESAFIO</title>
+</head>
+<body>
+  <form>
+    <input data-testid="nickname-box" type="text" id="nicknameInput" />
+    <button data-testid="nickname-button" type="button" id="chooseNickname">Salvar Nick</button>
+  </form>
+  <p data-testid="online-user" id="userNickname"></p>
+  <form>
+    <input data-testid="message-box" type="text" id="messageInput" />
+    <button data-testid="send-button" type="button" id="sendButton">Enviar</button>
+  </form>
+  <ul data-testid="message" id="messages"></ul>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="js/script.js"></script>
+</body>
+</html> 
