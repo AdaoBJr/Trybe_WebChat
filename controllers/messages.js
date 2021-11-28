@@ -1,3 +1,7 @@
+const express = require('express');
+
+const router = express.Router();
+
 const messageModel = require('../models/messages');
 // O formato da mensagem deve seguir esse padrão:
 const getFormatedDate = (date) => {
@@ -38,8 +42,14 @@ const sendMessage = async (message, nickname, now) => messageModel
 
 const getAllMessages = async () => messageModel.getAllMessages();
 
+router.get('/', async (req, res) => {
+  const messages = await messageModel.getAllMessages();
+  res.status(200).json(messages);
+});
+
 module.exports = {
   sendMessage,
   getAllMessages,
   newDate,
+  router,
 };
