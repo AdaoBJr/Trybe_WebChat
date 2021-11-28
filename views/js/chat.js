@@ -5,12 +5,18 @@ window.onbeforeunload = () => {
   socket.disconnect();
 };
 
-// const nickNameRandom = Math.random().toString(36).substring(2, 10)
-// + Math.random().toString(36).substring(2, 10);
+const nickNameRandom = Math.random().toString(36).substring(2, 10)
++ Math.random().toString(36).substring(2, 10);
 
 const form = document.querySelector('form');
 const inputMessage = document.querySelector('#message-box');
 const inputNickname = document.querySelector('#nickname-box');
+const randomNickname = document.querySelector('#randomNickname');
+randomNickname.innerHTML = nickNameRandom;
+
+if (!inputNickname.length) {
+  inputNickname.value = nickNameRandom;
+}
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -22,6 +28,7 @@ form.addEventListener('submit', (event) => {
 const createMessage = ({ message }) => {
   const messages = document.querySelector('#messages');
   const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
   li.innerText = message;
   messages.appendChild(li);
 };
