@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="./styles/chat.css">
+  <title>Web Chat</title>
+</head>
+<body>
+  <main>
+    <div id='chat-container'>
+      <div id='left-container'>
+        <p id='nickname' data-testid="online-user"></p>
+        <form id='user-nick-form'>
+          <input id="nickname-input" data-testid="nickname-box" autocomplete="false"/><button data-testid="nickname-button" id='change-nick'>Salvar</button>
+        </form>
+        <div id='online-users'></div>
+      </div>
+      <div id="right-container">
+        <ul id='msgs'>
+        </ul>
+      </div>  
+    </div>
+    <form id="message-form" action="">
+      <input id="message-input" data-testid="message-box" autocomplete="false"/><button data-testid="send-button">Send</button>
+    </form>
+  </main>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  // SOURCE: https://gist.github.com/6174/6062387
+  let nickname = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
+  
+  const form = document.getElementById('message-form');
+  const input = document.getElementById('message-input');
+  
+  const nicknameContainer = document.getElementById('nickname');
+  nicknameContainer.innerText = nickname;
+  socket.emit('newUser', nickname)
+
+  const nicknameInput = document.getElementById('nickname-input');
+  const btnNickInput = document.getElementById('change-nick');
+
+  btnNickInput.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (nicknameInput.value){
+      nickname = nicknameInput.value;
+      nicknameContainer.innerText = nickname;
+    }
+  })
+  
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (input.value) {
+      const data = { nickname, chatMessage: input.value }
+      socket.emit('message', data);
+      input.value = '';
+    }
+  });
+
+  socket.on('message', (msg) => {
+    const msgs = document.getElementById('msgs');
+    const li = document.createElement('li');
+    li.setAttribute('data-testid', 'message');
+    li.innerText = msg;
+    msgs.appendChild(li);
+  });
+
+</script>
+</html>
