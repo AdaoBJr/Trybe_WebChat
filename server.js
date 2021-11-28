@@ -35,7 +35,9 @@ function toFormatMessage(chatMessage, nickname) {
   return `${dateFormater()} ${hourFormater()} - ${nickname}: ${chatMessage}`;
 }
 
-const nickInfo = [];
+const onlineUsers = [];
+
+const disconnectUser = (socketid) => onlineUsers.findIndex((el) => el.id === socketid);
 
 io.on('connection', (socket) => {
   socket.on('message', async ({ chatMessage, nickname }) => {
@@ -43,12 +45,14 @@ io.on('connection', (socket) => {
     const messageFormated = toFormatMessage(chatMessage, nickname);
     io.emit('message', messageFormated);
   });
-  socket.on('disconnect', (data) => {
-    nickInfo.filter(({ id }) => id !== data.id);
-  });
   socket.on('newuser', (data) => {
-    nickInfo.push(data);
-    io.emit('usersonline', nickInfo);
+    onlineUsers.push(data);
+    io.emit('online-users', onlineUsers);
+  });
+  socket.on('disconnect', () => {
+    const position = disconnectUser(socket.id);
+    onlineUsers.splice(position, 1);
+    io.emit('online-users', onlineUsers);
   });
 });
 

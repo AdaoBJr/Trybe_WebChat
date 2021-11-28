@@ -71,10 +71,6 @@
       socket.emit('newuser', { nick, id: socket.id });
     });
 
-    socket.on('disconnect', () => {
-      socket.emit('offline', { nick: newUser.innerText, id: socket.id });
-    })
-
     socket.on('message', (message) => {
       const messagesDiv = document.getElementById('messages')
       const li = document.createElement('li');
@@ -83,17 +79,17 @@
       messagesDiv.appendChild(li);
     });
 
-    socket.on('usersonline', (data) => {
-      for(let i = 0; i < usersOnline.childNodes.length; i += 1) {
-        usersOnline.removeChild(usersOnline.childNodes[i]);
+    socket.on('online-users', (onlineUsers) => {
+      for (let i = usersOnline.childNodes.length; usersOnline.childNodes.length > 0; i -= 1) {
+        usersOnline.removeChild(usersOnline.lastChild);
       }
 
-      data.forEach((el) => {
+      onlineUsers.forEach((el) => {
         if (el.nick === newUser.innerText) return null;
-        const div = document.createElement('div');
-        div.innerText = el.nick;
-        div.setAttribute('data-testid', 'online-user')
-        usersOnline.appendChild(div);
+        const li = document.createElement('li');
+        li.innerText = el.nick;
+        li.setAttribute('data-testid', 'online-user')
+        usersOnline.appendChild(li);
       })
     })
   </script>
