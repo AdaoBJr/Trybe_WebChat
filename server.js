@@ -22,6 +22,8 @@ const webchatControllers = require('./controllers/webchatControllers');
 
 const users = [];
 
+const dateNow = new Date().toLocaleString().replace(/\//g, '-');
+
 io.on('connection', (socket) => {
   socket.on('userConnected', (nickname) => {
     users.push({ id: socket.id, nickname });
@@ -29,7 +31,6 @@ io.on('connection', (socket) => {
   });
   
   socket.on('message', async ({ nickname, chatMessage }) => {
-    const dateNow = new Date().toLocaleString().replace(/\//g, '-');
     await webchatControllers.newMessage(chatMessage, nickname, dateNow);
     io.emit('message', `${dateNow} ${nickname}: ${chatMessage}`);
   });
@@ -38,6 +39,12 @@ io.on('connection', (socket) => {
     const user = users.findIndex((item) => item.nickname === lastNickname);
     users.splice(user, 1, { id: socket.id, nickname });
   io.emit('updateUsers', users);
+  });
+  
+  socket.on('disconnect', ({ id }) => {
+  const index = users.findIndex((user) => user.id === id);
+  users.splice(index, 1);
+    io.emit('updateUsers', users);
   });
 });
 
