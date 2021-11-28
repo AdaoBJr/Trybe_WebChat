@@ -1,4 +1,5 @@
 // Faça seu código aqui - OK, iniciando projeto!
+// Sua aplicação deve ser inicializada no arquivo server.js;
 const express = require('express');
 require('dotenv').config();
 
