@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { StatusCodes } = require('http-status-codes');
 
-const { PORT } = process.env;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 const http = require('http').createServer(app);
