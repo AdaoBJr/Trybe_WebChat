@@ -27,7 +27,7 @@ app.get('/', (_req, res) => {
   res.status(200).render('index');
 });
 
-app.get('/messages', messageController.getAll);
+app.get('/', messageController.getAll);
 
 const PORT = process.env.PORT || 3000;
 
