@@ -15,7 +15,7 @@ const createUsersList = (userList) => {
         li.setAttribute('data-testid', onlineUser);
         li.setAttribute('id', user[0]);
         li.append(liText);
-        // Pescando de Alessandra Rezende
+        // Ajuda de Fe e Gabriel
         if (user[0] === socket.id) {
             document.getElementById(onlineUser).prepend(li);
         } else {

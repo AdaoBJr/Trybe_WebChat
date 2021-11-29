@@ -1,4 +1,4 @@
-const moment = require('moment'); // https://momentjs.com/
+const moment = require('moment');
 const connection = require('./connection');
 
 const createMessage = async ({ chatMessage, nickname }) => {
