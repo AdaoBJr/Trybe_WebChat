@@ -4,15 +4,14 @@ const allUsers = () => userArray;
 
 const addUser = (user) => {
   userArray.push(user);
-
   return userArray;
 };
 
 const removeUsers = (socketId) => {
   const userInfo = userArray.find((user) => user.socketId === socketId);
-  const userInfoIndex = userArray.indexOf(userInfo);
-  if (userInfoIndex > -1) {
-    userArray.splice(userInfoIndex, 1);
+  const userIndex = userArray.indexOf(userInfo);
+  if (userIndex > -1) {
+    userArray.splice(userIndex, 1);
   }
 };
 
