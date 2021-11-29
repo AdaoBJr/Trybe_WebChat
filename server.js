@@ -47,13 +47,12 @@ io.on('connection', (socket) => {
     const messageFormated = toFormatMessage(chatMessage, nickname);
     io.emit('message', messageFormated);
   }); socket.on('newuser', (data) => {
-    console.log(data);
     onlineUsers.push(data);
     io.emit(ONLINE_USERS, onlineUsers);
   });
-  socket.on('update-user', (data) => {
-    const position = disconnectUser(data.id);
-    onlineUsers[position].nick = data.newNick;
+  socket.on('update-user', ({ id, newNick }) => {
+    const position = disconnectUser(id);
+    onlineUsers[position].nickname = newNick;
     io.emit(ONLINE_USERS, onlineUsers);
   });
   socket.on('disconnect', () => {

@@ -68,8 +68,8 @@
       const messageAuthor = document.getElementById('nickname');
       messageAuthor.value = makeid(16);
       newUser.innerText = messageAuthor.value
-      const nick = newUser.innerText;
-      socket.emit('newuser', { nick, id: socket.id });
+      const nickname = newUser.innerText;
+      socket.emit('newuser', { nickname, id: socket.id });
     });
 
     socket.on('message', (message) => {
@@ -86,9 +86,9 @@
       }
 
       onlineUsers.forEach((el) => {
-        if (el.nick === newUser.innerText) return null;
+        if (el.id === socket.id) return;
         const li = document.createElement('li');
-        li.innerText = el.nick;
+        li.innerText = el.nickname;
         li.setAttribute('data-testid', 'online-user')
         usersOnline.appendChild(li);
       })
