@@ -55,10 +55,10 @@ const onlineUsersListUpdate = (onlineUsersObject) => {
   const usersUL = document.querySelector('#onlineUsers');
   const usersLI = document.querySelectorAll('.others-online-users');
 
+  // Source: Ajuda do parceiro Lucar Ribeiro T1o Tribo B
   if (usersLI.length !== 0) usersLI.forEach((li) => li.remove());
 
-  console.log(nickname);
-
+  // Source: Ajuda do parceiro Lucar Ribeiro T1o Tribo B
   const updatedUsersList = Object.values(onlineUsersObject)
     .filter((onlineUserNickname, _index, _array) => onlineUserNickname !== nickname);
 
