@@ -1,0 +1,144 @@
+* {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+body {
+  font-family: sans-serif;
+  width: 100%;
+}
+
+.chat {
+  border: solid 0.5px cadetblue;
+  border-radius: 5px;
+  color: rgb(72, 71, 71);
+  height: 44vh;
+  margin-top: 5px;
+  overflow-y: scroll;
+  padding: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.contents {
+  display: flex;
+  flex-direction: row;
+}
+
+.contents-one {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  width: 35%;
+}
+
+.contents-two {
+  margin-right: 20px;
+  width: 65%;
+}
+
+.footer {
+  background-color: cadetblue;
+  bottom: 0;
+  color: white;
+  font-size: 12px;
+  padding: 3px;
+  position: fixed;
+  text-align: center;
+  width: 100%;
+}
+
+.header {
+  background-color: cadetblue;
+  box-shadow: 1px 1px 10px 1px gray;
+  color: aliceblue;
+  font-size: 20px;
+  padding: 15px;
+  text-align: center;
+}
+
+li {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.messageBox {
+  border: solid 0.5px cadetblue;
+  border-radius: 15px;
+  font-size: 15px;
+  height: 10vh;
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  width: 50%;
+}
+
+.newMessage {
+  align-items: center;
+  border-top: solid cadetblue;
+  display: flex;
+  flex-direction: column;
+  height: 25vh;
+  margin-top: 20px;
+  padding-top: 10px;
+}
+
+.nickname {
+  text-align: center;
+}
+
+.nicknameBox {
+  border: solid 0.5px cadetblue;
+  border-radius: 15px;
+  color: rgb(72, 67, 67);
+  font-size: 20px;
+  margin: 20px 5px 20px -15px;
+  padding: 10px;
+  text-align: center;
+}
+
+.nicknameButton {
+  background: cadetblue;
+  border: 0;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  height: 25px;
+  outline: 0;
+  width: 70px;
+}
+
+.sendButton {
+  background: cadetblue;
+  border: 0;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  height: 25px;
+  outline: 0;
+  width: 70px;
+}
+
+.title {
+  color: cadetblue;
+  margin-bottom: 0;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.users {
+  border: solid 0.5px cadetblue;
+  border-radius: 3px;
+  color: rgb(72, 71, 71);
+  height: 32vh;
+  line-height: 20px;
+  margin-right: 20px;
+  margin-top: 5px;
+  overflow-y: scroll;
+  padding: 10px 30px;
+}

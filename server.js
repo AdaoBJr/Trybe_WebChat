@@ -52,6 +52,11 @@ io.on('connection', (socket) => {
   });
 });
 
+app.get('/', async (_request, response) => {
+  const messages = await Models.getAllMessage();
+  response.render('index', { messages });
+});
+
 http.listen(PORT, () => {
   console.clear();
   console.log(`Ouvindo na porta ${PORT}`);
