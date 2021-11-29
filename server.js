@@ -37,6 +37,8 @@ function toFormatMessage(chatMessage, nickname) {
 
 const onlineUsers = [];
 
+const ONLINE_USERS = 'online-users';
+
 const disconnectUser = (socketid) => onlineUsers.findIndex((el) => el.id === socketid);
 
 io.on('connection', (socket) => {
@@ -44,15 +46,19 @@ io.on('connection', (socket) => {
     await newMessageService(chatMessage, nickname);
     const messageFormated = toFormatMessage(chatMessage, nickname);
     io.emit('message', messageFormated);
-  });
-  socket.on('newuser', (data) => {
+  }); socket.on('newuser', (data) => {
+    console.log(data);
     onlineUsers.push(data);
-    io.emit('online-users', onlineUsers);
+    io.emit(ONLINE_USERS, onlineUsers);
+  });
+  socket.on('update-user', (data) => {
+    const position = disconnectUser(data.id);
+    onlineUsers[position].nick = data.newNick;
+    io.emit(ONLINE_USERS, onlineUsers);
   });
   socket.on('disconnect', () => {
-    const position = disconnectUser(socket.id);
-    onlineUsers.splice(position, 1);
-    io.emit('online-users', onlineUsers);
+    onlineUsers.splice(disconnectUser(socket.id), 1);
+    io.emit(ONLINE_USERS, onlineUsers);
   });
 });
 

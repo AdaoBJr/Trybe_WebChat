@@ -61,6 +61,7 @@
       event.preventDefault();
       const author = document.getElementById('nickname');
       newUser.innerText = author.value
+      socket.emit('update-user', { id: socket.id, newNick: author.value })
     })
 
     socket.on('connect', () => {
