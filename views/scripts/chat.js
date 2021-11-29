@@ -26,6 +26,7 @@ inputNicknameForm.addEventListener('submit', (e) => {
   e.preventDefault();
   nicknameLabel.innerText = inputNickname.value;
   sessionStorage.setItem('nickname', inputNickname.value);
+  nickname = inputNickname.value;
   socket.emit('userNameUpdate', inputNickname.value);
   inputNickname.value = '';
   return false;
@@ -49,20 +50,24 @@ const createMessage = (message) => {
 };
 
 const onlineUsersListUpdate = (onlineUsersObject) => {
+  console.log(onlineUsersObject);
+
   const usersUL = document.querySelector('#onlineUsers');
   const usersLI = document.querySelectorAll('.others-online-users');
 
-  console.log(usersLI);
   if (usersLI.length !== 0) usersLI.forEach((li) => li.remove());
 
-  Object.values(onlineUsersObject).forEach((onlineUser, _index, array) => {
-    // for (let cont = 0; cont < array.length - 1; cont += 1) {
+  console.log(nickname);
+
+  const updatedUsersList = Object.values(onlineUsersObject)
+    .filter((onlineUserNickname, _index, _array) => onlineUserNickname !== nickname);
+
+  updatedUsersList.forEach((onlineUserNickname, _index, _array) => {
       const li = document.createElement('li');
       li.setAttribute('data-testid', 'online-user');
       li.setAttribute('class', 'others-online-users');
-      li.innerText = onlineUser;
+      li.innerText = onlineUserNickname;
       usersUL.appendChild(li);
-    // }
   });
 };
 
