@@ -66,9 +66,7 @@
     })
 
     socket.on('connect', () => {
-      const messageAuthor = document.getElementById('nickname');
-      messageAuthor.value = makeid(16);
-      newUser.textContent = messageAuthor.value
+      newUser.textContent = makeid(16);
       const nickname = newUser.textContent;
       socket.emit('newuser', { nickname, id: socket.id });
     });
