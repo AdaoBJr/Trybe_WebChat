@@ -7,20 +7,23 @@
 </head>
 <body>
   <main>
-    <div id='chat-container'>
-      <div id='left-container'>
+    <div id='chat-container' class='chat-container'>
+      <div id='left-container' class='left-container'>
         <p id='nickname' data-testid="online-user"></p>
-        <form id='user-nick-form'>
+        <form id='user-nick-form' class='user-nick-form'>
           <input id="nickname-input" data-testid="nickname-box" autocomplete="false"/><button data-testid="nickname-button" id='change-nick'>Salvar</button>
         </form>
-        <div id='online-users'></div>
+        <div id='online-users' class='online-users'></div>
       </div>
-      <div id="right-container">
+      <div id="right-container" class="right-container">
         <ul id='msgs'>
+          <% messages.forEach(({nickname, message, timestamp}) => { %>
+            <li data-testid="message"><%= `${timestamp} - ${nickname}: ${message}` %></li>
+          <%})%>
         </ul>
       </div>  
     </div>
-    <form id="message-form" action="">
+    <form id="message-form" class="message-form" action="">
       <input id="message-input" data-testid="message-box" autocomplete="false"/><button data-testid="send-button">Send</button>
     </form>
   </main>

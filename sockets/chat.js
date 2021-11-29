@@ -1,3 +1,5 @@
+const Message = require('../models/Messages');
+
 const onlineUsers = [];
 
 const disconnect = (socket) => {
@@ -7,7 +9,7 @@ const disconnect = (socket) => {
 };
 
 const message = (socket, io) => {
-  socket.on('message', (msg) => {
+  socket.on('message', async (msg) => {
     const date = new Date();
     const [year, day, month] = [date.getFullYear(), date.getDate(), date.getMonth()];
     const [hour, minute, second] = [date.getHours(), date.getMinutes(), date.getSeconds()];
@@ -15,6 +17,11 @@ const message = (socket, io) => {
     const messageTime = `${day}-${month + 1}-${year} ${hour}:${minute}:${second}`;
     const formattedMessage = `${messageTime} - ${msg.nickname}: ${msg.chatMessage}`;
     io.emit('message', formattedMessage);
+    await Message.saveMessages({
+      nickname: msg.nickname,
+      message: msg.chatMessage,
+      timestamp: messageTime,
+    });
     console.log(formattedMessage);
   });
 };

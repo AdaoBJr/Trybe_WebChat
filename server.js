@@ -15,6 +15,8 @@ const io = require('socket.io')(server, {
 
 const chat = require('./sockets/chat');
 
+const Messages = require('./models/Messages');
+
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
@@ -22,7 +24,8 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 app.get('/', async (req, res) => {
-  res.status(200).render('chat');
+  const messages = await Messages.getAll();
+  res.status(200).render('chat', { messages });
 });
 
 chat(io);

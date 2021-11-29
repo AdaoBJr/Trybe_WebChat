@@ -1,62 +1,56 @@
 main {
-  width: 800px;
   height: 600px;
+  width: 800px;
 }
 
-#chat-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
+.chat-container {
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  width: 100%;
+  flex-direction: row;
   height: 90%;
+  width: 100%;
 }
 
-#chat-container #left-container {
-  width: 40%;
+.left-container {
   height: 100%;
+  width: 40%;
 }
 
-#chat-container #left-container #user-nick-form {
+.user-nick-form {
   height: 10%;
 }
 
-#chat-container #left-container #user-nick-form input {
+.user-nick-form input {
+  height: 80%;
   width: 80%;
+}
+
+.user-nick-form button {
   height: 80%;
 }
 
-#chat-container #left-container #user-nick-form button {
-  height: 80%;
-}
-
-#chat-container #left-container #online-users {
-  width: 100%;
+.online-users {
   height: 90%;
+  width: 100%;
 }
 
-#chat-container #right-container {
-  width: 60%;
+.right-container {
   height: 100%;
+  width: 60%;
 }
 
-#chat-container #right-container ul {
+.right-container ul {
   list-style-type: none;
 }
 
-#message-form {
+.message-form {
   height: 10%;
 }
 
-#message-form input {
-  width: 92.5%;
+.message-form input {
   height: 80%;
+  width: 92.5%;
 }
 
-#message-form button {
+.message-form button {
   height: 80%;
 }
-/*# sourceMappingURL=chat.css.map */
