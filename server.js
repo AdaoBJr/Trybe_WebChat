@@ -15,6 +15,9 @@ const io = require('socket.io')(http, {
   },
 });
 
+const { router } = require('./controllers/messages');
+
+app.use('/messages', router);
 app.use('/', express.static(`${__dirname}/view/`));
 
 require('./sockets/messages')(io);
