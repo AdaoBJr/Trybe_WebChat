@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const model = require('../models/data');
+const model = require('../../models/data');
 
 const generateUserName = () => crypto.randomBytes(8).toString('hex');
 const users = {};
