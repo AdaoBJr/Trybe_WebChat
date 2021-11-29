@@ -35,15 +35,17 @@
 
     <script>
       // https://dev.to/oyetoket/fastest-way-to-generate-random-strings-in-javascript-2k5a
-      const rand = () => Math.random(0).toString(36).substr(2);
-      const generateNick = (length) =>
-        (rand() + rand() + rand() + rand()).substr(0, length);
+      // const rand = () => Math.random(0).toString(36).substr(2);
+      // const generateNick = (length) =>
+      //   (rand() + rand() + rand() + rand()).substr(0, length);
 
-      let nickname = generateNick(16);
+      const userList = document.querySelector('#user-list');
+      let nickname = '';
 
-      socket.on('connect', () => {
-        socket.emit('nickname', nickname);
-      });
+      // let nickname = generateNick(16);
+      // socket.emit('nickname', nickname);
+
+      // socket.on('connect', () => {});
 
       const messageForm = document.querySelector('#message-form');
       const messageInput = document.querySelector('#message-input');
@@ -78,21 +80,27 @@
         nicknameInput.value = '';
       });
 
-      const userList = document.querySelector('#user-list');
-
-      const newUser = (user) => {
-        const li = document.createElement('li');
-        li.innerText = user;
-        li.setAttribute('data-testid', 'online-user');
-        userList.appendChild(li);
-      };
+      // const newUser = (user) => {
+      //   const li = document.createElement('li');
+      //   li.innerText = user;
+      //   li.setAttribute('data-testid', 'online-user');
+      //   userList.appendChild(li);
+      // };
 
       const renderAllUsers = (users) => {
         const userList = document.querySelector('#user-list');
         userList.innerText = '';
-        newUser(nickname);
+        const li = document.createElement('li');
+        li.innerText = nickname;
+        li.setAttribute('data-testid', 'online-user');
+        userList.appendChild(li);
         const filterUsers = users.filter((user) => user !== nickname);
-        filterUsers.forEach((user) => newUser(user));
+        filterUsers.map((user) => {
+          const li = document.createElement('li');
+          li.innerText = user;
+          li.setAttribute('data-testid', 'online-user');
+          userList.appendChild(li);
+        });
       };
 
       const renderAllMessages = (messages) => {
@@ -101,6 +109,10 @@
           createMessage(formatedMessage);
         });
       };
+
+      socket.on('nick', (nick) => {
+        nickname = nick;
+      });
 
       socket.on('message', (message) => createMessage(message));
       socket.on('users', (users) => renderAllUsers(users));

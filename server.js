@@ -38,7 +38,27 @@ const changeNickname = (socket) => {
   });
 };
 
+const rand = () => Math.random(0).toString(36).substr(2);
+const generateNick = (length) =>
+  (rand() + rand() + rand() + rand()).substr(0, length);
+
+const removeUser = (socket) => {
+  socket.on('disconnect', () => {
+    const onlineUsers = users.filter(({ id }) => id !== socket.id);
+    users = onlineUsers;
+    const usersNicknames = users.map((user) => user.nickname);
+    io.emit('users', usersNicknames);
+  });
+};
+
 io.on('connection', async (socket) => {
+  const nick = generateNick(16);
+  users.push({ nickname: nick, id: socket.id });
+  socket.emit('nick', nick);
+
+  const usersNicks = users.map((user) => user.nickname);
+  io.emit('users', usersNicks);
+
   const allMessages = await getAllMessages();
   socket.emit('messages', allMessages);
 
@@ -47,17 +67,12 @@ io.on('connection', async (socket) => {
   socket.on('nickname', (nickname) => {
     users.push({ nickname, id: socket.id });
     const usersNicknames = users.map((user) => user.nickname);
+    console.log(`users: ${usersNicknames}`);
     io.emit('users', usersNicknames);
   });
 
   changeNickname(socket);
-
-  socket.on('disconnect', () => {
-    const onlineUsers = users.filter(({ id }) => id !== socket.id);
-    users = onlineUsers;
-    const usersNicknames = users.map((user) => user.nickname);
-    io.emit('users', usersNicknames);
-  });
+  removeUser(socket);
 });
 
 const PORT = '3000';
