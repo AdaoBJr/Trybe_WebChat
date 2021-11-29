@@ -9,31 +9,37 @@
 </head>
 <body>
   <main>
+
+    <form id="nickname-form" action="">
+      <input 
+        type="text"
+        id="nickname-box" 
+        data-testid="nickname-box" 
+        autocomplete="off" 
+        placeholder="Digite como gostaria de ser chamado"
+        value="" 
+      />
+      <button type="submit" data-testid="nickname-button">SALVAR</button>
+    </form>
+
     <section>
-      <h3 id="randomNickname" data-testid="online-user"></h3>
-      <form action="">
+      <h2>Usuários online</h2>
+      <h3 id="online-user" data-testid="online-user"></h3>
+    </section>
+
+      <form id="message-form" action="">
         <input 
-          data-testid="nickname-box"
-          id="nickname-box" 
-          autocomplete="off"
-          placeholder="Digite como gostaria de ser chamado"
-        />
-        <button data-testid="nickname-button" type="submit">Salvar</button>
-        
-        <input 
-          data-testid="message-box" 
+          type="text"
+          data-testid="message-box"
           id="message-box" 
           autocomplete="off"
           placeholder="Digite sua mensagem"
         />
-        <button data-testid="send-button" type="submit">Enviar</button>
+        <button data-testid="send-button" type="submit">ENVIAR</button>
       </form>
-    </section>
   </main>
 
   <ul data-testid="message" id="messages"></ul>
-
-
 
 
 
