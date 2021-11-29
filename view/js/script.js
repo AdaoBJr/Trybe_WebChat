@@ -6,6 +6,7 @@ const nicknameInput = document.querySelector('#nicknameInput');
 const chooseNickname = document.querySelector('#chooseNickname');
 const userNickname = document.querySelector('#userNickname');
 const messageList = document.querySelector('#messages');
+const onlineUsers = document.querySelector('#onlineUsers');
 
 // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 const generateNickname = () => {
@@ -22,8 +23,11 @@ const generateNickname = () => {
 let nickname = generateNickname();
 
 chooseNickname.addEventListener('click', () => {
+  const oldNickname = nickname;
+  const newNickname = nicknameInput.value;
   nickname = nicknameInput.value;
   userNickname.textContent = nickname;
+  socket.emit('changeNicknames', { oldNickname, newNickname });
 });
 
 sendButton.addEventListener('click', () => {
@@ -50,8 +54,30 @@ const getMessages = async () => {
     .then((result) => renderMessages(result));
 };
 
+const createNickname = (nick, myNickname) => {
+  const li = document.createElement('li');
+  li.textContent = nick;
+  if (myNickname === nickname) {
+    li.setAttribute('data-testid', 'online-user');
+  }
+  onlineUsers.appendChild(li);
+};
+
+const renderArrayNicknames = (arr) => {
+  onlineUsers.innerHTML = '';
+  arr.forEach((nick) => {
+    createNickname(nick, nickname);
+  });
+};
+
 socket.on('message', (receivedMessage) => {
   createMessage(receivedMessage);
+});
+
+socket.on('updateNicknames', (nicknames) => {
+  const orderedNicknames = nicknames.filter((el) => el !== nickname);
+  orderedNicknames.unshift(nickname);
+  renderArrayNicknames(orderedNicknames);
 });
 
 window.onload = async () => {
