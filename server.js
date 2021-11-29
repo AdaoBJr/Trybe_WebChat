@@ -15,7 +15,6 @@ const io = require('socket.io')(socketIoServer, {
   },
 });
 
-// const model = require('./models/data');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
