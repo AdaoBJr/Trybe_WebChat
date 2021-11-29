@@ -38,24 +38,44 @@
     <script>
       const socket = io();
 
-      // https://gist.github.com/6174/6062387
-      let nickname = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 7);
+      function generateNick(length) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+
+        for (let i = 0; i < length; i += 1) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        return result;
+      }
+
+      let nickname = generateNick(16);
+      let originalNickname = nickname;
 
       const users = document.getElementById('users');
       const userForm = document.getElementById('users-form');
       const userInput = document.getElementById('user-input');
 
-      const item = document.createElement('li');
-      item.textContent = nickname;
-      item.id = nickname;
-      item.dataset.testid='online-user';
-      users.appendChild(item);
+      // Cria o usuário na lista
+      const user = document.createElement('li');
+      user.textContent = nickname;
+      user.id = nickname;
+      user.dataset.testid='online-user';
+      users.appendChild(user);
+      socket.emit('changeNickname', {originalNickname: nickname, nickname});
 
       userForm.addEventListener('submit', (e) => {
         e.preventDefault();
         if(userInput.value) {
+          originalNickname = nickname;
           nickname = userInput.value;
-          socket.emit('changeNickname', {nickname});
+
+          const item = document.createElement('li');
+          item.textContent = userInput.value;
+          user.removeChild(user.firstChild);
+          user.insertBefore(item, user.firstChild);
+          socket.emit('changeNickname', {originalNickname, nickname});
           userInput.value = '';
         }
       })
@@ -99,10 +119,26 @@
           const item = document.createElement('li');
 
           item.textContent = element;
-          item.dataset.testid = 'user';
+          item.dataset.testid = 'online-user';
           
           users.appendChild(item);
         })
+      })
+
+      socket.on('changeNickname', (usernames) => {
+        while (users.firstChild) { users.removeChild(users.firstChild) }
+        
+        const currentUser = document.createElement('li');
+        currentUser.textContent = nickname;
+        currentUser.dataset.testid='online-user';
+        users.appendChild(currentUser);
+
+        usernames.forEach((element) => {
+          const item = document.createElement('li');
+          item.textContent = element;
+          item.dataset.testid = 'online-user';
+          if (element !== nickname) users.appendChild(item);
+        });
       })
     </script>
   </body>

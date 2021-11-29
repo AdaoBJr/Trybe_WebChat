@@ -30,12 +30,15 @@ const { getDateTime } = require('./utils/dateTime');
 const removeUser = (socket) => {
   const nickname = socketsUsers[socket.id];
   const index = users.indexOf(nickname);
+  
   users.splice(index, 1);
 };
 
 const changeNickname = (socket, originalNickname, nickname) => {
   socketsUsers[socket.id] = nickname;
+
   const index = users.indexOf(originalNickname);
+
   if (index >= 0) users[index] = nickname;
   if (index < 0) users.push(originalNickname);
 };
