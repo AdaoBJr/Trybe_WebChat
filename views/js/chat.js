@@ -8,24 +8,33 @@ window.onbeforeunload = () => {
 const nickNameRandom = Math.random().toString(36).substring(2, 10)
 + Math.random().toString(36).substring(2, 10);
 
-const form = document.querySelector('form');
+const messageForm = document.querySelector('#message-form');
+const nickNameForm = document.querySelector('#nickname-form');
 const inputMessage = document.querySelector('#message-box');
 const inputNickname = document.querySelector('#nickname-box');
-const randomNickname = document.querySelector('#randomNickname');
-randomNickname.innerHTML = nickNameRandom;
+const newNickName = document.querySelector('#online-user');
 
-if (!inputNickname.length) {
-  inputNickname.value = nickNameRandom;
+function setNickname() {
+  const nickName = nickNameRandom;
+  sessionStorage.setItem('Nickname', nickName);
 }
 
-form.addEventListener('submit', (event) => {
+nickNameForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  socket.emit('message', { chatMessage: inputMessage.value, nickname: inputNickname.value });
+  sessionStorage.setItem('Nickname', inputNickname.value);
+  inputNickname.value = '';
+  return false;
+});
+
+messageForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const nickname = sessionStorage.getItem('Nickname');
+  socket.emit('message', { chatMessage: inputMessage.value, nickname });
   inputMessage.value = '';
   return false;
 });
 
-const createMessage = ({ message }) => {
+const createMessage = (message) => {
   const messages = document.querySelector('#messages');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
@@ -34,5 +43,14 @@ const createMessage = ({ message }) => {
 };
 
 socket.on('message', (message) => {
-  createMessage({ message });
+  createMessage(message);
+});
+
+socket.on('listMessages', (messageList) => {
+  messageList.map((message) => createMessage(message));
+});
+
+socket.on('connect', () => {
+  setNickname();
+  newNickName.innerHTML = nickNameRandom;
 });
