@@ -13,7 +13,10 @@
         <form id='user-nick-form' class='user-nick-form'>
           <input id="nickname-input" data-testid="nickname-box" autocomplete="false"/><button data-testid="nickname-button" id='change-nick'>Salvar</button>
         </form>
-        <div id='online-users' class='online-users'></div>
+        <div id='online-users' class='online-users'>
+          <ul id='online-users-list'>
+          </ul>
+        </div>
       </div>
       <div id="right-container" class="right-container">
         <ul id='msgs'>
@@ -44,11 +47,14 @@
   const nicknameInput = document.getElementById('nickname-input');
   const btnNickInput = document.getElementById('change-nick');
 
+  const onlineUsersList = document.getElementById('online-users-list');
+  
   btnNickInput.addEventListener('click', (event) => {
     event.preventDefault();
     if (nicknameInput.value){
       nickname = nicknameInput.value;
       nicknameContainer.innerText = nickname;
+      socket.emit('editUser', nickname);
     }
   })
   
@@ -68,6 +74,25 @@
     li.innerText = msg;
     msgs.appendChild(li);
   });
+
+  socket.on('online', (onlineUsers) => {
+    // SOURCE https://www.geeksforgeeks.org/remove-all-the-child-elements-of-a-dom-node-in-javascript/
+    let firstChild = onlineUsersList.firstElementChild;
+    while(firstChild){
+      firstChild.remove();
+      firstChild = onlineUsersList.firstElementChild;
+    }
+    
+    const userIndex = onlineUsers.findIndex((user) => user.nickname === nickname);
+    onlineUsers.splice(userIndex, 1);
+
+    onlineUsers.forEach((user) => {
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'online-user');
+      li.innerText = user.nickname;
+      onlineUsersList.appendChild(li);
+    })
+  })
 
 </script>
 </html>

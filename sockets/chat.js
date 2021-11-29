@@ -2,9 +2,12 @@ const Message = require('../models/Messages');
 
 const onlineUsers = [];
 
-const disconnect = (socket) => {
+const disconnect = (socket, io) => {
   socket.on('disconnect', () => {
     console.log('Disconnected user');
+    const userIndex = onlineUsers.findIndex((item) => item.id === socket.id);
+    onlineUsers.splice(userIndex, 1);
+    io.emit('online', onlineUsers);
   });
 };
 
@@ -28,7 +31,15 @@ const message = (socket, io) => {
 
 const newUser = (socket, io) => {
   socket.on('newUser', (nickname) => {
-    onlineUsers.push({ id: socket.id, user: nickname });
+    onlineUsers.push({ id: socket.id, nickname });
+    io.emit('online', onlineUsers);
+  });
+};
+
+const editUser = (socket, io) => {
+  socket.on('editUser', (nickname) => {
+    const index = onlineUsers.findIndex((item) => item.id === socket.id);
+    onlineUsers[index].nickname = nickname;
     io.emit('online', onlineUsers);
   });
 };
@@ -37,7 +48,8 @@ const chat = (io) => {
   io.on('connection', (socket) => {
     console.log('Connected user');
     newUser(socket, io);
-    disconnect(socket);
+    editUser(socket, io);
+    disconnect(socket, io);
     message(socket, io);
   });
 };
