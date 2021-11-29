@@ -24,10 +24,18 @@
           <input id="user-input" data-testid="nickname-box" autocomplete="off" />
           <button data-testid="nickname-button">Salvar</button>
         </form>
-        <ul id=users></ul>
+        <ul id=users>
+          <% users.forEach(user => { %>
+            <li data-testid="online-user"><%=user%></li>
+          <%})%>
+        </ul>
       </div>
       <div class="messages">
-        <ul id="messages"></ul>
+        <ul id="messages">
+          <% messages.forEach(message => { %>
+            <li data-testid="message"><%=message%></li>
+          <%})%>
+        </ul>
       </div>
     </div>
     <form id="message-form" action="">
@@ -35,111 +43,6 @@
       <button data-testid="send-button">Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const socket = io();
-
-      function generateNick(length) {
-        let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-
-        for (let i = 0; i < length; i += 1) {
-          result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-
-        return result;
-      }
-
-      let nickname = generateNick(16);
-      let originalNickname = nickname;
-
-      const users = document.getElementById('users');
-      const userForm = document.getElementById('users-form');
-      const userInput = document.getElementById('user-input');
-
-      // Cria o usuário na lista
-      const user = document.createElement('li');
-      user.textContent = nickname;
-      user.id = nickname;
-      user.dataset.testid='online-user';
-      users.appendChild(user);
-      socket.emit('changeNickname', {originalNickname: nickname, nickname});
-
-      userForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if(userInput.value) {
-          originalNickname = nickname;
-          nickname = userInput.value;
-
-          const item = document.createElement('li');
-          item.textContent = userInput.value;
-          user.removeChild(user.firstChild);
-          user.insertBefore(item, user.firstChild);
-          socket.emit('changeNickname', {originalNickname, nickname});
-          userInput.value = '';
-        }
-      })
-      
-      const messages = document.getElementById('messages');
-      const messageForm = document.getElementById('message-form');
-      const messageInput = document.getElementById('message-input');
-      
-      messageForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (messageInput.value) {
-          socket.emit('message', {chatMessage: messageInput.value, nickname});
-          messageInput.value = '';
-        }
-      });
-    
-      socket.on('message', (msg) => {
-        const item = document.createElement('li');
-
-        item.textContent = msg;
-        item.dataset.testid = 'message';
-
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-
-      socket.on('messageHistory', (messageHistory) => {
-        messageHistory.forEach((element) => {
-          const item = document.createElement('li');
-
-          item.textContent = element;
-          item.dataset.testid='message';
-
-          messages.appendChild(item);
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      })
-
-      socket.on('userHistory', (userHistory) => {
-        userHistory.forEach((element) => {
-          const item = document.createElement('li');
-
-          item.textContent = element;
-          item.dataset.testid = 'online-user';
-          
-          users.appendChild(item);
-        })
-      })
-
-      socket.on('changeNickname', (usernames) => {
-        while (users.firstChild) { users.removeChild(users.firstChild) }
-        
-        const currentUser = document.createElement('li');
-        currentUser.textContent = nickname;
-        currentUser.dataset.testid='online-user';
-        users.appendChild(currentUser);
-
-        usernames.forEach((element) => {
-          const item = document.createElement('li');
-          item.textContent = element;
-          item.dataset.testid = 'online-user';
-          if (element !== nickname) users.appendChild(item);
-        });
-      })
-    </script>
+    <script src="js/index.js"></script>
   </body>
 </html>
