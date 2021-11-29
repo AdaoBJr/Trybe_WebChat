@@ -18,7 +18,7 @@ const io = require('socket.io')(socketIoServer, {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-require('./sockets/backEnd')(io);
+require('./sockets/backend')(io);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
