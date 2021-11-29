@@ -6,10 +6,10 @@ const getAll = async () => {
   return messages;
 };
 
-const createMessage = async (message, nickName, date) => {
+const createMessage = async (message, nickname, date) => {
   const db = await connection();
   await db.collection('messages').insertOne({
-    nickName,
+    nickname,
     message,
     date,
   });
