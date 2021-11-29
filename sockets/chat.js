@@ -3,7 +3,7 @@ const { postChatMessage, getChatHistoric } = require('../models/chatModel');
 
 const onlineUsers = {};
 
-const joinChat = async ({ socket, nickname }) => {
+const joinChat = async ({ socket, nickname, io }) => {
   onlineUsers[socket.id] = nickname;
   const chatHistoric = await getChatHistoric();
   chatHistoric.forEach((msg) => {
@@ -13,11 +13,11 @@ const joinChat = async ({ socket, nickname }) => {
 
   // socket.broadcast.emit: Emite a msg pata TODOS, MENOS para o socket que se conectou
   socket.broadcast.emit('message', `${nickname} acabou de se conectar`);
-  socket.emit('onlineUser', onlineUsers);
+  io.emit('onlineUser', onlineUsers);
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
-  socket.on('joinChat', ({ nickname }) => joinChat({ socket, nickname }));
+  socket.on('joinChat', ({ nickname }) => joinChat({ socket, nickname, io }));
 
   socket.on('message', async ({ chatMessage, nickname }) => {
     // Source: https://www.geeksforgeeks.org/node-js-date-format-api/
