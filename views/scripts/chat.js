@@ -48,17 +48,27 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-const onlineUsersListUpdate = (name) => {
+const onlineUsersListUpdate = (onlineUsersObject) => {
   const usersUL = document.querySelector('#onlineUsers');
-  const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
-  li.innerText = name;
-  usersUL.appendChild(li);
+  const usersLI = document.querySelectorAll('.others-online-users');
+
+  console.log(usersLI);
+  if (usersLI.length !== 0) usersLI.forEach((li) => li.remove());
+
+  Object.values(onlineUsersObject).forEach((onlineUser, _index, array) => {
+    // for (let cont = 0; cont < array.length - 1; cont += 1) {
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'online-user');
+      li.setAttribute('class', 'others-online-users');
+      li.innerText = onlineUser;
+      usersUL.appendChild(li);
+    // }
+  });
 };
 
 socket.on('message', (message) => createMessage(message));
 
-socket.on('onlineUser', (name) => onlineUsersListUpdate(name));
+socket.on('onlineUser', (onlineUsersList) => onlineUsersListUpdate(onlineUsersList));
 
 window.onbeforeunload = () => {
   socket.disconnect();

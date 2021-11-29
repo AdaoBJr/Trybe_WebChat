@@ -5,15 +5,15 @@ const onlineUsers = {};
 
 const joinChat = async ({ socket, nickname }) => {
   onlineUsers[socket.id] = nickname;
-    const chatHistoric = await getChatHistoric();
-    chatHistoric.forEach((msg) => {
-    const formatedTimestamp = date.format(msg.timestamp, 'DD-MM-YYYY HH:mm:ss');
-      socket.emit('message', `${formatedTimestamp} - ${msg.nickname}: ${msg.message}`);
-    });
+  const chatHistoric = await getChatHistoric();
+  chatHistoric.forEach((msg) => {
+  const formatedTimestamp = date.format(msg.timestamp, 'DD-MM-YYYY HH:mm:ss');
+    socket.emit('message', `${formatedTimestamp} - ${msg.nickname}: ${msg.message}`);
+  });
 
-    // socket.broadcast.emit: Emite a msg pata TODOS, MENOS para o socket que se conectou
-    socket.broadcast.emit('message', `${nickname} acabou de se conectar`);
-    socket.broadcast.emit('onlineUser', `${nickname}`);
+  // socket.broadcast.emit: Emite a msg pata TODOS, MENOS para o socket que se conectou
+  socket.broadcast.emit('message', `${nickname} acabou de se conectar`);
+  socket.emit('onlineUser', onlineUsers);
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
@@ -31,10 +31,12 @@ module.exports = (io) => io.on('connection', (socket) => {
 
   socket.on('userNameUpdate', (newNickname) => {
     onlineUsers[socket.id] = newNickname;
+    io.emit('onlineUser', onlineUsers);
   });
 
   socket.on('disconnect', () => {
     socket.broadcast.emit('message', `${onlineUsers[socket.id]} se desconectou!`);
     delete onlineUsers[socket.id];
+    socket.broadcast.emit('onlineUser', onlineUsers);
   });
 });
