@@ -39,38 +39,39 @@ const onlineUsers = [];
 
 const ONLINE_USERS = 'online-users';
 
-const disconnectUser = (socketid) => onlineUsers.findIndex((el) => el.id === socketid);
+const getIndex = (socketid) => onlineUsers.findIndex((el) => el.id === socketid);
 
 io.on('connection', (socket) => {
   socket.on('message', async ({ chatMessage, nickname }) => {
     await newMessageService(chatMessage, nickname);
     const messageFormated = toFormatMessage(chatMessage, nickname);
     io.emit('message', messageFormated);
-  }); socket.on('newuser', (data) => {
-    onlineUsers.push(data);
+  }); socket.on('newuser', ({ nickname, id }) => {
+    onlineUsers.push({ nickname, id });
     io.emit(ONLINE_USERS, onlineUsers);
   });
-  socket.on('update-user', ({ id, newNick }) => {
-    const position = disconnectUser(id);
-    onlineUsers[position].nickname = newNick;
+  socket.on('update-user', (newNick) => {
+    const index = getIndex(socket.id);
+    console.log(newNick, 'aqui');
+    onlineUsers[index].nickname = newNick;
     io.emit(ONLINE_USERS, onlineUsers);
   });
-  socket.on('disconnect', () => {
-    onlineUsers.splice(disconnectUser(socket.id), 1);
-    io.emit(ONLINE_USERS, onlineUsers);
+    socket.on('disconnect', () => {
+      onlineUsers.splice(getIndex(socket.id), 1);
+      io.emit(ONLINE_USERS, onlineUsers);
+    });
   });
-});
 
-app.set('view engine', 'ejs');
-app.set('views', './views');
+  app.set('view engine', 'ejs');
+  app.set('views', './views');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', async (req, res) => {
-  const messages = await allMessagesService();
+  app.get('/', async (req, res) => {
+    const messages = await allMessagesService();
 
-  res.render('index', { messages });
-});
+    res.render('index', { messages });
+  });
 
-socketIoServer.listen(PORT, () => console.log(`listening on port ${PORT}`));
+  socketIoServer.listen(PORT, () => console.log(`listening on port ${PORT}`));

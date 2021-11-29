@@ -12,7 +12,7 @@
 <body>
   WebChat
   <div data-testid="online-user" id="new-user"></div>
-  <ul id=users-online></ul>
+  <div id=users-online></div>
   <form id="messageInfo">
     <button type="button" data-testid="nickname-button" id="nick-button">Mudar nome</button>
     <input type="text" placeholder="Digite seu nome" id="nickname" data-testid="nickname-box" />
@@ -33,7 +33,6 @@
     const nickButton = document.getElementById('nick-button');
     const nicknameInput = document.getElementById('nickname');
     const newUser = document.getElementById('new-user')
-    const usersOnline = document.getElementById('users-online');
 
     function makeid(length) {
       let result = '';
@@ -53,22 +52,24 @@
       const chatMessage = messageText
       const nickname = messageAuthor
       if (messageAuthor.length > 0 && messageText.length > 0) {
-        socket.emit('message', { chatMessage, nickname })
+        socket.emit('message', { chatMessage, nickname, })
       }
     });
 
     nickButton.addEventListener('click', (event) => {
       event.preventDefault();
-      const author = document.getElementById('nickname');
-      newUser.innerText = author.value
-      socket.emit('update-user', { id: socket.id, newNick: author.value })
+      const nicknameInput = document.getElementById('nickname');
+      const newNick = nicknameInput.value;
+      newUser.textContent = newNick;
+      console.log(newNick);
+      socket.emit('update-user', newNick);
     })
 
     socket.on('connect', () => {
       const messageAuthor = document.getElementById('nickname');
       messageAuthor.value = makeid(16);
-      newUser.innerText = messageAuthor.value
-      const nickname = newUser.innerText;
+      newUser.textContent = messageAuthor.value
+      const nickname = newUser.textContent;
       socket.emit('newuser', { nickname, id: socket.id });
     });
 
@@ -76,21 +77,22 @@
       const messagesDiv = document.getElementById('messages')
       const li = document.createElement('li');
       li.setAttribute('data-testid', 'message')
-      li.innerText = message;
+      li.textContent = message;
       messagesDiv.appendChild(li);
     });
 
-    socket.on('online-users', (onlineUsers) => {
+    socket.on('online-users', (users) => {
+      const usersOnline = document.getElementById('users-online');
       for (let i = usersOnline.childNodes.length; usersOnline.childNodes.length > 0; i -= 1) {
         usersOnline.removeChild(usersOnline.lastChild);
       }
 
-      onlineUsers.forEach((el) => {
+      users.map((el) => {
         if (el.id === socket.id) return;
-        const li = document.createElement('li');
-        li.innerText = el.nickname;
-        li.setAttribute('data-testid', 'online-user')
-        usersOnline.appendChild(li);
+        const div = document.createElement('div');
+        div.textContent = el.nickname;
+        div.setAttribute('data-testid', 'online-user')
+        usersOnline.appendChild(div);
       })
     })
   </script>
