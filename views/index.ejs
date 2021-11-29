@@ -9,42 +9,46 @@
 </head>
 <body>
   <main>
-
-    <form id="nickname-form" action="">
-      <input 
-        type="text"
-        id="nickname-box" 
-        data-testid="nickname-box" 
-        autocomplete="off" 
-        placeholder="Digite como gostaria de ser chamado"
-        value="" 
-      />
-      <button type="submit" data-testid="nickname-button">SALVAR</button>
-    </form>
+    <div>
+      <form id="nickname-form" action="">
+        <input 
+          id="nickname-box" 
+          data-testid="nickname-box" 
+          autocomplete="off" 
+          placeholder="Como gostaria de ser chamado?" 
+          value="" 
+        />
+        <button type="submit" data-testid="nickname-button">SALVAR</button>
+      </form>
+    </div>
 
     <section>
-      <h2>Usuários online</h2>
-      <h3 id="online-user" data-testid="online-user"></h3>
+      <div>Usuários online</div>
+        <div>
+          <ul id="online-users-list"></ul>
+        </div>
     </section>
 
-      <form id="message-form" action="">
-        <input 
-          type="text"
-          data-testid="message-box"
-          id="message-box" 
-          autocomplete="off"
-          placeholder="Digite sua mensagem"
-        />
-        <button data-testid="send-button" type="submit">ENVIAR</button>
-      </form>
+    <section>
+      <div>Mensagens</div>
+      <ul id="messages"></ul>
+    </section>
+    <div>    
+    <form id="message-form" action="">
+      <input 
+        type="text" 
+        data-testid="message-box" 
+        id="message-box" 
+        autocomplete="off" 
+        placeholder="Escreva sua mensagem" 
+      />
+      <button type="submit" data-testid="send-button">ENVIAR</button>
+    </form>
+    </div>
   </main>
 
-  <ul data-testid="message" id="messages"></ul>
+      <script src="/socket.io/socket.io.js"></script>
+      <script src='./js/chat.js'></script>
+  </body>
 
-
-
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script src='./js/chat.js'></script>
-</body>
 </html>
