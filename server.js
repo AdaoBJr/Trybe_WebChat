@@ -16,6 +16,8 @@ const io = require('socket.io')(server, {
   },
 });
 
+let onlineUsers = [];
+
 app.use(express.static(`${__dirname}/src`));
 
 io.on('connection', (socket) => {
@@ -23,6 +25,28 @@ io.on('connection', (socket) => {
     const { chatMessage, nickname } = message;
     const now = new Date().toLocaleString().replace(/\//g, '-');
     io.emit('message', `${now} - ${nickname}: ${chatMessage}`);
+  });
+
+  socket.on('userOnline', (nickname) => {
+    onlineUsers.push([nickname, socket.id]);
+
+    io.emit('userOnline', onlineUsers);
+  });
+  socket.on('disconnect', () => {
+    onlineUsers = onlineUsers.filter(([, id]) => id !== socket.id);
+
+    io.emit('userOnline', onlineUsers);
+  });
+});
+
+io.on('connection', (socket) => {
+  socket.on('updateNickname', (nickname) => {
+    onlineUsers = onlineUsers.map((el) => {
+      if (el[1] === socket.id) return [nickname, socket.id];
+      return el;
+    });
+
+    io.emit('userOnline', onlineUsers);
   });
 });
 
