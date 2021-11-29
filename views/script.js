@@ -65,4 +65,4 @@ document.querySelector('.nicknameButton').addEventListener('click', () => {
 
 user.on('disconnectUser', () => {
   localStorage.clear();
-}); 
+});
