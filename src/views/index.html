@@ -7,9 +7,22 @@
     <title>Web Chat</title>
 </head>
 <body>
+    <h2>Bem Vindo ao Web Chat</h2>
+    <span id="nickname" data-testid="online-user"></span>
+
+    <form id="nickname-form" action="">
+      <input id="nickname-input" autocomplete="off" data-testid="nickname-box" />
+      <button data-testid="nickname-button" id="save-nick-btn" type="button">Send</button>
+    </form>
+
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
+      <input id="messageInput" autocomplete="off" data-testid="message-box" />
+      <button data-testid="send-button" id="send-msg-btn" >Send</button>
     </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/chat.js"></script>
 </body>
 </html>
